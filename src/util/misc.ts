@@ -113,17 +113,28 @@ export async function withRetry<T>(fn: (attempt: number) => Promise<T>, opts: Re
   throw lastError;
 }
 
-/** Map with at most `limit` calls in flight, keeping input order in the result. */
+/**
+ * Map with at most `limit` calls in flight, keeping input order in the result.
+ * After the first failure no new item starts, the ones in flight finish, and then the first error is
+ * thrown. So a failed run doesn't keep paying for calls, and a caller's `finally` sees every result
+ * that did complete.
+ */
 export async function mapLimit<T, R>(items: readonly T[], limit: number, fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
   const results = new Array<R>(items.length);
   let next = 0;
+  let failure: { error: unknown } | null = null;
   const worker = async (): Promise<void> => {
-    while (next < items.length) {
+    while (next < items.length && !failure) {
       const i = next++;
-      results[i] = await fn(items[i] as T, i);
+      try {
+        results[i] = await fn(items[i] as T, i);
+      } catch (error) {
+        failure ??= { error };
+      }
     }
   };
   await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));
+  if (failure) throw (failure as { error: unknown }).error;
   return results;
 }
 

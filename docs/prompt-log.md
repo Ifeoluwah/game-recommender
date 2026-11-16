@@ -132,3 +132,15 @@ Record the rest in REBUILD_NOTES.md as deliberately kept, with reasons, for the 
 - one misleading-title trap is vacuous this run because the model stated the true type in the title, so EVALUATION.md must disclose that 39/39 includes a row that proves nothing;
 - near-duplicate titles pass the exact-match display-title dedupe; fuzzy matching is out of scope.
 </pasted_content id="2fae">
+
+## 2026-11-16 02:24:21
+
+Read @AGENTS.md and implement @docs/prompts/04-enrichment-and-guard.md, following milestone 4 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. The prompt file in prompts/ is given; don't edit it. Write every test in spec 04's acceptance criteria using a fake JsonLlm, then run npm run typecheck and npm test. Build and run everything offline; write the OpenAI path but don't run it. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 4 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Finish by reporting the test results, which acceptance criterion each test covers, and anything you had to interpret.
+
+## 2026-11-16 02:26:19
+
+Read @AGENTS.md and implement @docs/prompts/04-enrichment-and-guard.md, following milestone 4 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. The prompt file in prompts/ is given; don't edit it. Write every test in spec 04's acceptance criteria using a fake JsonLlm, then run npm run typecheck and npm test. Build and run everything offline; write the OpenAI path but don't run it. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 4 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Finish by reporting the test results, which acceptance criterion each test covers, and anything you had to interpret.

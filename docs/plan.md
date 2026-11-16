@@ -331,13 +331,13 @@ Done 2026-11-16: typecheck clean; 236 tests pass (6 files). Offline `catalogueHa
 
 ### Checklist
 
-- [ ] `src/ai/providers.ts`: check `OpenAiJsonLlm` against spec 04 §3:
+- [x] `src/ai/providers.ts`: check `OpenAiJsonLlm` against spec 04 §3:
   - strict `json_schema`;
   - temperature defaults to 0;
   - 30 s timeout, `maxRetries: 2`;
   - `OPENAI_CHAT_MODEL`, `id` = `openai:<model>`;
   - an empty response throws.
-- [ ] `src/pipeline/enrich.ts`:
+- [x] `src/pipeline/enrich.ts`:
   - `ENRICH_PROMPT_VERSION = "enrich-game.v2"`, `ENRICH_PIPELINE_VERSION = "enrich-pipeline.v1"`;
   - `assessEvidence`, `rulesProposal` and `KEYWORDS` (A9 verbatim);
   - `buildEnrichmentInput`; the strict response schema and the Zod parse;
@@ -351,16 +351,17 @@ Done 2026-11-16: typecheck clean; 236 tests pass (6 files). Offline `catalogueHa
     - 3 attempts with jitter;
     - per-record `rules_fallback` for LLM and parse failures only, while cache failures reject the run;
     - stats `{ llmCalls, cacheHits, fallbacks, skippedComplete, titleOnly }`.
-- [ ] `src/pipeline/guard.ts`:
+- [x] `src/pipeline/guard.ts`:
   - `applyGuard`: protected fields copied; vocabulary filter feeding `rejectedTags`; source wins, with caps of 4 themes and 5 mechanics; the insufficient formula; provenance; `cached` and `proposedAt`;
   - `lintSummary`: every banned pattern including the two number patterns; discard rather than repair; truncate at 240 characters.
-- [ ] `prompts/enrich-game.v2.md`: use as given.
+- [x] `prompts/enrich-game.v2.md`: use as given.
 
 ### Files
 
 | Action | Path |
 | --- | --- |
-| modify | `src/ai/providers.ts`; verify `src/domain/types.ts` against A12 |
+| verify (no change) | `src/ai/providers.ts`, `src/domain/types.ts` against A12 |
+| modify | `src/util/misc.ts` (`mapLimit` stops after a failure), `tests/misc.test.ts` |
 | create | `src/pipeline/enrich.ts`, `src/pipeline/guard.ts`, `tests/enrichment.test.ts` |
 | unchanged | `prompts/enrich-game.v2.md` |
 | runtime, git-ignored | `.cache/enrichment-cache.json` |
@@ -403,7 +404,9 @@ Get-ChildItem -Recurse -Filter *.tmp -ErrorAction SilentlyContinue | Select-Obje
 > 13. **Checkpointing:** a run interrupted part-way still leaves every completed proposal in the cache file, and no `.tmp` file behind.
 > 14. **Number lint:** summaries containing "96.5% RTP" or "£250,000" are discarded.
 
-Status: `[ ]` 1 `[ ]` 2 `[ ]` 3 `[ ]` 4 `[ ]` 5 `[ ]` 6 `[ ]` 7 `[ ]` 8 `[ ]` 9 `[ ]` 10 `[ ]` 11 `[ ]` 12 `[ ]` 13 `[ ]` 14
+Status: `[x]` 1 `[x]` 2 `[x]` 3 `[x]` 4 `[x]` 5 `[x]` 6 `[x]` 7 `[x]` 8 `[x]` 9 `[x]` 10 `[x]` 11 `[x]` 12 `[x]` 13 `[x]` 14
+
+Done 2026-11-16: typecheck clean; 342 tests pass (8 files), 40 of them in `tests/enrichment.test.ts` (each acceptance criterion is named in its test). Offline `catalogueHash` still `5caf2bbb0f343546`. `OpenAiJsonLlm` already matched §3; the OpenAI enrichment path is written, not run. `mapLimit` now stops starting work after a failure (see `REBUILD_NOTES.md`).
 
 ---
 

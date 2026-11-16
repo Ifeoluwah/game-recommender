@@ -86,4 +86,18 @@ describe("mapLimit", () => {
     expect(out).toEqual(["0:5", "1:1", "2:4", "3:2", "4:3"]);
     expect(peak).toBe(2);
   });
+
+  it("after a failure starts nothing new, lets in-flight work finish, then rejects with the first error", async () => {
+    const started: number[] = [], finished: number[] = [];
+    const run = mapLimit([0, 1, 2, 3, 4, 5], 2, async (n) => {
+      started.push(n);
+      if (n === 1) throw new Error("boom");
+      await new Promise((r) => setTimeout(r, 10));
+      finished.push(n);
+      return n;
+    });
+    await expect(run).rejects.toThrow("boom");
+    expect(started).toEqual([0, 1]); // item 2 onwards never started
+    expect(finished).toEqual([0]); // item 0 was in flight and completed before the rejection
+  });
 });
