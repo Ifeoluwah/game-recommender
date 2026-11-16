@@ -1,5 +1,6 @@
 import type { GameType, Mechanic } from "../domain/vocabulary.js";
 import type { CreativeGame } from "./creative.js";
+import { findRealNames } from "./real-names.js";
 import type { SlateEntry } from "./slate.js";
 
 /**
@@ -8,7 +9,7 @@ import type { SlateEntry } from "./slate.js";
  * through them, so the reference dataset is unchanged.
  */
 
-export type RepairKind = "title_studio" | "cluster_title" | "layout_regenerated" | "layout_cleared" | "live_dealer_removed";
+export type RepairKind = "title_studio" | "cluster_title" | "real_name" | "layout_regenerated" | "layout_cleared" | "live_dealer_removed";
 
 /** One change made after the model answered, recorded in the manifest's `repairs`. */
 export interface GenerationRepair {
@@ -19,19 +20,25 @@ export interface GenerationRepair {
   after: string | Mechanic[] | null;
   /** Single-slot calls it took, including failed ones; 0 for a deterministic fix. */
   attempts: number;
-  /** Title repairs: the earlier slot with the same title, and the studio involved. */
+  /** Collision repairs: the earlier slot with the same title, and the studio involved. */
   collidedWithSlot?: number;
   provider?: string;
+  /** Real-name repairs: the deny-list entries the old title matched. */
+  realNames?: string[];
 }
 
 /** A problem that sends a slot back to the model. */
 export interface SlotProblem {
-  kind: "title_studio" | "cluster_title" | "layout";
+  kind: "title_studio" | "cluster_title" | "real_name" | "layout";
   /** The slot that gets regenerated: for a collision, the later one in slate order. */
   slot: number;
   /** For a collision, the earlier slot it repeats. */
   otherSlot: number | null;
   message: string;
+  /** An extra line for the single-slot request, saying what was wrong. */
+  instruction: string | null;
+  /** For a real-name problem, the deny-list entries matched. */
+  realNames?: string[];
 }
 
 export interface TitleCollision {
@@ -122,21 +129,40 @@ const typeOf = (slate: readonly SlateEntry[], slot: number): GameType => {
   return s.gameType;
 };
 
-/** Problems that need the model again: title collisions, cluster-title repeats, contradicting layouts. */
+/** Problems that need the model again: title collisions, cluster-title repeats, real-world names, contradicting layouts. */
 export function findRegenerationProblems(games: readonly CreativeGame[], slate: readonly SlateEntry[]): SlotProblem[] {
   const problems: SlotProblem[] = [
-    ...findTitleStudioCollisions(games).map((c): SlotProblem => ({ kind: "title_studio", slot: c.slot, otherSlot: c.firstSlot, message: duplicateMessage(c) })),
+    ...findTitleStudioCollisions(games).map((c): SlotProblem => ({ kind: "title_studio", slot: c.slot, otherSlot: c.firstSlot, message: duplicateMessage(c), instruction: null })),
     ...findClusterTitleCollisions(games, slate).map((c): SlotProblem => ({
       kind: "cluster_title",
       slot: c.slot,
       otherSlot: c.firstSlot,
       message: `duplicate title among benchmark-cluster games: "${c.title}" (slots ${c.firstSlot} and ${c.slot})`,
+      instruction: null,
     })),
   ];
   for (const g of games) {
+    const realNames = findRealNames(g.title);
+    if (realNames.length) {
+      const quoted = realNames.map((n) => JSON.stringify(n)).join(", ");
+      problems.push({
+        kind: "real_name",
+        slot: g.slot,
+        otherSlot: null,
+        message: `title ${JSON.stringify(g.title)} uses a real-world name (${quoted}) (slot ${g.slot})`,
+        instruction: `The previous title ${JSON.stringify(g.title)} uses a real-world name (${quoted}). Use an invented title: no real brand, game, franchise, film or TV title.`,
+        realNames,
+      });
+    }
     const type = typeOf(slate, g.slot);
     if (layoutFit(type, g.reelLayout) === "contradicts") {
-      problems.push({ kind: "layout", slot: g.slot, otherSlot: null, message: `reelLayout ${JSON.stringify(g.reelLayout)} doesn't fit type=${type} (slot ${g.slot})` });
+      problems.push({
+        kind: "layout",
+        slot: g.slot,
+        otherSlot: null,
+        message: `reelLayout ${JSON.stringify(g.reelLayout)} doesn't fit type=${type} (slot ${g.slot})`,
+        instruction: `The previous reelLayout ${JSON.stringify(g.reelLayout ?? "")} does not fit type=${type}. Use a reelLayout that fits it.`,
+      });
     }
   }
   return problems;

@@ -505,6 +505,54 @@ describe("repairs after LLM generation (spec 01 §6.2)", () => {
     });
   });
 
+  describe("real-world names in titles (spec 01 §4 hard rule)", () => {
+    const gameShow = slate.filter((s) => s.cluster === "live_game_show" && s.clusterRole === "member").map((s) => s.slot).sort((x, y) => x - y)[0]!;
+    const instruction = (title: string, name: string) =>
+      `The previous title ${JSON.stringify(title)} uses a real-world name (${JSON.stringify(name)}). Use an invented title: no real brand, game, franchise, film or TV title.`;
+
+    it("regenerates a title using a real name, saying why, until it's invented", async () => {
+      // The batch answers "Wheel of Fortune Live" (as in the first rebuild); the first repair still uses
+      // a real name, the second is invented.
+      const answers = ["Casino Royale Live", "Prize Carousel Live"];
+      const llm = model((e, { repair, attempt }) =>
+        e.slot === gameShow ? { title: repair ? answers[attempt - 1]! : "Wheel of Fortune Live" } : {},
+      );
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(games.find((g) => g.slot === gameShow)!.title).toBe("Prize Carousel Live");
+      expect(repairs).toEqual([{ kind: "real_name", slot: gameShow, field: "title", before: "Wheel of Fortune Live", after: "Prize Carousel Live", attempts: 2, realNames: ["wheel of fortune"] }]);
+      expect(llm.calls).toHaveLength(10 + 2);
+      for (const call of llm.calls.slice(10)) {
+        expect(slotsInRequest(call.user).map((e) => e.slot)).toEqual([gameShow]);
+        expect(call.user).toContain(instruction("Wheel of Fortune Live", "wheel of fortune"));
+        expect(call.user).toContain("Titles already used (do not reuse): ");
+      }
+    });
+
+    it("fails, naming the slot, when every attempt still uses a real name", async () => {
+      const llm = model((e) => (e.slot === gameShow ? { title: "Wheel of Fortune Live" } : {}));
+      await expect(generateWithLlm(slate, llm, { system: "p" })).rejects.toThrow(
+        `title "Wheel of Fortune Live" uses a real-world name ("wheel of fortune") (slot ${gameShow}) (not repaired after 3 attempts)`,
+      );
+      expect(llm.calls).toHaveLength(10 + 3);
+    });
+
+    it("checks a title produced by another repair too", async () => {
+      // A cluster-title repair that answers with a real name must be rejected and tried again.
+      const fishing = slate.filter((s) => s.cluster === "fishing_cash_collect" && s.clusterRole === "member").map((s) => s.slot).sort((x, y) => x - y);
+      const answers = ["Fishin Frenzy Live", "Deep Sea Haul"];
+      const llm = model((e, { repair, attempt }) =>
+        repair ? { title: answers[attempt - 1]! } : fishing.slice(0, 2).includes(e.slot) ? { title: "Deep Sea Catch" } : {},
+      );
+      const { repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(repairs).toEqual([expect.objectContaining({ kind: "cluster_title", slot: fishing[1], after: "Deep Sea Haul", attempts: 2 })]);
+    });
+
+    it("records the real-name repair in the manifest", async () => {
+      const d = await generateDataset({ llm: model((e, { repair }) => (e.slot === gameShow && !repair ? { title: "Casino Royale Live" } : {})), system: "p" });
+      expect(d.manifest.repairs).toEqual([{ kind: "real_name", slot: gameShow, field: "title", before: "Casino Royale Live", after: `Unique Game ${gameShow}`, attempts: 1, realNames: ["casino royale"] }]);
+    });
+  });
+
   describe("layouts that don't fit the game type (item 3)", () => {
     const table = plainSlots("table")[0]!;
     const live = plainSlots("live")[0]!;

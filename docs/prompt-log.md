@@ -101,3 +101,34 @@ Add tests with a fake JsonLlm for 1–3. Don't run the OpenAI path; I'll rerun i
 ## 2026-11-16 02:05:23
 
 Keep the title dedupe rule as a service rule applying to both builds. Don't scope to openai. Record in Rebuild_note.md that START_HERE §3's offline ranking and cluster numbers are a prototype baseline that this build supersedes, because the display-title dedupe changes what's served; they'll be re-baselined from this build's own first offline eval at milestone 6, with the reason noted. The hash, trap count and eligibility/policy gates stay as the expected values.
+
+## 2026-11-16 02:08:15
+
+Split the "Baselines superseded" list. Keep as expected values, because the display-title dedupe doesn't touch them: cluster Recall@5, MRR, near-miss intrusion, theme precision, game-type accuracy. Re-baseline only what the recommender serves: served Recall@5, nDCG@5, lift over raw text, bad-recommendation rate, coverage. Say why each group falls where it does.
+
+## 2026-11-16 02:09:14
+
+Also compare against docs/notes/openai-catalogue-inspection.md: which problems from the previous inspection are fixed, which remain, and anything new. Append a dated section to that file rather than overwriting it.
+
+## 2026-11-16 02:11:53
+
+<pasted_content id="2fae">
+Read-only re-check of data/generated/ after the repair fixes; change no data file and call no model.
+1. Counts and type mix still correct; manifest lists 14 repairs across the four kinds.
+2. No repeated title within any benchmark cluster, whatever the studio.
+3. No live_dealer on a non-live game.
+4. Every layout either fits its game type or is null. Include the case you said the rule doesn't catch: a card game on a "single-zero wheel".
+5. Anything new that the previous inspection didn't flag.
+Append a dated section to docs/notes/openai-catalogue-inspection.md with the result and say whether it's fit to build on. Don't commit.
+</pasted_content id="2fae">
+
+## 2026-11-16 02:15:07
+
+<pasted_content id="2fae">
+Only one generator change: real-world names. Add a deny-list check to the repair loop (spec 01 §6.2): a title matching a known real brand, game franchise, film or TV title (case- and punctuation-insensitive, whole tokens) is regenerated with an instruction not to use real-world names, up to 3 attempts, then fail naming the slot. One module, a comment saying the list isn't exhaustive, the limitation recorded in REBUILD_NOTES.md, and a test. Report which of this run's titles it catches.
+
+Record the rest in REBUILD_NOTES.md as deliberately kept, with reasons, for the README and EVALUATION.md:
+- card games and game shows on wheel layouts, table copy that still says live dealer, metadata contradicting its own copy, games left with no mechanics: realistic supplier-feed mess, which the pipeline and evaluation exist to handle; tidying it would make the dataset less representative;
+- one misleading-title trap is vacuous this run because the model stated the true type in the title, so EVALUATION.md must disclose that 39/39 includes a row that proves nothing;
+- near-duplicate titles pass the exact-match display-title dedupe; fuzzy matching is out of scope.
+</pasted_content id="2fae">

@@ -169,14 +169,14 @@ export async function generateWithLlm(slate: SlateEntry[], llm: JsonLlm, opts: {
  * every other slot's title, so a repair can't create a new collision. The versioned prompt file is
  * unchanged.
  */
-export function repairUserMessage(entry: SlateEntry, otherTitles: readonly string[], badLayout: string | null = null): string {
+export function repairUserMessage(entry: SlateEntry, otherTitles: readonly string[], instruction: string | null = null): string {
   const lines = [batchUserMessage([entry])];
-  if (badLayout !== null) lines.push(`The previous reelLayout ${JSON.stringify(badLayout)} does not fit type=${entry.gameType}. Use a reelLayout that fits it.`);
+  if (instruction !== null) lines.push(instruction);
   lines.push(`Titles already used (do not reuse): ${otherTitles.map((t) => JSON.stringify(t)).join(", ")}`);
   return lines.join("\n");
 }
 
-const REPAIR_KIND: Record<SlotProblem["kind"], RepairKind> = { title_studio: "title_studio", cluster_title: "cluster_title", layout: "layout_regenerated" };
+const REPAIR_KIND: Record<SlotProblem["kind"], RepairKind> = { title_studio: "title_studio", cluster_title: "cluster_title", real_name: "real_name", layout: "layout_regenerated" };
 
 async function repairSlot(
   games: CreativeGame[],
@@ -190,7 +190,7 @@ async function repairSlot(
   let lastError: unknown;
   for (let attempt = 1; attempt <= MAX_REPAIR_ATTEMPTS; attempt++) {
     try {
-      const user = repairUserMessage(entry, otherTitles, problem.kind === "layout" ? before.reelLayout ?? "" : null);
+      const user = repairUserMessage(entry, otherTitles, problem.instruction);
       const [candidate] = parseEntries(await call(user), [entry]);
       const next = alignAndEnforce(games.map((g) => (g.slot === entry.slot ? candidate! : g)), slate);
       if (!involves(findRegenerationProblems(next, slate), entry.slot)) {
@@ -198,7 +198,9 @@ async function repairSlot(
         const repair: GenerationRepair =
           problem.kind === "layout"
             ? { kind: "layout_regenerated", slot: entry.slot, field: "reelLayout", before: before.reelLayout, after: after.reelLayout, attempts: attempt }
-            : { kind: REPAIR_KIND[problem.kind], slot: entry.slot, field: "title", before: before.title, after: after.title, attempts: attempt, collidedWithSlot: problem.otherSlot ?? undefined, provider: after.provider };
+            : problem.kind === "real_name"
+              ? { kind: "real_name", slot: entry.slot, field: "title", before: before.title, after: after.title, attempts: attempt, realNames: problem.realNames ?? [] }
+              : { kind: REPAIR_KIND[problem.kind], slot: entry.slot, field: "title", before: before.title, after: after.title, attempts: attempt, collidedWithSlot: problem.otherSlot ?? undefined, provider: after.provider };
         return { games: next, repair };
       }
       lastError = undefined;

@@ -56,29 +56,69 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
   - At milestone 1 a scratch preview (A8 inlined) had predicted it. Without the trailing newline the feed hashes to `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`; the M1 feed alone (100 / 105) gives `4de3ec42e6087043`.
   - Still to confirm: the same value in `artifacts/offline/index.json` at milestone 5.
 - **Theme-precision denominator (P-23):** whether including title-only records gives 0.667. *Pending milestone 6.*
-- **Ranking numbers (P-16):** no longer a reproduction target; see "Baselines superseded" below. *At milestone 6, record this build's first offline values.*
+- **Ranking numbers (P-16):** the served numbers are no longer a reproduction target; see "Baselines superseded" below. *At milestone 6, record this build's first offline values for them.*
 
 ## Baselines superseded
 
-**START_HERE §3's offline ranking and cluster numbers are a prototype baseline, and this build supersedes them.**
+**What changed:** the prototype's recommender deduplicated only on title + studio. This build also skips a candidate with the same displayed name as the seed or an already-shown game (spec 02 §6.2, `quality:duplicate_title`), in both builds, so it serves different rails from the same catalogue. The offline catalogue has 5 groups of same-title games from different studios, two of them inside `live_game_show` ("Prize Wheel Live" ×3, "Big Show Live" ×3). Those are exactly the games the new rule now keeps apart.
 
-- **Superseded:**
-  - cluster Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.863 → 0.850;
-  - nDCG@5 0.549, lift over raw text −0.026, bad-recommendation rate 0.606, coverage 0.979;
-  - the theme precision of 0.667.
-- **Why:** they were measured on the prototype, whose recommender deduplicated only on title + studio. This build also skips a candidate with the same displayed name as the seed or an already-shown game (spec 02 §6.2, `quality:duplicate_title`), for both builds, so it serves different rails from the same catalogue.
-  - The offline catalogue has 5 groups of same-title games from different studios, two of them inside `live_game_show` ("Prize Wheel Live" ×3, "Big Show Live" ×3). Those are exactly the games the new rule now keeps apart.
-  - Served recall, nDCG, bad-recommendation rate and coverage all depend on what's served, so they move. Similarity-only cluster metrics (Recall@5, MRR, intrusion on the raw neighbour lists) don't go through `recommend()`, so they may still match, but they're re-baselined with the rest rather than mixed with prototype numbers.
-  - Theme precision doesn't depend on serving either, so it should still match. It's re-baselined anyway.
-- **What replaces them:** this build's own first offline evaluation at milestone 6 (`npm run eval -- --provider=offline`). Record its values here, then update START_HERE §3 to quote them as the expected offline values, with this reason.
-- **Still the expected values, unchanged:**
-  - **`catalogueHash`:** `5caf2bbb0f343546`. The dataset is untouched, and still byte-identical to the prototype's.
-  - **Planted traps:** 39 rows, all handled. The rows depend on the dataset; their pass conditions are eligibility, policy and normalisation outcomes the title rule doesn't weaken.
-  - **Eligibility and policy gates:** `eligibilityViolations`, `duplicateViolations` and `policyViolations` are all 0. A stricter dedupe can only remove items, never add a violating one.
+**The test for each number:** does it go through `recommend()`? The title rule lives only there, in the quality step. Anything computed upstream of it, on the dataset, the enriched records or the precomputed neighbour lists, can't see it.
+
+**Re-baselined: what the recommender serves.** These are prototype numbers, superseded by this build's first offline evaluation at milestone 6 (`npm run eval -- --provider=offline`). Record the new values here, then update START_HERE §3 to quote them with this reason.
+
+| Metric | Prototype value | Why it moves |
+| --- | --- | --- |
+| Served Recall@5 (clusters) | 0.863 → 0.850 | Computed on `recommend()`'s output (spec 03 §7). The `live_game_show` members and near-misses that share a name with one another now dedupe, so fewer fellow members can be served |
+| nDCG@5 | 0.549 | Computed on the items `recommend()` returns, against an ideal pool that still counts same-title games separately (spec 06 §5.2) |
+| Lift over raw text | −0.026 | The difference between two nDCG@5 values, both served. The rule affects the `enriched` and `raw_text` variants differently, depending on which same-title games each ranks highly |
+| Bad-recommendation rate | 0.606 | The share of grade-0 items among those shown. Removing a same-title item lets the next candidate in, with its own grade |
+| Coverage | 0.979 | Whether `recommend()` answers at all. A rail that loses same-title items can fall below `minResults` and decline |
+
+**Kept as expected values: what the title rule can't touch.** These are still the targets for this build.
+
+| Value | Expected | Why it stays |
+| --- | --- | --- |
+| Cluster Recall@5 | 0.825 → 0.800 | Computed on the similarity ranking itself, the precomputed neighbour list before any rule (spec 03 §7). The neighbour lists come from the dataset, the rules enricher and the hashing embedder, all unchanged |
+| Cluster MRR | 1 → 1 | Same: the rank of the first fellow member in the neighbour list, before any rule |
+| Near-miss intrusion | 0.15 → 0 | Same: near-miss and member ranks in the neighbour list, before any rule |
+| Theme precision when filled | 0.667 | An enrichment metric: enriched themes compared with the canonical record (spec 06 §4). Enrichment runs at build time and never calls `recommend()` |
+| Game-type accuracy when filled | 1.0 | Same: enriched game type against the canonical record, at build time |
+| `catalogueHash` | `5caf2bbb0f343546` | The dataset is untouched and still byte-identical to the prototype's |
+| Planted traps | 39 rows, all handled | The rows come from the dataset. Their pass conditions are normalisation, enrichment, eligibility and policy outcomes, and a trap judged on being absent stays absent when a stricter dedupe removes more |
+| `eligibilityViolations`, `duplicateViolations`, `policyViolations` | 0 | A stricter dedupe only removes items from a rail; it can never add one that violates a rule |
+
+**Caveat on "kept":** these stay expected only while the rules enricher, the embedding text and the hashing embedder copy appendix A9, A16 and A17 exactly. If one of them differs at milestone 5 or 6, that's a rebuild discrepancy to investigate, not something the title rule explains.
 
 ## Known limitations
 
 Kept on purpose, with reasons. They belong in the README's "what I left out" and in `docs/EVALUATION.md`'s known limitations when spec 08 writes them.
+
+- **The real-name deny-list isn't exhaustive** (`src/catalogue/real-names.ts`).
+  - It lists well-known names a casino-themed model is likely to reach for, so an obscure real title, or a real name not on the list, gets through. "Gods of Olympus" (in both OpenAI builds) isn't listed, because it couldn't be confirmed as a real title.
+  - It also deliberately leaves out ordinary words that real titles happen to use ("gladiator", "the chase", "fortune", "royale", "gold rush"), because blocking them would reject invented titles.
+  - So it's a backstop to reviewing a build's titles, not a replacement. A model-based "is this real?" check was rejected: it costs calls, and isn't reliable on obscure titles either. Add a name to the list when an inspection finds one.
+- **Supplier-feed mess left in the OpenAI catalogue** (inspection notes, 2026-11-16 re-inspections):
+  - card games and game shows on "single-zero wheel" layouts (4 card games; 2 `live_game_show` members);
+  - table copy that still says "live dealer" after the mechanic was removed (4 tables);
+  - metadata that contradicts its own copy;
+  - games left with no mechanics (6).
+
+  **Why kept:** this is what real supplier and CMS feeds look like, and the pipeline (normalisation, the evidence check, guarded enrichment) and the evaluation (wrong-fill samples, silver labels against the clean truth) exist to handle it. Tidying it at generation would make the dataset less representative, and the evaluation would measure a cleaner world than production.
+
+  **Cost:**
+  - wheel layouts pull card games and game-show members towards roulette in the embedding text;
+  - enrichment will re-infer `live_dealer` on those tables from their copy, scored as wrong fills;
+  - empty-mechanics records go to the LLM rather than being "complete" evidence.
+
+  Expect all of it in spec 06's wrong-fills sample and failure cases.
+- **One misleading-title trap is vacuous in the OpenAI build.**
+  - g-019 came back as "Mega Scratch: Fruity Adventure". The model put the true type ("Scratch") in the title, and neither "Megaways" nor "Spins".
+  - Its trap row (spec 02 §7: `e.gameType === truth.gameType`) will pass without testing whether enrichment trusts copy over a slot-sounding title. g-057 "Festive Spins Extravaganza" still tests it.
+  - **`EVALUATION.md` must disclose** that the OpenAI report's 39/39 planted traps includes one row that proves nothing, and name it. It's kept rather than regenerated because nothing in the spec checks a misleading title's shape, and adding one is a generator change for later.
+  - The offline build's misleading titles ("… Megaways") are unaffected.
+- **Near-duplicate titles pass the display-title dedupe.**
+  - The rail's dedupe (spec 02 §6.2) compares normalised titles exactly, so near-namesakes can share a rail: "Mystic Forest Quest" and "Mystical Forest Quest"; "Fruit Frenzy Megaways" and "Fruity Megaways Frenzy"; three "Fortune Wheel" names in `live_game_show`. The cluster-title repair can produce one too, since it also uses exact matching.
+  - Fuzzy matching (word overlap, stemming, edit distance) is out of scope: it needs a threshold of its own, and a false positive would silently hide a legitimately different game.
 
 - **Win-promise copy is left in the generated descriptions.** 8 of 108 descriptions in the first OpenAI build use language like "massive wins", "chance to win big" or "guarantees fun".
   - It's realistic supplier copy, and the system is built to handle it: descriptions are never shown to players (only titles are; AGENTS.md rule 4), and the guard discards any enrichment summary that echoes banned language (spec 04 §6). So it exercises the guard rather than threatening players.
@@ -135,6 +175,16 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
   **Not verified yet:** the OpenAI regeneration with fixes 1–3.
 
   **Decision (2026-11-16): the display-title dedupe is a service rule for both builds.** It isn't scoped to the OpenAI build: players see titles whichever build is served, so the offline build is held to the same rule. See "Baselines superseded" (above) for what this does to START_HERE §3.
+
+- **Real-world names in generated titles (spec 01 §4 hard rule, §6.2), found by re-inspecting the 02:06 rebuild.**
+  - **What happened:** the rebuild had "Wheel of Fortune Live" (a `live_game_show` member), "Casino Royale Live" and the borderline "Candyland Delight". The prompt forbids real names, but nothing in code enforced it.
+  - **Fix:**
+    - a new module, `src/catalogue/real-names.ts`, holds a deny-list of real brands, operators, studios, game franchises, casino games, game shows, films, TV shows and board games, matched case- and punctuation-insensitively on whole tokens;
+    - in the repair loop, a matching title is a `real_name` problem. The slot is regenerated with `The previous title "…" uses a real-world name ("…"). Use an invented title: no real brand, game, franchise, film or TV title.`, up to 3 attempts, then the run fails naming the slot;
+    - the check also applies to titles produced by other repairs;
+    - recorded in the manifest as `real_name`, with the matched `realNames`.
+  - **Spec:** spec 01 §6.2 and Decisions. **Tests:** `tests/real-names.test.ts` (the matcher, including names it deliberately lets through) and `tests/pipeline.test.ts` ("real-world names in titles").
+  - **On the 02:06 build:** it catches 3 of 108 titles, g-007 "Wheel of Fortune Live", g-038 "Candyland Delight" and g-054 "Casino Royale Live". It catches nothing in the offline titles. Offline `catalogueHash` unchanged (`5caf2bbb0f343546`). The OpenAI rerun is still to do.
 
 ## Build choices where the specs are silent
 

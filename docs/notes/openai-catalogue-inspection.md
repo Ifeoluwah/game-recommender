@@ -153,3 +153,162 @@ These need a spec 01 change and a regeneration. None is required by the current 
 - **Title uniqueness across studios.** Extend the title repair (spec 01 §6.2) to repeated titles regardless of studio. This fixes the player-visible duplicates (item 4) and the misleading-title pairing (item 5).
 - **A copy and metadata check after generation.** Regenerate a slot when its copy uses the guard's banned patterns, names a mechanic its metadata lacks, or its layout doesn't fit its type. That covers items 1, 3, 6 and 7, using the same single-slot repair loop.
 - **Prompt v3.** Add explicit rules: no `live_dealer` on table or bingo games, layouts in the listed formats only, and no "big/massive wins". As a prompt change it's a new version and a new evaluation (AGENTS.md rule 8).
+
+---
+
+## Re-inspection, 2026-11-16: the rebuild with generation repairs
+
+**Build:** `data/generated/`, generated 02:06 UTC, `openai:gpt-4o-mini`, prompt `generate-catalogue.v2`. It's the first build with the repairs specified after the inspection above (spec 01 §6.2): cluster-title collisions, layout fit and `live_dealer` removal.
+
+**How it was checked:** the same read-only script, extended to use the repo's own `layoutFit` and to report null layouts, card games on a roulette wheel, empty mechanics and every repaired slot. No data file was changed and no model was called.
+
+This is a fresh model run, so game ids hold different games than in the first build. Problems are compared by kind, not by id.
+
+### Verdict
+
+**Not fit to commit yet**, for one new reason. Two titles look like real brands, which spec 01 §4 forbids ("no real game titles … anywhere") and AGENTS.md repeats ("fictional names everywhere"):
+
+| Game | Title | Why it's a problem |
+| --- | --- | --- |
+| g-007 | "Wheel of Fortune Live" | A real TV game show and slot brand. It's also a `live_game_show` **member** |
+| g-054 | "Casino Royale Live" | A film title |
+| g-038 | "Candyland Delight" | Borderline: close to "Candy Land", a board-game brand |
+| g-051, g-075 | "Gods of Olympus" | Present in both builds. A slot by that name may exist; not verified |
+
+Everything else that blocked or worried the first inspection is either fixed or a recorded known limitation. Once those titles are regenerated, the build is fit to commit.
+
+The generator has no real-name check today. Two options:
+- **a deny-list check in the repair loop** (a spec 01 §6.2 addition, regenerating the slot like any other problem);
+- **a rerun**, which is random and could produce other real names.
+
+The first is the durable fix. Your call.
+
+### Results against specs 01–03 (unchanged checks)
+
+| # | Check | First build | This build |
+| --- | --- | --- | --- |
+| 1 | 108 / 113, slate mix 70 / 9 / 9 / 7 / 5 | PASS | **PASS** |
+| 2 | Manifest names model and prompt; lists repairs | PASS (`titleRepairs`, 1) | **PASS:** `repairs`, 14 entries (below) |
+| 3 | Slate contract | PASS | **PASS** |
+| 4 | Clusters: counts, 5 distinct member studios, shared theme and exact mechanics, **no repeated titles** | FAIL (one repeat) | **PASS:** no repeats; 3 caught and repaired during generation |
+| 5 | No duplicate title + studio; vocabulary; **layouts fit**; **no `live_dealer` on non-live** | FAIL on layouts and `live_dealer` | **PASS** on all four |
+| 6 | Traps and edge cases at their counts, through normalisation | PASS | **PASS:** 39-row trap table again (4 seasonal); profiles 50 rich, 38 partial, 17 thin, 8 title-only |
+| 7 | No RTP, max win or money in copy | PASS | **PASS:** only "117,649 ways", a layout fact |
+
+**The 14 repairs in the manifest:**
+- **3 × `cluster_title`:** g-048 "Classic Fruit Fiesta" → "Classic Fruit Delight", g-065 "Spin the Fortune Wheel" → "Fortune Wheel Live", g-083 "Pharaoh's Cascade" → "Cascading Empire: The Pharaoh's Legacy".
+- **3 × `layout_regenerated`:** two tables with "5x3, 10 lines" (g-040, g-055), and the misleading-title instant win g-057 with "6x7 Megaways, 117,649 ways".
+- **4 × `live_dealer_removed`:** tables g-040, g-041, g-050, g-055.
+- **4 × `layout_cleared`:** "live dealer" on g-054 and g-056; "na" on g-082 and g-089.
+- Every regeneration succeeded on the first attempt.
+
+### Fixed
+
+| Problem in the first build | Now |
+| --- | --- |
+| Repeated title inside a cluster ("Deep Sea Catch" ×2) | **Fixed.** No repeats in any cluster; the three this run produced were repaired |
+| Layouts contradicting the type ("live dealer" on a table; "6x5, cascading" on a slot) | **Fixed.** No contradictions left: 3 regenerated |
+| Placeholder layouts on live games ("live_dealer", "live dealer", "live studio setting") | **Fixed.** None left: 4 cleared to null, including two "na" the first build didn't have |
+| `live_dealer` on 6 non-live games | **Fixed** in the metadata: 4 removed this run, 0 left. But see "Remaining", item 2 |
+| A misleading-title scratch card sharing its exact title with an extreme Megaways slot | **Gone**, but by chance in this run, not by a rule. The misleading titles are now "Mega Scratch: Fruity Adventure" and "Festive Spins Extravaganza" |
+| Near-identical titles for a near-miss and a member in `live_game_show` | **Gone** this run (also by chance) |
+| Win-promise copy (8 descriptions) | Down to 5 (g-043, g-056, g-058 and g-087 "big wins/prizes"; g-089 "guarantees fun"). **Kept deliberately** as realistic input for the guard (`REBUILD_NOTES.md`, known limitations) |
+
+### Remaining
+
+1. **Same title from different studios:** 2 groups, down from 5. "Roulette Royale" is on 3 tables (g-050, g-063, g-088), and "Gods of Olympus" on g-051 and g-075. They're not a generation problem under spec 01: the service's display-title dedupe (spec 02 §6.2) keeps namesakes out of one rail.
+2. **Copy still says "live dealer" on the 4 tables that lost the mechanic** (g-040, g-041, g-050, g-055: "This live dealer poker experience…", "Engage with live dealers…"). Removing the mechanic fixed the metadata but not the copy.
+   - The rules enricher maps "dealer" and "live dealer" to `live_dealer` (appendix A9), and the LLM enricher will read the same words. So enrichment will put `live_dealer` back on these tables, and the evaluation will score it as a wrong fill, because the truth now lacks it.
+   - Same family as "metadata contradicts its own copy" in the known limitations; this fix creates new instances of it.
+3. **Card games on a "single-zero wheel":** 4 (g-039, g-040, g-041, g-055), up from 3. Two of them (g-040 poker, g-055 blackjack) are the tables the layout repair regenerated. The repair accepted a wheel because the fit rule knows game types, not themes. Cost: these card games' embedding text reads "Layout: single-zero wheel", pulling them towards roulette.
+4. **The "wheel" and "jackpot" keyword mappings** (known limitation):
+   - the 6 roulette tables' copy says "wheel", so they'll be tagged `wheel_bonus`;
+   - g-039 "Live Dealer Jackpot Showdown", a `live_game_show` near-miss, promises "jackpot prizes" with no progressive.
+
+   13 mechanic words in copy aren't in the metadata (15 in the first build).
+
+### New in this build
+
+1. **Real-brand titles:** see the verdict. Not checked by the generator.
+2. **More games with no mechanics:** 6, up from 2. Two (g-041, g-050) are empty *because* `live_dealer` was their only mechanic; g-063, g-066 and g-069 (roulette tables) and g-064 (an instant win without `scratch_card`) came back empty from the model.
+   - For matching, an empty list means no "Mechanics:" line in the embedding text, and these records can't be "complete" evidence (spec 04 §4), so they go to the LLM.
+   - Not wrong, but it's more gap than the first build had.
+3. **Null layouts on two `live_game_show` members** (g-056, g-089, plus non-cluster live games g-054 and g-082). Their embedding text has no "Layout:" line while the other three members' do. That's a small, real difference inside the cluster: the "na" placeholders were honest to clear, but the cluster members are now slightly less alike.
+4. **A repair replaces the whole game; the manifest records only the field that triggered it.**
+   - A `layout_regenerated` entry shows the old and new layout, but the title, description and mechanics were regenerated too, and their old values aren't recorded.
+   - The misleading-title trap g-057 survived its regeneration intact (a slot-sounding title, copy that says scratch card), because the repair request carries the slate line with "misleading title". But that relies on the model following it again.
+   - Worth recording `before`/`after` titles for every regenerated slot, or keeping the original fields where only the layout was wrong.
+
+### Worth changing next
+
+All of these are spec 01 §6.2 additions, then a rerun:
+- **A real-name deny-list check** in the repair loop. It's the blocker.
+- **Regenerate instead of strip `live_dealer`** on non-live games, so the copy and the metadata agree (remaining item 2). Or strip it and accept the wrong fills as a known limitation.
+- **Theme-aware layout fit for card games:** a deck or shoe, not a wheel (remaining item 3).
+- **Record every field a regeneration changed** (new item 4).
+
+---
+
+## Re-check, 2026-11-16: the same 02:06 build, against the repair rules
+
+**What was checked:** `data/generated/`, read-only. No data file was changed and no model was called.
+
+**Note: this is the build re-inspected above, not a new one.** All four files are still the ones written at 02:06:19, with `generatedAt` `2026-11-16T02:06:19.418Z`. Since then no generator change and no rerun have happened, so none of the "worth changing next" items above is in this data. The re-check confirms the repair rules hold on it and looks for what the earlier passes missed.
+
+The checks use the repo's own `layoutFit` and `titleKey` (`src/catalogue/repairs.ts`) and normaliser, so they test exactly what the generator enforces.
+
+### Results
+
+| # | Check | Result |
+| --- | --- | --- |
+| 1 | 108 canonical / 113 feed / 113 reference; base mix 70 / 9 / 9 / 7 / 5 (78 slots with traps) | **PASS** |
+| 1 | Manifest lists 14 repairs across the four kinds | **PASS:** 3 `cluster_title`, 3 `layout_regenerated`, 4 `live_dealer_removed`, 4 `layout_cleared`. Every repair's `after` matches the final data |
+| 2 | No repeated title within any benchmark cluster, whatever the studio | **PASS:** none (compared case- and punctuation-insensitively, as the generator does) |
+| 3 | No `live_dealer` on a non-live game | **PASS** in the canonical catalogue, **and** in the normalised feed: no non-live record normalises to `live_dealer` |
+| 4 | Every layout fits its game type or is null | **PASS on the rule:** 104 fit, 4 are null (all live games), and no slot has a null layout. The 4 cleared layouts are absent from the feed, and normalise to null |
+| 4 | …including card games on a "single-zero wheel" (the case the rule doesn't catch) | **FAIL, 4 games:** g-039 "Live Dealer Jackpot Showdown" (live, game_show + cards), g-040 "Card Clash: Poker Showdown", g-041 "High Stakes Hold'em" and g-055 "Card Duel: Blackjack Royale" (tables). Two of the tables (g-040, g-055) got that layout from the layout repair itself |
+
+### New: not flagged by the earlier inspections
+
+1. **Game shows on a roulette wheel.** Two `live_game_show` members, g-007 "Wheel of Fortune Live" and g-080 "Spin & Win Live", have the layout "single-zero wheel". So does near-miss g-025 "Showdown Roulette Live", which is genuinely roulette.
+   - A game show's money wheel isn't a single-zero roulette wheel, and the shared layout string puts these members closer to the roulette near-miss in the embedding text ("Layout: single-zero wheel").
+   - The cluster's member layouts are now inconsistent: two roulette wheels, one "single-wheel", two null.
+   - This is the same blind spot as the card games: the fit rule knows game types, not themes.
+2. **One misleading-title trap no longer misleads.**
+   - g-019 is "Mega Scratch: Fruity Adventure". The title names its true type ("Scratch") and contains neither "Megaways" nor "Spins", which the prompt asks for.
+   - Spec 02's trap row for it (`e.gameType === truth.gameType`) will pass trivially, so it no longer tests whether enrichment trusts copy over a slot-sounding title.
+   - g-057 "Festive Spins Extravaganza" still does its job.
+   - Nothing checks the misleading-title shape after generation, so a regeneration or rerun can quietly lose the trap.
+3. **Near-duplicate titles that exact-title checks miss.**
+   - **Not related:**
+     - g-046 "Mystic Forest Quest" and g-096 "Mystical Forest Quest";
+     - g-046 and g-103 "Mystical Forest Quest Xtreme", g-096's escalation twin. A player on g-046 may see a near-namesake that is an extreme bonus-buy trap. The policy layer blocks the twin, but the names are confusable;
+     - g-087 "Fruit Frenzy Megaways" (a non-cluster Megaways slot) and g-095 "Fruity Megaways Frenzy" (the `classic_fruit` extreme near-miss).
+   - **Inside a cluster:**
+     - `live_game_show` has three "Fortune Wheel" names: g-007 "Wheel of Fortune Live", g-056 "Spin the Fortune Wheel" and g-065 "Fortune Wheel Live";
+     - `classic_fruit` has g-021 "Fruit Fiesta Spins" and g-033 "Classic Fruit Fiesta".
+   - **The repair loop produced one of these.** g-065 was a `cluster_title` repair of "Spin the Fortune Wheel"; the model answered "Fortune Wheel Live". That passes the exact-match rule but not its purpose, since titles go into the embedding text.
+   - The service's display-title dedupe (spec 02 §6.2) compares normalised titles exactly, so it doesn't catch these either.
+4. **No repaired slot is a trap anchor.** This rules out a risk: a regenerated anchor would have silently changed its traps' copies. That's luck of this run, not a rule.
+
+**Still present from the previous re-inspection:**
+- the real-brand titles g-007 "Wheel of Fortune Live" and g-054 "Casino Royale Live" (and borderline g-038 "Candyland Delight");
+- 6 games with no mechanics;
+- copy that still says "live dealer" on the 4 tables that lost the mechanic;
+- the "wheel"/"jackpot" keyword mappings.
+
+### Fit to build on?
+
+**For the next milestones, yes.** Specs 04–06 are developed and tested on the offline build (spec 05 §9: tests never read either build's files). This data's structure is correct: counts, slate contract, clusters, traps, and the repair rules all hold. So the enrichment, index and service work can go ahead.
+
+**As the committed OpenAI build that gets enriched and evaluated, no.** It's the same verdict as the previous re-inspection, now with two more reasons:
+- **blocker:** real-brand titles, a spec 01 §4 hard rule;
+- **weakens the evaluation:** one of the two misleading-title traps no longer tests anything;
+- **distorts what the cluster metrics measure:** near-duplicate titles inside `live_game_show`, and game-show members on a roulette layout.
+
+**Before the next OpenAI rerun,** these spec 01 §6.2 additions would close every open item:
+- a real-name deny-list check;
+- a misleading-title shape check (slot-sounding title, no true-type word);
+- near-duplicate title detection within clusters (word overlap, not exact match);
+- theme-aware layout fit: card games need a deck, shoe or table; game shows a money wheel, not a single-zero wheel;
+- recording every field a regeneration changes.

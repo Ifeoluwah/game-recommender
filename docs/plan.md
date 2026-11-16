@@ -540,7 +540,7 @@ Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 `[ ]` identity hash `5caf2bbb0f3
   - **Removed-per-rule table.**
   - **Output:** the report, in the §7 order, to `eval/reports/` or `eval/reports/offline/`, with the offline callout. Console output as in §7. `--gate` exits 1 on any failure.
   - Record the theme-precision outcome (0.667?) in `REBUILD_NOTES.md`.
-- [ ] `docs/EVALUATION.md`: first version, covering every point in AC5 below. Include the duplicate effect on the ideal pool under known limitations (spec 06 §5.2). Failure analysis marked *pending the OpenAI run*.
+- [ ] `docs/EVALUATION.md`: first version, covering every point in AC5 below. Include the duplicate effect on the ideal pool under known limitations (spec 06 §5.2), and every item in `REBUILD_NOTES.md` "Known limitations". That includes the disclosure that the OpenAI report's 39/39 planted traps contains one vacuous misleading-title row (g-019), named. Failure analysis marked *pending the OpenAI run*.
 
 ### Files
 
@@ -575,7 +575,7 @@ Compare with START_HERE §3:
 - theme precision 0.667, the only non-ranking gate that fails; coverage 0.979 passes;
 - nDCG@5 0.549, lift −0.026, bad-rec 0.606.
 
-**Expect the served-recall and ranking numbers to differ.** The rail now also dedupes on the displayed title (spec 02 §6.2, `quality:duplicate_title`), which the prototype didn't. The offline catalogue has same-title games, including "Prize Wheel Live" ×3 and "Big Show Live" ×3 in `live_game_show`. START_HERE §3's ranking and cluster numbers are a prototype baseline this build supersedes. Record this build's first offline values as the new baseline and update START_HERE §3 (`REBUILD_NOTES.md`, "Baselines superseded"). The `catalogueHash`, the 39 traps and the eligibility and policy gates stay as expected values.
+**Expect the served-recall and ranking numbers to differ.** The rail now also dedupes on the displayed title (spec 02 §6.2, `quality:duplicate_title`), which the prototype didn't. The offline catalogue has same-title games, including "Prize Wheel Live" ×3 and "Big Show Live" ×3 in `live_game_show`. Only the served numbers are superseded: served Recall@5, nDCG@5, lift over raw text, bad-recommendation rate and coverage. Record this build's first offline values as their new baseline and update START_HERE §3 (`REBUILD_NOTES.md`, "Baselines superseded"). The rest stay as expected values, because the title rule runs only inside `recommend()`: cluster Recall@5, MRR and near-miss intrusion (on the neighbour lists), theme precision 0.667 and game-type accuracy 1.0 (enrichment), the `catalogueHash`, the 39 traps, and the eligibility, duplicate and policy gates.
 
 ### Acceptance criteria (verbatim, spec 06 §9)
 

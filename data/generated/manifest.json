@@ -9,77 +9,175 @@
     "degradation": 1234,
     "traps": 777
   },
-  "generatedAt": "2026-11-16T02:06:19.418Z",
+  "generatedAt": "2026-11-16T02:23:28.989Z",
   "counts": {
     "canonicalGames": 108,
     "feedRecords": 113
   },
   "repairs": [
     {
-      "kind": "cluster_title",
-      "slot": 48,
+      "kind": "title_studio",
+      "slot": 15,
       "field": "title",
-      "before": "Classic Fruit Fiesta",
-      "after": "Classic Fruit Delight",
+      "before": "Festive Bingo Bonanza",
+      "after": "Festive Bingo Gala",
       "attempts": 1,
-      "collidedWithSlot": 33,
-      "provider": "Bramble Games"
+      "collidedWithSlot": 10,
+      "provider": "Kestrel Play"
+    },
+    {
+      "kind": "title_studio",
+      "slot": 35,
+      "field": "title",
+      "before": "Thunder Halls: Valkyries' Call",
+      "after": "Thunder Halls: Odin's Fury",
+      "attempts": 1,
+      "collidedWithSlot": 16,
+      "provider": "Redwater Gaming"
+    },
+    {
+      "kind": "title_studio",
+      "slot": 55,
+      "field": "title",
+      "before": "Classic Blackjack Royale",
+      "after": "Royal Flush Showdown",
+      "attempts": 1,
+      "collidedWithSlot": 40,
+      "provider": "Redwater Gaming"
+    },
+    {
+      "kind": "title_studio",
+      "slot": 100,
+      "field": "title",
+      "before": "Fortune's Bounty",
+      "after": "Wealth of the Ancients",
+      "attempts": 1,
+      "collidedWithSlot": 36,
+      "provider": "Lumen Studios"
     },
     {
       "kind": "cluster_title",
       "slot": 65,
       "field": "title",
-      "before": "Spin the Fortune Wheel",
-      "after": "Fortune Wheel Live",
+      "before": "Spin The Wheel Live",
+      "after": "Wheel of Wealth Live",
       "attempts": 1,
-      "collidedWithSlot": 56,
+      "collidedWithSlot": 25,
       "provider": "Northlight Interactive"
+    },
+    {
+      "kind": "cluster_title",
+      "slot": 67,
+      "field": "title",
+      "before": "Deep Sea Cash Collect",
+      "after": "Angler's Fortune: Free Spins Dive",
+      "attempts": 1,
+      "collidedWithSlot": 17,
+      "provider": "Bramble Games"
     },
     {
       "kind": "cluster_title",
       "slot": 83,
       "field": "title",
       "before": "Pharaoh's Cascade",
-      "after": "Cascading Empire: The Pharaoh's Legacy",
+      "after": "Cascading Pharaohs",
       "attempts": 1,
-      "collidedWithSlot": 72,
+      "collidedWithSlot": 70,
       "provider": "Bramble Games"
     },
     {
       "kind": "layout_regenerated",
-      "slot": 40,
-      "field": "reelLayout",
-      "before": "5x3, 10 lines",
-      "after": "single-zero wheel",
-      "attempts": 1
-    },
-    {
-      "kind": "layout_regenerated",
-      "slot": 55,
-      "field": "reelLayout",
-      "before": "5x3, 10 lines",
-      "after": "single-zero wheel",
-      "attempts": 1
-    },
-    {
-      "kind": "layout_regenerated",
-      "slot": 57,
+      "slot": 19,
       "field": "reelLayout",
       "before": "6x7 Megaways, 117,649 ways",
       "after": "3x3 scratch grid",
       "attempts": 1
     },
     {
+      "kind": "real_name",
+      "slot": 38,
+      "field": "title",
+      "before": "Candyland Parade",
+      "after": "Candy Dreams: Sweet Spins",
+      "attempts": 1,
+      "realNames": [
+        "candyland"
+      ]
+    },
+    {
+      "kind": "real_name",
+      "slot": 39,
+      "field": "title",
+      "before": "Deal or No Deal: Live Challenge",
+      "after": "Card Clash: Live Showdown",
+      "attempts": 1,
+      "realNames": [
+        "deal or no deal"
+      ]
+    },
+    {
+      "kind": "layout_regenerated",
+      "slot": 57,
+      "field": "reelLayout",
+      "before": "5x3, 10 lines",
+      "after": "3x3 scratch grid",
+      "attempts": 1
+    },
+    {
+      "kind": "real_name",
+      "slot": 86,
+      "field": "title",
+      "before": "Lucky Clover Lane: Rainbow Riches",
+      "after": "Lucky Clover Lane: Emerald Enchantment",
+      "attempts": 1,
+      "realNames": [
+        "rainbow riches"
+      ]
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 7,
+      "field": "reelLayout",
+      "before": "live game",
+      "after": null,
+      "attempts": 0
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 12,
+      "field": "mechanics",
+      "before": [
+        "live_dealer"
+      ],
+      "after": [],
+      "attempts": 0
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 28,
+      "field": "mechanics",
+      "before": [
+        "live_dealer"
+      ],
+      "after": [],
+      "attempts": 0
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 39,
+      "field": "reelLayout",
+      "before": "",
+      "after": null,
+      "attempts": 0
+    },
+    {
       "kind": "live_dealer_removed",
       "slot": 40,
       "field": "mechanics",
       "before": [
-        "live_dealer",
-        "side_bets"
+        "live_dealer"
       ],
-      "after": [
-        "side_bets"
-      ],
+      "after": [],
       "attempts": 0
     },
     {
@@ -106,7 +204,7 @@
       "kind": "layout_cleared",
       "slot": 54,
       "field": "reelLayout",
-      "before": "live dealer",
+      "before": "null",
       "after": null,
       "attempts": 0
     },
@@ -115,35 +213,16 @@
       "slot": 55,
       "field": "mechanics",
       "before": [
-        "live_dealer",
-        "side_bets"
+        "live_dealer"
       ],
-      "after": [
-        "side_bets"
-      ],
+      "after": [],
       "attempts": 0
     },
     {
       "kind": "layout_cleared",
       "slot": 56,
       "field": "reelLayout",
-      "before": "live dealer",
-      "after": null,
-      "attempts": 0
-    },
-    {
-      "kind": "layout_cleared",
-      "slot": 82,
-      "field": "reelLayout",
-      "before": "na",
-      "after": null,
-      "attempts": 0
-    },
-    {
-      "kind": "layout_cleared",
-      "slot": 89,
-      "field": "reelLayout",
-      "before": "na",
+      "before": "null",
       "after": null,
       "attempts": 0
     }
@@ -221,9 +300,9 @@
     "perFeedRecord": {
       "denominator": 113,
       "qualityProfile": {
-        "partial": 38,
-        "rich": 50,
-        "thin": 17,
+        "partial": 31,
+        "rich": 64,
+        "thin": 10,
         "title_only": 8
       },
       "trapTypes": {
@@ -240,10 +319,10 @@
         "new_release": 2,
         "noisy_tags": 2,
         "non_english": 1,
-        "none": 79,
+        "none": 78,
         "prompt_injection": 2,
         "rtp_variant": 2,
-        "seasonal": 4,
+        "seasonal": 5,
         "status_missing": 1,
         "studio_aggregator_swap": 1,
         "test_game": 1

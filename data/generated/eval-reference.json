@@ -2,16 +2,12 @@
   {
     "rawId": "g-001",
     "canonicalId": "g-001",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": "orchard-classics",
       "semanticCluster": null,
       "clusterRole": null,
@@ -25,17 +21,12 @@
   {
     "rawId": "g-002",
     "canonicalId": "g-002",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -49,19 +40,14 @@
   {
     "rawId": "g-002-rtp94",
     "canonicalId": "g-002",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [
       "rtp_variant"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -77,18 +63,14 @@
   {
     "rawId": "g-003",
     "canonicalId": "g-003",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "description"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [
-      "new_release"
+      "non_english"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -97,21 +79,23 @@
       "brandScope": "multi_brand",
       "distribution": "direct",
       "trapTypes": [
-        "new_release"
+        "non_english"
       ]
     }
   },
   {
     "rawId": "g-004",
     "canonicalId": "g-004",
-    "profile": "rich",
+    "profile": "partial",
     "missingFields": [
+      "themes",
+      "mechanics",
       "volatility"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -125,17 +109,14 @@
   {
     "rawId": "g-005",
     "canonicalId": "g-005",
-    "profile": "partial",
+    "profile": "rich",
     "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
       "volatility"
     ],
     "specials": [],
     "labels": {
       "gameType": "instant_win",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -149,17 +130,20 @@
   {
     "rawId": "g-006",
     "canonicalId": "g-006",
-    "profile": "partial",
+    "profile": "title_only",
     "missingFields": [
       "gameType",
       "themes",
       "mechanics",
-      "volatility"
+      "volatility",
+      "description"
     ],
-    "specials": [],
+    "specials": [
+      "cryptic"
+    ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "title_only",
       "series": "cosmic-drift",
       "semanticCluster": null,
       "clusterRole": null,
@@ -167,23 +151,20 @@
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
-      "trapTypes": []
+      "trapTypes": [
+        "cryptic"
+      ]
     }
   },
   {
     "rawId": "g-007",
     "canonicalId": "g-007",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "live",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "live_game_show",
       "clusterRole": "member",
@@ -197,17 +178,14 @@
   {
     "rawId": "g-008",
     "canonicalId": "g-008",
-    "profile": "partial",
+    "profile": "rich",
     "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
       "volatility"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "egyptian_cascade",
       "clusterRole": "member",
@@ -221,14 +199,17 @@
   {
     "rawId": "g-009",
     "canonicalId": "g-009",
-    "profile": "rich",
+    "profile": "thin",
     "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
       "volatility"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "thin",
       "series": "sands-of-khepri",
       "semanticCluster": null,
       "clusterRole": null,
@@ -244,7 +225,7 @@
     "canonicalId": "g-010",
     "profile": "partial",
     "missingFields": [
-      "gameType",
+      "themes",
       "mechanics",
       "volatility"
     ],
@@ -269,33 +250,34 @@
   {
     "rawId": "g-011",
     "canonicalId": "g-011",
-    "profile": "rich",
+    "profile": "title_only",
     "missingFields": [
-      "volatility"
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility",
+      "description"
     ],
-    "specials": [
-      "prompt_injection"
-    ],
+    "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "title_only",
       "series": "gilded-dragon",
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "high",
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
-      "trapTypes": [
-        "prompt_injection"
-      ]
+      "trapTypes": []
     }
   },
   {
     "rawId": "g-012",
     "canonicalId": "g-012",
-    "profile": "thin",
+    "profile": "partial",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
       "volatility"
@@ -303,7 +285,7 @@
     "specials": [],
     "labels": {
       "gameType": "bingo",
-      "qualityProfile": "thin",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -317,29 +299,28 @@
   {
     "rawId": "g-013",
     "canonicalId": "g-013",
-    "profile": "title_only",
+    "profile": "partial",
     "missingFields": [
-      "gameType",
       "themes",
       "mechanics",
       "volatility",
       "description"
     ],
     "specials": [
-      "cryptic"
+      "new_release"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "title_only",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "high",
+      "volatilityBand": "medium",
       "marketProfile": "nj_only",
       "brandScope": "single_brand",
       "distribution": "direct",
       "trapTypes": [
-        "cryptic"
+        "new_release"
       ]
     }
   },
@@ -369,18 +350,23 @@
   {
     "rawId": "g-015",
     "canonicalId": "g-015",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [
       "seasonal"
     ],
     "labels": {
       "gameType": "bingo",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "low",
+      "volatilityBand": "medium",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
@@ -392,17 +378,12 @@
   {
     "rawId": "g-016",
     "canonicalId": "g-016",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": "thunder-halls",
       "semanticCluster": null,
       "clusterRole": null,
@@ -416,19 +397,15 @@
   {
     "rawId": "g-016-cms2",
     "canonicalId": "g-016",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [
-      "duplicate_export"
+      "duplicate_export",
+      "studio_aggregator_swap"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": "thunder-halls",
       "semanticCluster": null,
       "clusterRole": null,
@@ -437,19 +414,23 @@
       "brandScope": "multi_brand",
       "distribution": "direct",
       "trapTypes": [
-        "duplicate_export"
+        "duplicate_export",
+        "studio_aggregator_swap"
       ]
     }
   },
   {
     "rawId": "g-017",
     "canonicalId": "g-017",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "themes",
+      "mechanics"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": "fishing_cash_collect",
       "clusterRole": "member",
@@ -463,16 +444,19 @@
   {
     "rawId": "g-018",
     "canonicalId": "g-018",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "mechanics",
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "low",
+      "volatilityBand": "medium",
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "direct",
@@ -498,7 +482,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "low",
+      "volatilityBand": "medium",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
@@ -510,18 +494,18 @@
   {
     "rawId": "g-020",
     "canonicalId": "g-020",
-    "profile": "partial",
+    "profile": "title_only",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
+      "volatility",
       "description"
     ],
-    "specials": [
-      "new_release"
-    ],
+    "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "title_only",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -529,9 +513,7 @@
       "marketProfile": "nj_only",
       "brandScope": "single_brand",
       "distribution": "direct",
-      "trapTypes": [
-        "new_release"
-      ]
+      "trapTypes": []
     }
   },
   {
@@ -556,16 +538,12 @@
   {
     "rawId": "g-022",
     "canonicalId": "g-022",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "fishing_cash_collect",
       "clusterRole": "member",
@@ -579,44 +557,54 @@
   {
     "rawId": "g-023",
     "canonicalId": "g-023",
-    "profile": "title_only",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
-    ],
-    "specials": [
-      "cryptic"
-    ],
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "title_only",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "low",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": []
+    }
+  },
+  {
+    "rawId": "g-023-cms2",
+    "canonicalId": "g-023",
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [
+      "duplicate_export"
+    ],
+    "labels": {
+      "gameType": "slot",
+      "qualityProfile": "rich",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "low",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
       "trapTypes": [
-        "cryptic"
+        "duplicate_export"
       ]
     }
   },
   {
     "rawId": "g-024",
     "canonicalId": "g-024",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "classic_fruit",
       "clusterRole": "member",
@@ -649,12 +637,17 @@
   {
     "rawId": "g-026",
     "canonicalId": "g-026",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "thin",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "thin",
       "series": "orchard-classics",
       "semanticCluster": null,
       "clusterRole": null,
@@ -666,36 +659,13 @@
     }
   },
   {
-    "rawId": "g-026-cms2",
-    "canonicalId": "g-026",
-    "profile": "rich",
-    "missingFields": [],
-    "specials": [
-      "duplicate_export",
-      "studio_aggregator_swap"
-    ],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "rich",
-      "series": "orchard-classics",
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "medium",
-      "marketProfile": "eu_only",
-      "brandScope": "multi_brand",
-      "distribution": "aggregated",
-      "trapTypes": [
-        "duplicate_export",
-        "studio_aggregator_swap"
-      ]
-    }
-  },
-  {
     "rawId": "g-027",
     "canonicalId": "g-027",
     "profile": "rich",
     "missingFields": [],
-    "specials": [],
+    "specials": [
+      "noisy_tags"
+    ],
     "labels": {
       "gameType": "slot",
       "qualityProfile": "rich",
@@ -706,24 +676,20 @@
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": []
+      "trapTypes": [
+        "noisy_tags"
+      ]
     }
   },
   {
     "rawId": "g-028",
     "canonicalId": "g-028",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
-    "specials": [
-      "non_english"
-    ],
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [],
     "labels": {
       "gameType": "table",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -731,9 +697,7 @@
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
-      "trapTypes": [
-        "non_english"
-      ]
+      "trapTypes": []
     }
   },
   {
@@ -758,15 +722,12 @@
   {
     "rawId": "g-030",
     "canonicalId": "g-030",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": "bandit-ridge",
       "semanticCluster": null,
       "clusterRole": null,
@@ -780,12 +741,15 @@
   {
     "rawId": "g-031",
     "canonicalId": "g-031",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "gameType",
+      "mechanics"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -801,10 +765,10 @@
     "canonicalId": "g-032",
     "profile": "thin",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
-      "volatility",
-      "description"
+      "volatility"
     ],
     "specials": [],
     "labels": {
@@ -823,12 +787,15 @@
   {
     "rawId": "g-033",
     "canonicalId": "g-033",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "themes",
+      "mechanics"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": "classic_fruit",
       "clusterRole": "member",
@@ -844,6 +811,7 @@
     "canonicalId": "g-034",
     "profile": "partial",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
       "volatility"
@@ -867,6 +835,7 @@
     "canonicalId": "g-035",
     "profile": "partial",
     "missingFields": [
+      "themes",
       "mechanics",
       "volatility"
     ],
@@ -906,16 +875,12 @@
   {
     "rawId": "g-037",
     "canonicalId": "g-037",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "fishing_cash_collect",
       "clusterRole": "member",
@@ -930,9 +895,7 @@
     "rawId": "g-038",
     "canonicalId": "g-038",
     "profile": "rich",
-    "missingFields": [
-      "volatility"
-    ],
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
@@ -940,7 +903,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "low",
+      "volatilityBand": "medium",
       "marketProfile": "nj_only",
       "brandScope": "single_brand",
       "distribution": "direct",
@@ -969,35 +932,36 @@
   {
     "rawId": "g-040",
     "canonicalId": "g-040",
-    "profile": "partial",
-    "missingFields": [
-      "mechanics",
-      "volatility"
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [
+      "noisy_tags"
     ],
-    "specials": [],
     "labels": {
       "gameType": "table",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "low",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": []
+      "trapTypes": [
+        "noisy_tags"
+      ]
     }
   },
   {
-    "rawId": "g-040-cms2",
-    "canonicalId": "g-040",
+    "rawId": "g-041",
+    "canonicalId": "g-041",
     "profile": "partial",
     "missingFields": [
-      "mechanics",
-      "volatility"
+      "themes",
+      "mechanics"
     ],
     "specials": [
-      "duplicate_export"
+      "markets_missing"
     ],
     "labels": {
       "gameType": "table",
@@ -1010,16 +974,15 @@
       "brandScope": "multi_brand",
       "distribution": "direct",
       "trapTypes": [
-        "duplicate_export"
+        "markets_missing"
       ]
     }
   },
   {
-    "rawId": "g-041",
-    "canonicalId": "g-041",
-    "profile": "title_only",
+    "rawId": "g-042",
+    "canonicalId": "g-042",
+    "profile": "thin",
     "missingFields": [
-      "gameType",
       "themes",
       "mechanics",
       "volatility",
@@ -1027,31 +990,8 @@
     ],
     "specials": [],
     "labels": {
-      "gameType": "table",
-      "qualityProfile": "title_only",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "medium",
-      "marketProfile": "eu_only",
-      "brandScope": "multi_brand",
-      "distribution": "direct",
-      "trapTypes": []
-    }
-  },
-  {
-    "rawId": "g-042",
-    "canonicalId": "g-042",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "mechanics",
-      "volatility"
-    ],
-    "specials": [],
-    "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "thin",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1086,6 +1026,7 @@
     "canonicalId": "g-044",
     "profile": "thin",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
       "volatility",
@@ -1108,17 +1049,20 @@
   {
     "rawId": "g-045",
     "canonicalId": "g-045",
-    "profile": "thin",
+    "profile": "title_only",
     "missingFields": [
       "gameType",
       "themes",
       "mechanics",
-      "volatility"
+      "volatility",
+      "description"
     ],
-    "specials": [],
+    "specials": [
+      "cryptic"
+    ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "thin",
+      "qualityProfile": "title_only",
       "series": "bandit-ridge",
       "semanticCluster": null,
       "clusterRole": null,
@@ -1126,22 +1070,26 @@
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
-      "trapTypes": []
+      "trapTypes": [
+        "cryptic"
+      ]
     }
   },
   {
     "rawId": "g-046",
     "canonicalId": "g-046",
-    "profile": "partial",
+    "profile": "title_only",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
-      "volatility"
+      "volatility",
+      "description"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "title_only",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1155,17 +1103,12 @@
   {
     "rawId": "g-047",
     "canonicalId": "g-047",
-    "profile": "thin",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "thin",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1179,12 +1122,17 @@
   {
     "rawId": "g-048",
     "canonicalId": "g-048",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": "classic_fruit",
       "clusterRole": "member",
@@ -1198,23 +1146,18 @@
   {
     "rawId": "g-049",
     "canonicalId": "g-049",
-    "profile": "partial",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [
       "markets_missing"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "high",
       "marketProfile": "eu_only",
       "brandScope": "single_brand",
       "distribution": "direct",
@@ -1226,13 +1169,42 @@
   {
     "rawId": "g-050",
     "canonicalId": "g-050",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "themes",
+      "mechanics",
+      "description"
+    ],
     "specials": [
-      "noisy_tags"
+      "new_release"
     ],
     "labels": {
       "gameType": "table",
+      "qualityProfile": "partial",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "direct",
+      "trapTypes": [
+        "new_release"
+      ]
+    }
+  },
+  {
+    "rawId": "g-051",
+    "canonicalId": "g-051",
+    "profile": "rich",
+    "missingFields": [
+      "volatility"
+    ],
+    "specials": [
+      "prompt_injection"
+    ],
+    "labels": {
+      "gameType": "slot",
       "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
@@ -1242,32 +1214,8 @@
       "brandScope": "multi_brand",
       "distribution": "direct",
       "trapTypes": [
-        "noisy_tags"
+        "prompt_injection"
       ]
-    }
-  },
-  {
-    "rawId": "g-051",
-    "canonicalId": "g-051",
-    "profile": "thin",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
-    "specials": [],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "thin",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "medium",
-      "marketProfile": "eu_only",
-      "brandScope": "multi_brand",
-      "distribution": "direct",
-      "trapTypes": []
     }
   },
   {
@@ -1275,9 +1223,7 @@
     "canonicalId": "g-052",
     "profile": "rich",
     "missingFields": [],
-    "specials": [
-      "noisy_tags"
-    ],
+    "specials": [],
     "labels": {
       "gameType": "slot",
       "qualityProfile": "rich",
@@ -1288,16 +1234,16 @@
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": [
-        "noisy_tags"
-      ]
+      "trapTypes": []
     }
   },
   {
     "rawId": "g-053",
     "canonicalId": "g-053",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "instant_win",
@@ -1315,12 +1261,14 @@
   {
     "rawId": "g-054",
     "canonicalId": "g-054",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "mechanics"
+    ],
     "specials": [],
     "labels": {
       "gameType": "live",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1334,17 +1282,12 @@
   {
     "rawId": "g-055",
     "canonicalId": "g-055",
-    "profile": "thin",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "table",
-      "qualityProfile": "thin",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1356,14 +1299,42 @@
     }
   },
   {
-    "rawId": "g-056",
-    "canonicalId": "g-056",
+    "rawId": "g-055-cms2",
+    "canonicalId": "g-055",
     "profile": "rich",
     "missingFields": [],
+    "specials": [
+      "duplicate_export"
+    ],
+    "labels": {
+      "gameType": "table",
+      "qualityProfile": "rich",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "single_brand",
+      "distribution": "direct",
+      "trapTypes": [
+        "duplicate_export"
+      ]
+    }
+  },
+  {
+    "rawId": "g-056",
+    "canonicalId": "g-056",
+    "profile": "partial",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "live",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": "live_game_show",
       "clusterRole": "member",
@@ -1404,7 +1375,7 @@
   {
     "rawId": "g-058",
     "canonicalId": "g-058",
-    "profile": "title_only",
+    "profile": "thin",
     "missingFields": [
       "gameType",
       "themes",
@@ -1415,7 +1386,7 @@
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "title_only",
+      "qualityProfile": "thin",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1429,18 +1400,17 @@
   {
     "rawId": "g-059",
     "canonicalId": "g-059",
-    "profile": "thin",
+    "profile": "partial",
     "missingFields": [
       "gameType",
       "themes",
       "mechanics",
-      "volatility",
-      "description"
+      "volatility"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "thin",
+      "qualityProfile": "partial",
       "series": "lucky-clover-lane",
       "semanticCluster": null,
       "clusterRole": null,
@@ -1452,30 +1422,53 @@
     }
   },
   {
-    "rawId": "g-060",
-    "canonicalId": "g-060",
+    "rawId": "g-059-rtp93",
+    "canonicalId": "g-059",
     "profile": "partial",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
       "volatility"
     ],
     "specials": [
-      "marketing_fluff"
+      "rtp_variant"
     ],
+    "labels": {
+      "gameType": "slot",
+      "qualityProfile": "partial",
+      "series": "lucky-clover-lane",
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": [
+        "rtp_variant"
+      ]
+    }
+  },
+  {
+    "rawId": "g-060",
+    "canonicalId": "g-060",
+    "profile": "partial",
+    "missingFields": [
+      "themes",
+      "mechanics"
+    ],
+    "specials": [],
     "labels": {
       "gameType": "slot",
       "qualityProfile": "partial",
       "series": "orchard-classics",
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "high",
       "marketProfile": "eu_only",
       "brandScope": "single_brand",
       "distribution": "aggregated",
-      "trapTypes": [
-        "marketing_fluff"
-      ]
+      "trapTypes": []
     }
   },
   {
@@ -1500,15 +1493,12 @@
   {
     "rawId": "g-062",
     "canonicalId": "g-062",
-    "profile": "partial",
-    "missingFields": [
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "egyptian_cascade",
       "clusterRole": "near_miss",
@@ -1522,30 +1512,6 @@
   {
     "rawId": "g-063",
     "canonicalId": "g-063",
-    "profile": "thin",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
-    "specials": [],
-    "labels": {
-      "gameType": "table",
-      "qualityProfile": "thin",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "medium",
-      "marketProfile": "eu_only",
-      "brandScope": "multi_brand",
-      "distribution": "aggregated",
-      "trapTypes": []
-    }
-  },
-  {
-    "rawId": "g-064",
-    "canonicalId": "g-064",
     "profile": "title_only",
     "missingFields": [
       "gameType",
@@ -1554,10 +1520,37 @@
       "volatility",
       "description"
     ],
-    "specials": [],
+    "specials": [
+      "cryptic"
+    ],
+    "labels": {
+      "gameType": "table",
+      "qualityProfile": "title_only",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": [
+        "cryptic"
+      ]
+    }
+  },
+  {
+    "rawId": "g-064",
+    "canonicalId": "g-064",
+    "profile": "rich",
+    "missingFields": [
+      "volatility"
+    ],
+    "specials": [
+      "prompt_injection"
+    ],
     "labels": {
       "gameType": "instant_win",
-      "qualityProfile": "title_only",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1565,14 +1558,18 @@
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
-      "trapTypes": []
+      "trapTypes": [
+        "prompt_injection"
+      ]
     }
   },
   {
     "rawId": "g-065",
     "canonicalId": "g-065",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "live",
@@ -1590,16 +1587,12 @@
   {
     "rawId": "g-066",
     "canonicalId": "g-066",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "table",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1614,7 +1607,9 @@
     "rawId": "g-067",
     "canonicalId": "g-067",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
@@ -1632,14 +1627,16 @@
   {
     "rawId": "g-068",
     "canonicalId": "g-068",
-    "profile": "rich",
+    "profile": "partial",
     "missingFields": [
-      "volatility"
+      "gameType",
+      "themes",
+      "mechanics"
     ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": "egyptian_cascade",
       "clusterRole": "member",
@@ -1653,8 +1650,9 @@
   {
     "rawId": "g-069",
     "canonicalId": "g-069",
-    "profile": "thin",
+    "profile": "partial",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
       "volatility"
@@ -1662,7 +1660,7 @@
     "specials": [],
     "labels": {
       "gameType": "table",
-      "qualityProfile": "thin",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -1676,15 +1674,12 @@
   {
     "rawId": "g-070",
     "canonicalId": "g-070",
-    "profile": "partial",
-    "missingFields": [
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "egyptian_cascade",
       "clusterRole": "member",
@@ -1700,9 +1695,13 @@
     "canonicalId": "g-071",
     "profile": "partial",
     "missingFields": [
-      "mechanics"
+      "themes",
+      "mechanics",
+      "volatility"
     ],
-    "specials": [],
+    "specials": [
+      "marketing_fluff"
+    ],
     "labels": {
       "gameType": "slot",
       "qualityProfile": "partial",
@@ -1713,21 +1712,20 @@
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": []
+      "trapTypes": [
+        "marketing_fluff"
+      ]
     }
   },
   {
     "rawId": "g-072",
     "canonicalId": "g-072",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "egyptian_cascade",
       "clusterRole": "member",
@@ -1742,9 +1740,7 @@
     "rawId": "g-073",
     "canonicalId": "g-073",
     "profile": "rich",
-    "missingFields": [
-      "volatility"
-    ],
+    "missingFields": [],
     "specials": [
       "seasonal"
     ],
@@ -1754,7 +1750,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "low",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
@@ -1768,37 +1764,13 @@
     "canonicalId": "g-074",
     "profile": "thin",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics",
-      "volatility",
-      "description"
-    ],
-    "specials": [],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "thin",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "high",
-      "marketProfile": "eu_only",
-      "brandScope": "single_brand",
-      "distribution": "aggregated",
-      "trapTypes": []
-    }
-  },
-  {
-    "rawId": "g-074-rtp93",
-    "canonicalId": "g-074",
-    "profile": "thin",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
+      "volatility"
     ],
     "specials": [
-      "rtp_variant"
+      "status_missing"
     ],
     "labels": {
       "gameType": "slot",
@@ -1811,63 +1783,13 @@
       "brandScope": "single_brand",
       "distribution": "aggregated",
       "trapTypes": [
-        "rtp_variant"
+        "status_missing"
       ]
     }
   },
   {
     "rawId": "g-075",
     "canonicalId": "g-075",
-    "profile": "thin",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
-    ],
-    "specials": [],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "thin",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "medium",
-      "marketProfile": "eu_and_nj",
-      "brandScope": "multi_brand",
-      "distribution": "aggregated",
-      "trapTypes": []
-    }
-  },
-  {
-    "rawId": "g-076",
-    "canonicalId": "g-076",
-    "profile": "rich",
-    "missingFields": [
-      "volatility"
-    ],
-    "specials": [
-      "prompt_injection"
-    ],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "rich",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "high",
-      "marketProfile": "eu_and_nj",
-      "brandScope": "multi_brand",
-      "distribution": "aggregated",
-      "trapTypes": [
-        "prompt_injection"
-      ]
-    }
-  },
-  {
-    "rawId": "g-077",
-    "canonicalId": "g-077",
     "profile": "partial",
     "missingFields": [
       "gameType",
@@ -1883,15 +1805,40 @@
       "semanticCluster": null,
       "clusterRole": null,
       "volatilityBand": "medium",
-      "marketProfile": "eu_only",
+      "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
       "trapTypes": []
     }
   },
   {
-    "rawId": "g-078",
-    "canonicalId": "g-078",
+    "rawId": "g-076",
+    "canonicalId": "g-076",
+    "profile": "thin",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility",
+      "description"
+    ],
+    "specials": [],
+    "labels": {
+      "gameType": "slot",
+      "qualityProfile": "thin",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "high",
+      "marketProfile": "eu_and_nj",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": []
+    }
+  },
+  {
+    "rawId": "g-077",
+    "canonicalId": "g-077",
     "profile": "title_only",
     "missingFields": [
       "gameType",
@@ -1904,7 +1851,7 @@
     "labels": {
       "gameType": "slot",
       "qualityProfile": "title_only",
-      "series": "deep-reef",
+      "series": null,
       "semanticCluster": null,
       "clusterRole": null,
       "volatilityBand": "medium",
@@ -1915,24 +1862,44 @@
     }
   },
   {
-    "rawId": "g-079",
-    "canonicalId": "g-079",
-    "profile": "title_only",
+    "rawId": "g-078",
+    "canonicalId": "g-078",
+    "profile": "partial",
     "missingFields": [
       "gameType",
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
+      "mechanics"
     ],
+    "specials": [
+      "seasonal"
+    ],
+    "labels": {
+      "gameType": "slot",
+      "qualityProfile": "partial",
+      "series": "deep-reef",
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": [
+        "seasonal"
+      ]
+    }
+  },
+  {
+    "rawId": "g-079",
+    "canonicalId": "g-079",
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "bingo",
-      "qualityProfile": "title_only",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "low",
+      "volatilityBand": "medium",
       "marketProfile": "eu_only",
       "brandScope": "single_brand",
       "distribution": "direct",
@@ -1944,6 +1911,7 @@
     "canonicalId": "g-080",
     "profile": "partial",
     "missingFields": [
+      "gameType",
       "themes",
       "mechanics"
     ],
@@ -1983,20 +1951,12 @@
   {
     "rawId": "g-082",
     "canonicalId": "g-082",
-    "profile": "thin",
-    "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
-    ],
-    "specials": [
-      "status_missing"
-    ],
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [],
     "labels": {
       "gameType": "live",
-      "qualityProfile": "thin",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -2004,18 +1964,14 @@
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": [
-        "status_missing"
-      ]
+      "trapTypes": []
     }
   },
   {
     "rawId": "g-083",
     "canonicalId": "g-083",
     "profile": "rich",
-    "missingFields": [
-      "volatility"
-    ],
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
@@ -2052,12 +2008,16 @@
   {
     "rawId": "g-085",
     "canonicalId": "g-085",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "thin",
+    "missingFields": [
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "instant_win",
-      "qualityProfile": "rich",
+      "qualityProfile": "thin",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -2071,16 +2031,12 @@
   {
     "rawId": "g-086",
     "canonicalId": "g-086",
-    "profile": "thin",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "thin",
+      "qualityProfile": "rich",
       "series": "lucky-clover-lane",
       "semanticCluster": null,
       "clusterRole": null,
@@ -2094,25 +2050,6 @@
   {
     "rawId": "g-087",
     "canonicalId": "g-087",
-    "profile": "rich",
-    "missingFields": [],
-    "specials": [],
-    "labels": {
-      "gameType": "slot",
-      "qualityProfile": "rich",
-      "series": null,
-      "semanticCluster": null,
-      "clusterRole": null,
-      "volatilityBand": "high",
-      "marketProfile": "eu_only",
-      "brandScope": "multi_brand",
-      "distribution": "aggregated",
-      "trapTypes": []
-    }
-  },
-  {
-    "rawId": "g-088",
-    "canonicalId": "g-088",
     "profile": "thin",
     "missingFields": [
       "gameType",
@@ -2122,8 +2059,31 @@
     ],
     "specials": [],
     "labels": {
-      "gameType": "table",
+      "gameType": "slot",
       "qualityProfile": "thin",
+      "series": null,
+      "semanticCluster": null,
+      "clusterRole": null,
+      "volatilityBand": "medium",
+      "marketProfile": "eu_only",
+      "brandScope": "multi_brand",
+      "distribution": "aggregated",
+      "trapTypes": []
+    }
+  },
+  {
+    "rawId": "g-088",
+    "canonicalId": "g-088",
+    "profile": "partial",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics"
+    ],
+    "specials": [],
+    "labels": {
+      "gameType": "table",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -2137,15 +2097,12 @@
   {
     "rawId": "g-089",
     "canonicalId": "g-089",
-    "profile": "partial",
-    "missingFields": [
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "live",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "live_game_show",
       "clusterRole": "member",
@@ -2159,16 +2116,12 @@
   {
     "rawId": "g-090",
     "canonicalId": "g-090",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "instant_win",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": null,
       "semanticCluster": "fishing_cash_collect",
       "clusterRole": "near_miss",
@@ -2201,14 +2154,18 @@
   {
     "rawId": "g-092",
     "canonicalId": "g-092",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "partial",
+    "missingFields": [
+      "themes",
+      "mechanics",
+      "volatility"
+    ],
     "specials": [
-      "markets_missing"
+      "marketing_fluff"
     ],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "partial",
       "series": "gilded-dragon",
       "semanticCluster": null,
       "clusterRole": null,
@@ -2217,23 +2174,19 @@
       "brandScope": "multi_brand",
       "distribution": "direct",
       "trapTypes": [
-        "markets_missing"
+        "marketing_fluff"
       ]
     }
   },
   {
     "rawId": "g-093",
     "canonicalId": "g-093",
-    "profile": "thin",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
+    "profile": "rich",
+    "missingFields": [],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "thin",
+      "qualityProfile": "rich",
       "series": "gilded-dragon",
       "semanticCluster": null,
       "clusterRole": null,
@@ -2247,12 +2200,18 @@
   {
     "rawId": "g-094",
     "canonicalId": "g-094",
-    "profile": "rich",
-    "missingFields": [],
+    "profile": "title_only",
+    "missingFields": [
+      "gameType",
+      "themes",
+      "mechanics",
+      "volatility",
+      "description"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "rich",
+      "qualityProfile": "title_only",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
@@ -2268,7 +2227,6 @@
     "canonicalId": "g-095",
     "profile": "partial",
     "missingFields": [
-      "themes",
       "mechanics",
       "volatility"
     ],
@@ -2290,7 +2248,9 @@
     "rawId": "g-096",
     "canonicalId": "g-096",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
@@ -2308,18 +2268,12 @@
   {
     "rawId": "g-097",
     "canonicalId": "g-097",
-    "profile": "partial",
-    "missingFields": [
-      "themes",
-      "mechanics",
-      "volatility"
-    ],
-    "specials": [
-      "marketing_fluff"
-    ],
+    "profile": "rich",
+    "missingFields": [],
+    "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "partial",
+      "qualityProfile": "rich",
       "series": "deep-reef",
       "semanticCluster": null,
       "clusterRole": null,
@@ -2327,16 +2281,16 @@
       "marketProfile": "nj_only",
       "brandScope": "single_brand",
       "distribution": "aggregated",
-      "trapTypes": [
-        "marketing_fluff"
-      ]
+      "trapTypes": []
     }
   },
   {
     "rawId": "g-098",
     "canonicalId": "g-098",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [],
     "labels": {
       "gameType": "slot",
@@ -2363,7 +2317,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "high",
+      "volatilityBand": "medium",
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
@@ -2373,30 +2327,22 @@
   {
     "rawId": "g-100",
     "canonicalId": "g-100",
-    "profile": "title_only",
+    "profile": "partial",
     "missingFields": [
-      "gameType",
-      "themes",
-      "mechanics",
-      "volatility",
-      "description"
+      "mechanics"
     ],
-    "specials": [
-      "cryptic"
-    ],
+    "specials": [],
     "labels": {
       "gameType": "slot",
-      "qualityProfile": "title_only",
+      "qualityProfile": "partial",
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "high",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "direct",
-      "trapTypes": [
-        "cryptic"
-      ]
+      "trapTypes": []
     }
   },
   {
@@ -2427,7 +2373,9 @@
     "rawId": "g-102",
     "canonicalId": "g-102",
     "profile": "rich",
-    "missingFields": [],
+    "missingFields": [
+      "volatility"
+    ],
     "specials": [
       "market_twin"
     ],
@@ -2451,9 +2399,7 @@
     "rawId": "g-103",
     "canonicalId": "g-103",
     "profile": "rich",
-    "missingFields": [
-      "volatility"
-    ],
+    "missingFields": [],
     "specials": [
       "escalation_twin"
     ],
@@ -2512,7 +2458,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "low",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
@@ -2560,7 +2506,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "high",
+      "volatilityBand": "medium",
       "marketProfile": "eu_and_nj",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
@@ -2584,7 +2530,7 @@
       "series": null,
       "semanticCluster": null,
       "clusterRole": null,
-      "volatilityBand": "medium",
+      "volatilityBand": "low",
       "marketProfile": "eu_only",
       "brandScope": "multi_brand",
       "distribution": "aggregated",
