@@ -6,9 +6,10 @@ import { GENERATE_PROMPT_VERSION, assertUniqueTitleStudio, generateOffline, gene
 import { assembleCanonical, degrade, idForSlot } from "./degrade.js";
 import type { ReferenceEntry } from "./degrade.js";
 import { BENCHMARK_CLUSTERS, buildSlate } from "./slate.js";
+import { addTrapGames } from "./traps.js";
 
 /**
- * The whole dataset pipeline in memory: slate → creative → operational fields → degradation.
+ * The whole dataset pipeline in memory: slate → creative → operational fields → trap games → degradation.
  * The generate script writes its result to disk; tests call it directly, so both run the same code.
  */
 
@@ -40,12 +41,20 @@ export async function generateDataset(opts: DatasetOptions = {}): Promise<Datase
     : generateOffline(slate, SEEDS.offlineCreative);
   assertUniqueTitleStudio(creative);
 
-  const canonical = assembleCanonical(creative, slate, SEEDS.operational);
+  const traps = addTrapGames(assembleCanonical(creative, slate, SEEDS.operational), SEEDS.traps);
+  const canonical = traps.canonical;
   // Validate without replacing: Zod's output reorders keys, and file bytes must not depend on the schema.
   CanonicalGameSchema.array().parse(canonical);
 
   const misleadingTitleIds = new Set(slate.filter((s) => s.misleadingTitle).map((s) => idForSlot(s.slot)));
-  const { raw, reference } = degrade(canonical, { seed: SEEDS.degradation, misleadingTitleIds, today: opts.today ?? DEFAULT_TODAY });
+  const { raw, reference } = degrade(canonical, {
+    seed: SEEDS.degradation,
+    misleadingTitleIds,
+    today: opts.today ?? DEFAULT_TODAY,
+    forcedSpecials: traps.specials,
+    anchors: traps.anchors,
+    anchorOf: traps.anchorOf,
+  });
 
   const offline = !opts.llm;
   const manifest = {

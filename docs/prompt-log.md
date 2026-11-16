@@ -38,3 +38,13 @@ List all flags in a table : flag, one line problem, proposed reoslution, affecte
 Read @AGENTS.md and implement @docs/prompts/01-dataset-spec.md, following milestone 1 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then run npm run generate -- --provider=offline. Build and run everything offline; write the OpenAI path but don't run it. Tick milestone 1 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
 
  Finish by reporting: the test results, the catalogueHash of data/offline/catalogue.raw.json and whether it matches what the specs expect at this point, and anything in the spec you had to interpret.
+
+## 2026-11-16 01:18:29
+
+Read-only: does the normaliser map "uk" to "gb"?some feed records use "ES;UK;NL;SE" while others use GB in arrays
+
+## 2026-11-16 01:20:45
+
+Read @AGENTS.md and implement @docs/prompts/02-guardrail-layers-and-compliance-traps.md, following milestone 2 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then run npm run generate -- --provider=offline. Build and run everything offline; don't run the OpenAI path. Tick milestone 2 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Finish by reporting: the test results, the catalogueHash of data/offline/catalogue.raw.json (expected 5caf2bbb0f343546 now that traps are added), the counts of canonical games and feed records, and anything you had to interpret.

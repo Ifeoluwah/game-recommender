@@ -261,7 +261,9 @@ describe("fail-closed eligibility", () => {
 
   it.each([[true], ["Y"], ["yes"], ["1"], ["TRUE"]])("test flag %j marks a test build", (flag) => expect(normaliseRecord({ ...base, is_test_game: flag }).isTestGame).toBe(true));
 
-  it.each([["TEST_GOLD_RUSH_V2"], ["QA build 3"], ["dev-gold-rush"]])("title %j marks a test build", (name) => expect(normaliseRecord({ ...base, name }).isTestGame).toBe(true));
+  it.each([["TEST_GOLD_RUSH_V2"], ["QA build 3"], ["QA-gold-rush"], ["dev-gold-rush"], ["DEV Gold Rush"], ["  TEST_GOLD_RUSH_V2™ "]])("title %j marks a test build", (name) =>
+    expect(normaliseRecord({ ...base, name }).isTestGame).toBe(true),
+  );
 
   it.each([["Testament of Ra"], ["Developer's Dream"]])("title %j is not a test build", (name) => expect(normaliseRecord({ ...base, name }).isTestGame).toBe(false));
 

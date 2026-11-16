@@ -1,0 +1,19 @@
+{
+  "_comment": "Release gates, grouped by guardrail layer. Thresholds are product decisions, set before looking at results and changed only in review, with the reason recorded. They are the release decision: tune the operating point (the score threshold in config/service.json) instead, never a gate. A gate with no value (n/a) fails. Spec 06 adds the remaining information gates and the ranking gates.",
+  "information": {
+    "protectedFieldViolations": { "max": 0, "why": "Authoritative fields (title, provider, RTP, stakes, max win, layout, jackpot network, status, brands, markets, season) must equal the rules-only normalisation: the model never writes them (AGENTS.md rule 3)." },
+    "regulatedFieldsInvented": { "max": 0, "why": "An RTP, stake or max win filled where the source had none would be a made-up regulated figure." },
+    "crypticRecordFabrications": { "max": 0, "why": "An opaque record (an internal code and an unknown studio) carries no evidence, so any inferred matching field is a fabrication." }
+  },
+  "eligibility": {
+    "eligibilityViolations": { "max": 0, "why": "A game that isn't live, is a test build, isn't on the brand, isn't licensed in the market, is out of season or has a restricted feature must never be shown. Checked against ground truth, so normalisation bugs count too." },
+    "duplicateViolations": { "max": 0, "why": "Showing the seed's own game, or the same game twice (duplicate export or RTP variant), is a broken rail." }
+  },
+  "policy": {
+    "policyViolations": { "max": 0, "why": "No rail may step a player up more than one volatility level, to more than 5x the seed's max bet or 10x its minimum bet (safer-gambling policy owned with compliance)." }
+  },
+  "abstention": {
+    "expectedDeclineRate": { "min": 0.8, "why": "Title-only and opaque seeds carry no reliable evidence; recommending from them would be guessing." },
+    "coverage": { "min": 0.8, "why": "Declining is right only when no good rail exists. Among queries the oracle can answer, at least 80% must be answered (false abstention at most 20%)." }
+  }
+}

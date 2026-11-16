@@ -1,0 +1,19 @@
+{
+  "brands": {
+    "aurora":   { "enabled": true,  "markets": ["GB", "ES", "SE", "NL"] },
+    "harbour":  { "enabled": true,  "markets": ["GB", "ES", "SE", "NL"] },
+    "meridian": { "enabled": false, "markets": ["GB"] },
+    "liberty":  { "enabled": true,  "markets": ["NJ"] }
+  },
+  "restrictedMechanicsByMarket": { "GB": ["bonus_buy"] },
+  "policy": { "maxVolatilityStepUp": 1, "maxStakeMultiplier": 5, "maxMinStakeMultiplier": 10 },
+  "recommendation": {
+    "defaultLimit": 6,
+    "maxLimit": 12,
+    "minResults": 3,
+    "maxPerProvider": 3,
+    "maxPerSeries": 2,
+    "minScoreByEmbedder": { "openai:text-embedding-3-small": 0.45, "hashing-v1": 0.3 }
+  },
+  "cacheMaxAgeSeconds": 300
+}

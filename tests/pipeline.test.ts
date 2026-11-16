@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { GENERATION_TEMPERATURE, assertUniqueTitleStudio, generateWithLlm } from "../src/catalogue/creative.js";
+import { GENERATION_TEMPERATURE, assertUniqueTitleStudio, generateOffline, generateWithLlm } from "../src/catalogue/creative.js";
 import type { CreativeGame } from "../src/catalogue/creative.js";
 import { generateDataset } from "../src/catalogue/dataset.js";
-import { degrade, idForSlot } from "../src/catalogue/degrade.js";
+import { assembleCanonical, degrade, idForSlot } from "../src/catalogue/degrade.js";
+import { addTrapGames } from "../src/catalogue/traps.js";
 import type { Special } from "../src/catalogue/degrade.js";
 import { buildSlate } from "../src/catalogue/slate.js";
 import type { RawRecord } from "../src/domain/types.js";
@@ -11,6 +12,8 @@ import { normaliseRecord } from "../src/pipeline/normalise.js";
 import { jsonFileText } from "../src/util/misc.js";
 import { FakeJsonLlm, noSleep, slotsInRequest } from "./helpers/fake-llm.js";
 import { offlineDataset } from "./helpers/offline-dataset.js";
+
+const TRAP_SPECIALS: Special[] = ["market_twin", "escalation_twin", "lifecycle_suspended", "lifecycle_cert_expired", "lifecycle_demo_only", "test_game"];
 
 const rawById = (raw: RawRecord[], id: string): RawRecord => {
   const r = raw.find((x) => x.game_id === id);
@@ -40,12 +43,13 @@ describe("slate", () => {
 });
 
 describe("offline dataset", () => {
-  it("builds 100 canonical games and 105 feed records before spec 02's traps", async () => {
+  it("builds 108 canonical games (100 + 8 traps) and 113 feed records", async () => {
     const d = await offlineDataset();
-    expect(d.canonical).toHaveLength(100);
-    expect(d.raw).toHaveLength(105);
-    expect(d.reference).toHaveLength(105);
-    expect(d.manifest).toMatchObject({ provider: "offline", model: null, counts: { canonicalGames: 100, feedRecords: 105 } });
+    expect(d.canonical).toHaveLength(108);
+    expect(d.canonical.filter((g) => g.gameType === "slot")).toHaveLength(78);
+    expect(d.raw).toHaveLength(113);
+    expect(d.reference).toHaveLength(113);
+    expect(d.manifest).toMatchObject({ provider: "offline", model: null, counts: { canonicalGames: 108, feedRecords: 113 } });
     expect(String(d.manifest.note)).toMatch(/offline/);
   });
 
@@ -77,7 +81,8 @@ describe("offline dataset", () => {
     const bySeries = new Map<string, Set<string>>();
     for (const g of canonical.filter((x) => x.seriesId)) bySeries.set(g.seriesId!, (bySeries.get(g.seriesId!) ?? new Set()).add(g.provider));
     expect([...bySeries.values()].every((providers) => providers.size === 1)).toBe(true);
-    expect(canonical.every((g) => !g.isTestGame)).toBe(true);
+    // No base game is a test build; the only one is spec 02's trap.
+    expect(canonical.filter((g) => g.isTestGame).map((g) => g.id)).toEqual(["g-108"]);
   });
 });
 
@@ -113,7 +118,11 @@ describe("data-quality edge cases (spec 01 §7.3)", () => {
 
   it("picks edge cases only from live, unreserved games", async () => {
     const d = await offlineDataset();
-    const picks = d.reference.filter((r) => r.specials.some((s) => s !== "misleading_title" && s !== "seasonal"));
+    // The 25 picks: 12 edge cases, 3 duplicated and 2 RTP-varied originals, 5 title-only, 3 opaque.
+    // Title-only picks and the originals of duplicates carry no special of their own.
+    const notPicked = new Set<Special>(["misleading_title", "seasonal", ...TRAP_SPECIALS]);
+    const picks = d.reference.filter((r) => r.specials.some((s) => !notPicked.has(s)) || (r.profile === "title_only" && !r.specials.length));
+    expect(new Set(picks.map((r) => r.canonicalId)).size).toBe(25);
     for (const r of picks) {
       const g = d.canonical.find((x) => x.id === r.canonicalId)!;
       expect(g.status).toBe("active");
@@ -354,5 +363,157 @@ describe("title and studio uniqueness", () => {
 
   it("allows the same title from different studios", () => {
     expect(() => assertUniqueTitleStudio([game(1, "Gold Rush", "Lumen Studios"), game(2, "Gold Rush", "Kestrel Play")])).not.toThrow();
+  });
+});
+
+describe("trap games (spec 02 §4.1)", () => {
+  const slate = buildSlate();
+  const base = () => assembleCanonical(generateOffline(slate), slate);
+
+  it("derives 2 market twins, 2 escalation twins, 3 lifecycle copies and 1 test build", () => {
+    const input = base();
+    const before = JSON.stringify(input);
+    const t = addTrapGames(input);
+    expect(JSON.stringify(input)).toBe(before); // the input catalogue isn't mutated
+    expect(t.canonical).toHaveLength(108);
+    expect([...t.specials.keys()]).toEqual(["g-101", "g-102", "g-103", "g-104", "g-105", "g-106", "g-107", "g-108"]);
+    const kinds = [...t.specials.values()];
+    expect(kinds.filter((k) => k === "market_twin")).toHaveLength(2);
+    expect(kinds.filter((k) => k === "escalation_twin")).toHaveLength(2);
+    expect(kinds.filter((k) => k.startsWith("lifecycle_"))).toHaveLength(3);
+    expect(kinds.filter((k) => k === "test_game")).toHaveLength(1);
+    expect(t.anchors.size).toBe(7);
+  });
+
+  it("builds each trap from a live standalone slot and keeps its themes", () => {
+    const t = addTrapGames(base());
+    const byId = (id: string) => t.canonical.find((g) => g.id === id)!;
+    for (const anchorId of t.anchors) {
+      const a = byId(anchorId);
+      expect([a.gameType, a.status, a.benchmarkCluster]).toEqual(["slot", "active", null]);
+    }
+    for (const [trapId, anchorId] of t.anchorOf) expect(byId(trapId).themes).toEqual(byId(anchorId).themes);
+  });
+
+  it("market twins: the anchor is on liberty in GB and NJ; the twin is in the same family but not in NJ", () => {
+    const t = addTrapGames(base());
+    const byId = (id: string) => t.canonical.find((g) => g.id === id)!;
+    for (const [trapId, kind] of t.specials) {
+      if (kind !== "market_twin") continue;
+      const twin = byId(trapId), anchor = byId(t.anchorOf.get(trapId)!);
+      expect(anchor.markets).toEqual(expect.arrayContaining(["GB", "NJ"]));
+      expect(anchor.brands).toContain("liberty");
+      expect(twin.markets).not.toContain("NJ");
+      expect(twin.brands).toEqual(anchor.brands);
+      expect(twin.title).toBe(`${anchor.title} II`);
+      expect(twin.seriesId).toBe(`${anchor.id}-family`);
+      expect(anchor.seriesId).toBe(`${anchor.id}-family`);
+    }
+  });
+
+  it("escalation twins: a gentle anchor in GB and ES, an extreme bonus-buy twin", () => {
+    const t = addTrapGames(base());
+    const byId = (id: string) => t.canonical.find((g) => g.id === id)!;
+    for (const [trapId, kind] of t.specials) {
+      if (kind !== "escalation_twin") continue;
+      const twin = byId(trapId), anchor = byId(t.anchorOf.get(trapId)!);
+      expect([anchor.volatility, anchor.minStake, anchor.maxStake]).toEqual(["low", 0.1, 5]);
+      expect(anchor.maxWinMultiplier).toBeLessThanOrEqual(1000);
+      expect(anchor.markets).toEqual(expect.arrayContaining(["GB", "ES"]));
+      expect([twin.volatility, twin.minStake, twin.maxStake, twin.maxWinMultiplier]).toEqual(["extreme", 2, 500, 50000]);
+      expect(twin.mechanics).toEqual([...new Set([...anchor.mechanics, "bonus_buy"])]);
+      expect(twin.markets).toEqual(anchor.markets);
+      expect(twin.title).toBe(`${anchor.title} Xtreme`);
+      expect(twin.description).toBe(`${anchor.description} Extreme volatility with Bonus Buy to jump straight into the feature.`);
+    }
+  });
+
+  it("lifecycle copies carry their status and suffix; the test build says it's live", () => {
+    const t = addTrapGames(base());
+    const byId = (id: string) => t.canonical.find((g) => g.id === id)!;
+    const expected: Record<string, [string, string]> = {
+      lifecycle_suspended: ["suspended", " Deluxe"],
+      lifecycle_cert_expired: ["certification_expired", " Classic"],
+      lifecycle_demo_only: ["demo_only", " Demo"],
+    };
+    const lifecycleAnchors: string[] = [];
+    for (const [trapId, kind] of t.specials) {
+      const g = byId(trapId), anchor = byId(t.anchorOf.get(trapId)!);
+      const e = expected[kind];
+      if (e) {
+        expect(g.status).toBe(e[0]);
+        expect(g.title).toBe(anchor.title + e[1]);
+        expect([g.seriesId, g.benchmarkCluster]).toEqual([null, null]);
+        lifecycleAnchors.push(anchor.id);
+      }
+      if (kind === "test_game") {
+        expect([g.status, g.isTestGame]).toEqual(["active", true]);
+        expect(g.title).toMatch(/^TEST_[A-Z0-9_]+_V2$/);
+        expect(t.anchorOf.get(trapId)).toBe(lifecycleAnchors[0]); // a copy of the first lifecycle anchor
+      }
+    }
+  });
+
+  it("fails loudly when there are fewer than 7 live standalone slots", () => {
+    const few = base().map((g, i) => (i < 95 ? { ...g, status: "withdrawn" as const } : g));
+    expect(() => addTrapGames(few)).toThrow(/need at least 7 live standalone slots/);
+  });
+});
+
+describe("trap games in the degraded feed (spec 02 §4.2)", () => {
+  it("labels traps, opaque records and seasonal titles", async () => {
+    const d = await offlineDataset();
+    const all = d.reference.flatMap((r) => r.specials);
+    expect(all).toContain("cryptic");
+    expect(all).toContain("seasonal");
+    for (const s of TRAP_SPECIALS) expect(all).toContain(s);
+  });
+
+  it("gives traps and anchors the rich profile, keeps anchors out of edge cases, and links traps to anchors", async () => {
+    const d = await offlineDataset();
+    const traps = d.reference.filter((r) => r.specials.some((s) => TRAP_SPECIALS.includes(s)));
+    expect(traps).toHaveLength(8);
+    const anchorIds = new Set(traps.map((r) => r.relatedTo));
+    expect(anchorIds.size).toBe(7);
+    for (const r of traps) {
+      expect(r.profile).toBe("rich");
+      expect(r.relatedTo).toMatch(/^g-\d{3}$/);
+    }
+    for (const r of d.reference.filter((x) => anchorIds.has(x.rawId))) {
+      expect(r.profile).toBe("rich");
+      expect(r.specials.every((s) => s === "seasonal")).toBe(true);
+    }
+  });
+
+  it("emits lifecycle statuses, a test build without a test flag, and season months", async () => {
+    const d = await offlineDataset();
+    const rawFor = (special: Special) => rawById(d.raw, d.reference.find((r) => r.specials.includes(special))!.rawId);
+    expect(rawFor("lifecycle_suspended").status).toBe("SUSPENDED");
+    expect(rawFor("lifecycle_cert_expired").status).toBe("CERTIFICATION_EXPIRED");
+    expect(rawFor("lifecycle_demo_only").status).toBe("DEMO_ONLY");
+    for (const s of ["lifecycle_suspended", "lifecycle_cert_expired", "lifecycle_demo_only"] as const) expect(normaliseRecord(rawFor(s)).status).toBe("withdrawn");
+
+    const testBuild = rawFor("test_game");
+    expect(testBuild).not.toHaveProperty("is_test_game");
+    expect(["live", "ACTIVE", "active"]).toContain(testBuild.status);
+    expect(normaliseRecord(testBuild)).toMatchObject({ isTestGame: true, status: "active" });
+
+    for (const g of d.canonical.filter((x) => x.seasonMonths)) {
+      for (const r of d.reference.filter((x) => x.canonicalId === g.id)) expect(rawById(d.raw, r.rawId).available_months).toEqual(g.seasonMonths);
+    }
+    for (const r of d.reference.filter((x) => x.specials.includes("seasonal"))) {
+      expect(normaliseRecord(rawById(d.raw, r.rawId)).seasonMonths).toEqual([1, 11, 12]);
+    }
+  });
+
+  it("keeps market-twin licences and escalation-twin features through normalisation", async () => {
+    const d = await offlineDataset();
+    for (const r of d.reference.filter((x) => x.specials.includes("market_twin"))) {
+      expect(normaliseRecord(rawById(d.raw, r.rawId)).markets).not.toContain("NJ");
+      expect(normaliseRecord(rawById(d.raw, r.relatedTo!)).markets).toContain("NJ");
+    }
+    for (const r of d.reference.filter((x) => x.specials.includes("escalation_twin"))) {
+      expect(normaliseRecord(rawById(d.raw, r.rawId)).mechanics).toContain("bonus_buy");
+    }
   });
 });

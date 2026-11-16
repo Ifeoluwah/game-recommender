@@ -51,10 +51,10 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 
 ## To record during the build
 
-- **Identity hash (P-8, P-9):** *Reproduced in preview at milestone 1.*
-  - A scratch script outside the repo ran the M1 code with appendix A8 inlined and hashed the raw feed. `JSON.stringify(value, null, 2) + "\n"`, with offline output left unsanitised, gives 108 games / 113 records and exactly `5caf2bbb0f343546`. Without the trailing newline it gives `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`.
-  - The M1 feed alone (no traps yet: 100 / 105) hashes to `4de3ec42e6087043`, as expected.
-  - Final confirmation from `artifacts/offline/index.json` at milestone 5.
+- **Identity hash (P-8, P-9):** *Reproduced at milestone 2.*
+  - `npm run generate -- --provider=offline` writes `data/offline/catalogue.raw.json` hashing to `5caf2bbb0f343546` (108 games / 113 records), with `JSON.stringify(value, null, 2) + "\n"` and offline output left unsanitised.
+  - At milestone 1 a scratch preview (A8 inlined) had predicted it. Without the trailing newline the feed hashes to `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`; the M1 feed alone (100 / 105) gives `4de3ec42e6087043`.
+  - Still to confirm: the same value in `artifacts/offline/index.json` at milestone 5.
 - **Theme-precision denominator (P-23):** whether including title-only records gives 0.667. *Pending milestone 6.*
 - **Ranking numbers (P-16):** whether nDCG@5 0.549, bad-rec 0.606 and coverage 0.979 reproduce with the specified `recommend()` loop. *Pending milestone 6.*
 
@@ -74,3 +74,21 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 - **`resolveProviderMode`** returns `{ mode, reason }`; the generate script logs both (spec 05 §3).
 - **Extra test files.** `tests/misc.test.ts` (PRNG, serialisation, atomic writes, retry jitter, `mapLimit`) and `tests/providers.test.ts` (provider-mode resolution), beyond the two files spec 01 names.
 - **Toolchain.** Node v26.13.1 with ICU 78.3 (`toLocaleString("en-GB")` gives `5,000`). tsx 4.19.2 prints a harmless `DEP0205 module.register()` deprecation warning on Node 26. Nothing needed changing.
+
+### Milestone 2 (spec 02)
+
+- **Festive anchors kept.** `addTrapGames` is A8 verbatim, so festive games stay in the anchor pool (spec 02 §4.1 allows excluding them; doing so would change the dataset). The reference draws give 4 seasonal records.
+- **Trap games in the pipeline.** `generateDataset` runs `addTrapGames(…, 777)` between `assembleCanonical` and `degrade`, passing `specials`, `anchors` and `anchorOf` as `forcedSpecials`, `anchors` and `anchorOf`. The generate script itself is unchanged.
+- **`recommend()` signature.** `recommend(index, config, request)`.
+  - `index` is a `RecommendIndex` (the `games`, `neighbours` and `embedding` of the artefact), so the evaluation can swap in other neighbour lists.
+  - The result is `{ status, reason?, seed, items: [{ gameId, title, score }], diagnostics }`. The HTTP layer (spec 05) shapes the response from it and strips the diagnostics.
+- **`month`** defaults to the current UTC month inside `recommend()` as well as in the server.
+- **Limit clamping** truncates a non-integer limit before clamping to 1…`maxLimit`; a missing limit becomes `defaultLimit`.
+- **A neighbour id missing from `games`** is skipped and counted as `quality:not_in_index`. A validated index can't contain one; this fails closed anyway.
+- **Neighbours below the threshold** end the loop without a diagnostic: they're not candidates.
+- **No threshold for the index's embedder** makes `recommend()` throw. `loadIndex` (spec 05) refuses such an index first, so this only signals a programming error.
+- **`DECLINE_REASONS`** is exported alongside the `DeclineReason` type, so tests (and spec 08's docs test) can check every reason is covered.
+- **`ServiceConfigSchema`** is strict (unknown keys rejected). Brand keys must be in `KNOWN_BRANDS`, and `defaultLimit` must not exceed `maxLimit`. Its path is `SERVICE_CONFIG_PATH` in `src/config.ts`.
+- **`IndexSchema` written now.** It lives in `src/domain/index-schema.ts` with `ServiceGame`, with the spec 05 §4.3 fields; its type is named `RecommendationIndex` (the name appendix A14 uses). Spec 05 builds the artefact against it.
+- **`eval/release-gates.json` shape.** A `_comment`, then layer → gate key → `{ min | max, why }`. Spec 06 adds its gates to the same groups.
+- **Extra test file.** `tests/config.test.ts` checks the service config against spec 02 §6.1 and the gates file's structure.

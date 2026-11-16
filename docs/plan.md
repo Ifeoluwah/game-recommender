@@ -170,20 +170,20 @@ The eval runner is built in M6.
 
 ### Checklist
 
-- [ ] `src/catalogue/traps.ts`: A8 verbatim. Festive anchors stay in the pool.
-- [ ] `scripts/generate-catalogue.ts`: `addTrapGames(canonical, 777)` after `assembleCanonical`. Pass `forcedSpecials`, `anchors`, `anchorOf` and `misleadingTitleIds` to `degrade`.
-- [ ] `src/catalogue/degrade.ts` and `src/pipeline/normalise.ts`: confirm the A7/A13 code covers §4.2 and §5. Change nothing unless a test fails. A missing status records `status_missing_fail_closed` (P-13).
-- [ ] `config/service.json`: the whole file (spec 02 §6.1 plus spec 05 §6.3).
-- [ ] `src/service/service-config.ts`: `ServiceConfigSchema` and its loader.
-- [ ] `src/domain/index-schema.ts`: `ServiceGame` (and `IndexSchema`, spec 05 §4.3), with no AI imports.
-- [ ] `src/service/recommender.ts`:
+- [x] `src/catalogue/traps.ts`: A8 verbatim. Festive anchors stay in the pool.
+- [x] `scripts/generate-catalogue.ts`: `addTrapGames(canonical, 777)` after `assembleCanonical`. Pass `forcedSpecials`, `anchors`, `anchorOf` and `misleadingTitleIds` to `degrade`.
+- [x] `src/catalogue/degrade.ts` and `src/pipeline/normalise.ts`: confirm the A7/A13 code covers §4.2 and §5. Change nothing unless a test fails. A missing status records `status_missing_fail_closed` (P-13).
+- [x] `config/service.json`: the whole file (spec 02 §6.1 plus spec 05 §6.3).
+- [x] `src/service/service-config.ts`: `ServiceConfigSchema` and its loader.
+- [x] `src/domain/index-schema.ts`: `ServiceGame` (and `IndexSchema`, spec 05 §4.3), with no AI imports.
+- [x] `src/service/recommender.ts`:
   - A10 verbatim;
   - `recommend()` in the §6.2 order: brand → market → restriction → `UNKNOWN_GAME` → `SEED_NOT_AVAILABLE` → `INSUFFICIENT_SOURCE_DATA`;
   - per candidate: eligibility → policy → quality → diversity, where the first failing layer ends the checks and every problem within it is counted;
   - dedupe against the seed and accepted items; caps over accepted items only, seed excluded;
   - the threshold stop; `limit` clamping; diagnostics keyed `<layer>:<rule>`; the `DeclineReason` union.
-- [ ] `eval/release-gates.json`: the `_comment` and the spec 02 §7 gates by layer, each with a `why`.
-- [ ] Regenerate offline: 108 canonical, 113 feed records, 8 title-only.
+- [x] `eval/release-gates.json`: the `_comment` and the spec 02 §7 gates by layer, each with a `why`.
+- [x] Regenerate offline: 108 canonical, 113 feed records, 8 title-only.
 
 ### Files
 
@@ -191,7 +191,7 @@ The eval runner is built in M6.
 | --- | --- |
 | create | `src/catalogue/traps.ts`, `src/service/recommender.ts`, `src/service/service-config.ts`, `src/domain/index-schema.ts`, `config/service.json`, `eval/release-gates.json` |
 | modify | `scripts/generate-catalogue.ts`; verify only: `src/catalogue/degrade.ts`, `src/pipeline/normalise.ts` |
-| create | `tests/recommender.test.ts` |
+| create | `tests/recommender.test.ts`, `tests/config.test.ts` (service config and gates file) |
 | modify | `tests/normalise.test.ts`, `tests/pipeline.test.ts`, `REBUILD_NOTES.md` |
 
 ### Tests to add
@@ -240,7 +240,9 @@ $ref | ForEach-Object { $_.specials } | Group-Object | Sort-Object Name | Format
 >    - diagnostics name the rule that removed a candidate.
 > 4. `npm run eval -- --provider=offline`: every eligibility, policy and information gate is 0, and every trap row reads `ok`. (Checked once spec 06's runner exists.)
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 *(checked in M6)*
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[ ]` AC4 *(checked in M6)*
+
+Done 2026-11-16: typecheck clean; 226 tests pass (6 files). Offline generate: 108 canonical games / 113 feed records, `catalogueHash` `5caf2bbb0f343546` (matches). Profiles: rich 65, partial 27, thin 13, title_only 8. Specials: all trap counts as expected; 4 seasonal records, so the trap table totals 39. See `REBUILD_NOTES.md`.
 
 ---
 

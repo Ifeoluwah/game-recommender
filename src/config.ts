@@ -13,6 +13,7 @@ export const EU_BRANDS = ["aurora", "harbour", "meridian"] as const;
 export const REPO_ROOT = resolve(fileURLToPath(new URL(".", import.meta.url)), "..");
 export const PROMPTS_DIR = join(REPO_ROOT, "prompts");
 export const ENV_FILE = join(REPO_ROOT, ".env");
+export const SERVICE_CONFIG_PATH = join(REPO_ROOT, "config", "service.json");
 
 /** openai = the shipped, committed build; offline = the keyless stand-in, git-ignored (spec 05 §3). */
 export type BuildMode = "openai" | "offline";
