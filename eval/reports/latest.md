@@ -178,6 +178,20 @@ k = 5, July. nDCG@5 is the mean over answered queries; precision@5 and the bad-r
 | `random` | 0.689 | 0.83 | 0.17 | 1 | 0.396 | 1 | 67 | 270 |
 | `oracle (ceiling)` | 0.858 | 1 | 0 | 1 | 0.343 | 1 | 58 | 226 |
 
+Coverage of `enriched` against an oracle without `quality:no_shared_theme` (not gated): 0.843, over the 70 queries that oracle answers. The gated coverage above is against an oracle that obeys the same rule, so it can't count a decline the rule causes as a false abstention.
+
+### Coverage per brand and market (`enriched`)
+
+Not gated. Non-abstaining queries in each context. Eligible games: canonical games live and eligible there by ground truth in July, excluding records flagged insufficient (which are never shown); their distinct themes; and how many of those themes fewer than 3 of the games carry (`minResults`), so a seed with only that theme can't fill a rail. Overall: 67 answered, all-query coverage 0.396.
+
+| Brand / market | Queries | Answered | All-query coverage | Oracle answers | Coverage | Declines | Eligible games | Themes | Themes with < 3 games |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| aurora/GB | 64 | 29 | 0.453 | 25 | 1 | INSUFFICIENT_SOURCE_DATA 6, NO_CONFIDENT_MATCHES 29 | 51 | 17 | 8 |
+| harbour/GB | 80 | 38 | 0.475 | 33 | 1 | INSUFFICIENT_SOURCE_DATA 4, NO_CONFIDENT_MATCHES 38 | 66 | 21 | 11 |
+| liberty/NJ | 25 | **0 (no rails)** | 0 | 0 | n/a | INSUFFICIENT_SOURCE_DATA 3, NO_CONFIDENT_MATCHES 22 | 22 | 13 | 10 |
+
+**Every rail declines in: liberty/NJ.** Players there never see the rail.
+
 ### Decline reasons
 
 | Variant | `INSUFFICIENT_SOURCE_DATA` | `NO_CONFIDENT_MATCHES` |

@@ -99,7 +99,8 @@ A reviewer should be able to understand the production design, its limits and ho
    - a golden set disagrees with the silver labels;
    - compliance needs live eligibility;
    - product wants personalisation;
-   - build lag becomes visible.
+   - build lag becomes visible;
+   - **a brand or market whose rails all decline** (the report's per-brand coverage table names it) → revisit the relatedness rule (`quality:no_shared_theme`) or `minResults`, after checking whether catalogue breadth is the cause. liberty/NJ is this case today: about 22 live eligible NJ games across many themes, so no seed finds three theme-mates.
 
 ## 4. `docs/EVALUATION.md`
 
@@ -120,6 +121,7 @@ The failure-analysis section (a few concrete cases where the system is wrong, re
 
 Sections:
 1. A one-paragraph summary: the build-time vs request-time idea.
+   - Then, on the first screen, a **status block**: the release decision, how many of the ranking queries decline, and any brand or market with no rails, with the reason. Then **"Trade-offs and limitations"**, using only figures from `eval/reports/latest.json` and naming the build. Both already exist (added after spec 07); keep them and refresh the figures from the latest report.
 2. The four-layer table, with the real numbers.
 3. A "read this" table linking the ADR, `EVALUATION.md`, the latest report, `LEVERAGE.md`, `AI_USAGE.md`, `docs/prompts/` and `AGENTS.md`.
 4. "Run it (no API key needed)": the offline commands with `--provider=offline`, including that offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`, and that `demo` and `eval` read the committed OpenAI build unless given the flag. Then the API section: routes, parameters, response shape, decline reasons and an example.

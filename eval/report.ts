@@ -25,6 +25,11 @@ export function trapLine(r: EvalReport): string {
   return `Planted traps: ${r.traps.handled}/${r.traps.total} handled correctly${r.traps.misses.length ? `. Misses: ${r.traps.misses.join("; ")}` : ""}`;
 }
 
+/** Null when every context answers something; otherwise the warning the runner prints. */
+export function noRailsLine(r: EvalReport): string | null {
+  return r.ranking.contextsWithNoRails.length ? `Every rail declines in: ${r.ranking.contextsWithNoRails.join(", ")} (see "Coverage per brand and market" in the report)` : null;
+}
+
 export function renderMarkdown(r: EvalReport): string {
   const h = r.header;
   const out: string[] = [];
@@ -129,6 +134,21 @@ export function renderMarkdown(r: EvalReport): string {
     table(["Variant", "nDCG@5", "P@5", "Bad-rec rate", "Coverage", "All-query coverage", "Expected-decline rate", "Answered", "Items"], rk.variants.map((v) => [`\`${v.variant}\``, v.ndcgAt5, v.precisionAt5, v.badRecommendationRate, v.coverage, v.allQueryCoverage, v.expectedDeclineRate, v.answered, v.itemsShown])),
     "",
   );
+  const shipped = rk.variants.find((v) => v.variant === "enriched");
+  out.push(
+    `Coverage of \`enriched\` against an oracle without \`quality:no_shared_theme\` (not gated): ${fmt(rk.oracleWithoutThemeRule.coverage)}, over the ${rk.oracleWithoutThemeRule.answerable} queries that oracle answers. The gated coverage above is against an oracle that obeys the same rule, so it can't count a decline the rule causes as a false abstention.`,
+    "",
+  );
+  out.push("### Coverage per brand and market (`enriched`)", "");
+  out.push(`Not gated. Non-abstaining queries in each context. Eligible games: canonical games live and eligible there by ground truth in July, excluding records flagged insufficient (which are never shown); their distinct themes; and how many of those themes fewer than ${rk.minResults} of the games carry (\`minResults\`), so a seed with only that theme can't fill a rail. ${shipped ? `Overall: ${shipped.answered} answered, all-query coverage ${fmt(shipped.allQueryCoverage)}.` : ""}`, "");
+  out.push(
+    table(["Brand / market", "Queries", "Answered", "All-query coverage", "Oracle answers", "Coverage", "Declines", "Eligible games", "Themes", `Themes with < ${rk.minResults} games`], rk.perContext.map((c) => [
+      `${c.brand}/${c.market}`, c.queries, c.answered === 0 && c.queries > 0 ? "**0 (no rails)**" : String(c.answered), c.allQueryCoverage, c.answerableByOracle, c.coverage,
+      Object.entries(c.declineReasons).map(([k, v]) => `${k} ${v}`).join(", ") || "-", c.eligibleGames, c.eligibleThemes, c.themesBelowMinResults,
+    ])),
+    "",
+  );
+  if (rk.contextsWithNoRails.length) out.push(`**Every rail declines in: ${rk.contextsWithNoRails.join(", ")}.** Players there never see the rail.`, "");
   out.push("### Decline reasons", "");
   const reasons = [...new Set(rk.variants.flatMap((v) => Object.keys(v.declineReasons)))].sort();
   out.push(table(["Variant", ...reasons.map((x) => `\`${x}\``)], rk.variants.map((v) => [`\`${v.variant}\``, ...reasons.map((x) => v.declineReasons[x] ?? 0)])), "");

@@ -149,7 +149,7 @@ describe("the guard (spec 04 §6)", () => {
     expect(e!.enrichment.method).toBe("llm");
   });
 
-  it("AC14: summaries containing '96.5% RTP' or '£250,000' are discarded", () => {
+  it("AC14 (spec 07 AC5): summaries containing '96.5% RTP' or '£250,000' are discarded with a summary_banned: flag", () => {
     for (const summary of ["A 96.5% RTP slot with expanding wilds.", "Win up to £250,000 on expanding wilds.", "Pays 97 % on average."]) {
       const lint = lintSummary(summary);
       expect(lint.summary).toBe("");
@@ -276,7 +276,7 @@ describe("routing and fallbacks (spec 04 §4, §8)", () => {
 });
 
 describe("the cache (spec 04 §8)", () => {
-  it("AC12: an unchanged record is a cache hit marked cached with a proposedAt; a changed sourceHash calls the model again", async () => {
+  it("AC12 (spec 07 AC2): an unchanged record is a cache hit marked cached with a proposedAt; a changed sourceHash calls the model again", async () => {
     const path = tempCachePath();
     const first = new Date("2026-11-16T10:00:00Z"), second = new Date("2026-11-17T10:00:00Z");
     const a = game({ id: "g-a", sourceHash: "hash-a" }), b = game({ id: "g-b", sourceHash: "hash-b" });
@@ -294,7 +294,7 @@ describe("the cache (spec 04 §8)", () => {
     expect(games[1]!.enrichment).toMatchObject({ method: "llm", cached: false, proposedAt: second.toISOString() });
   });
 
-  it("AC12: the key changes with the model, the prompt version and the pipeline version, and is stable otherwise", () => {
+  it("AC12 (spec 07 AC3): the key changes with the model, the prompt version and the pipeline version, and is stable otherwise", () => {
     const k = cacheKey("hash-a", "openai:gpt-4o-mini");
     expect(cacheKey("hash-a", "openai:gpt-4o-mini")).toBe(k);
     expect(cacheKey("hash-a", "openai:gpt-4o-mini", ENRICH_PROMPT_VERSION, ENRICH_PIPELINE_VERSION)).toBe(k);
@@ -311,7 +311,7 @@ describe("the cache (spec 04 §8)", () => {
     expect(games[0]!.enrichment).toMatchObject({ cached: true, proposedAt: null });
   });
 
-  it("AC13: a run interrupted part-way keeps every completed proposal in the cache file, and leaves no .tmp file", async () => {
+  it("AC13 (spec 07 AC4): a run interrupted part-way keeps every completed proposal in the cache file, and leaves no .tmp file", async () => {
     const path = tempCachePath();
     /** The file-backed cache, except its third write fails, as a crash outside the per-record fallback would. */
     class FailingCache extends FileEnrichmentCache {

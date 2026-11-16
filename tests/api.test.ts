@@ -194,7 +194,7 @@ describe("GET /ready and /metrics", () => {
 });
 
 describe("logging without player data (spec 05 §6.2, spec 07 §3.5)", () => {
-  it("keeps request ids, logs the unrestricted recommendation, and logs no IP, port or restriction", async () => {
+  it("spec 07 AC6: keeps request ids, logs the unrestricted recommendation, and logs no IP, port or restriction", async () => {
     const lines: string[] = [];
     const a = fresh({ logStream: { write: (line) => void lines.push(line) } });
     await a.inject({ url: related("brand=aurora&market=GB"), headers: { "x-request-id": "req-open-1" }, remoteAddress: "203.0.113.7" });
@@ -213,6 +213,8 @@ describe("logging without player data (spec 05 §6.2, spec 07 §3.5)", () => {
     for (const forbidden of ["203.0.113", "remoteAddress", "remotePort", "restrict", "PLAYER_RESTRICTED"]) {
       expect(log).not.toContain(forbidden);
     }
+    // No port under any key name (Fastify's default serializer adds remotePort; pino could add port).
+    expect(log).not.toMatch(/"(remote)?port"/i);
     // The request serializer is exactly { id, method, url }.
     const incoming = entries.find((e) => e.msg === "incoming request");
     expect(Object.keys(incoming!.req as object).sort()).toEqual(["id", "method", "url"]);

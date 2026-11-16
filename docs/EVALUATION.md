@@ -2,6 +2,13 @@
 
 *First version (spec 06). Spec 08 §4 completes it. The failure-analysis section is pending the OpenAI run.*
 
+> **Status** (committed OpenAI build, index `ef13f1ecf784`, `eval/reports/latest.md`): **14 of 15 gates pass; `ndcgLiftOverRawText` fails (−0.003).**
+>
+> - **The service declines 117 of 184 ranking queries** (28 `INSUFFICIENT_SOURCE_DATA`, 89 `NO_CONFIDENT_MATCHES`) and answers 67.
+> - **liberty/NJ returns no rails at all**: 0 of 25 queries answered, on both builds. Only 22 live, eligible games serve NJ, across 13 themes, and 10 of those themes have fewer than 3 games. So no NJ seed finds the three theme-or-series mates a rail needs. Even the oracle answers none of them.
+> - **The fix is catalogue breadth, not a looser rule.** NJ needs more eligible games per theme. Dropping or widening `quality:no_shared_theme` for NJ would bring back the unrelated filler the rule exists to stop (bad-rec 0.531 before it; same-studio relatedness 0.385, see "The theme-overlap rule").
+> - **Per-brand coverage is now in the report** ("Coverage per brand and market"). A context where every rail declines is named there and on the console, so this can't pass unnoticed again. It was missed when the rule was added, because the demo and the offline build weren't rerun.
+
 **Tests and evaluation are different things.** The software tests (`tests/`, `npm test`) check that the code does what it says: a parser parses, a rule blocks, a decline is returned. The evaluation (`eval/`, `npm run eval`) checks whether the AI output is **good enough to ship**: whether enrichment recovered the truth, whether the rails are related games, and whether any guardrail let something through on real data. Test coverage isn't an AI evaluation, and a green test suite doesn't mean a shippable index.
 
 The evaluation is **repeatable and free**. It reads one build's artefacts, makes no model calls, and gives the same report for the same artefacts. It's organised by the four guardrail layers (spec 02 §2), plus ranking quality:
@@ -113,6 +120,8 @@ Every variant goes through the real `recommend()` with the real config, so all o
 | Coverage (answerable) | Share answered among the queries the **oracle** answers. 1 − coverage is the false-abstention rate |
 | All-query coverage | Share answered among every query that shouldn't abstain |
 | Expected-decline rate | Share of title-only and opaque seeds that decline |
+| Coverage against the oracle without the theme rule (not gated) | Coverage, but against an oracle run on games that all share every theme, so `quality:no_shared_theme` never fires. It counts declines the rule causes as false abstentions, which gated coverage can't |
+| Coverage per brand and market (not gated) | For `enriched`, per context: queries, answered, coverage both ways, decline reasons, and what a rail could draw on there (canonical games live and eligible by ground truth, not insufficient; their themes; themes with fewer than `minResults` games). Any context where every rail declines is named |
 
 **The ideal pool** for a query is every feed record that isn't a record of the seed's own game, isn't flagged insufficient, is eligible by ground truth in the query's context, and passes the policy by ground truth against the seed. Diversity caps are ignored.
 
@@ -134,6 +143,13 @@ Every planted record gets one row per trap on it (spec 02 §7): 39 rows on the r
 | 3 | Volatility/stake escalation (2) | The escalation twin is absent from its anchor's rail outside GB |
 | 4 | Cold-start release (2) | The seed is answered: declining would be a false abstention |
 | Ranking | RTP variant (2), duplicate export (3), studio/aggregator swap (1) | The dedupe key equals the original's (and the studio is repaired) |
+
+### Trap results, disclosed
+
+- **OpenAI build: 39/40.** The miss is the cold-start row for g-050 "Roulette Royale", which declines on aurora/GB although ground truth has 4 related eligible tables ("The theme-overlap rule" below).
+- **OpenAI build: two of the 39 passes prove nothing.** The misleading-title rows g-019 and g-057 name their true type in the title (see Known limitations).
+- **Offline build: 38/39.** The miss is the cold-start row for g-003 "Crypt Legends", the only horror game offline. It declines on harbour/GB although the labels relate 5 eligible slots to it through mechanics. `quality:no_shared_theme` causes it, and `tests/evaluation.test.ts` pins it, so any new miss fails the test. The other cold-start row offline (g-020 on liberty/NJ, 2 related) is a correct decline.
+- **The offline build is a software check only.** Its rules enricher and hashing embedder aren't the shipped system. Its trap rows test the guardrails and the code paths, not model quality, and none of its ranking numbers says anything about the OpenAI build.
 
 ## Benchmark clusters
 
@@ -198,14 +214,23 @@ The thresholds haven't changed since they were set. The one change to the evalua
 
 From `eval/reports/offline/latest.md` (git-ignored; rebuild with `npm run generate -- --provider=offline`, `npm run build:index -- --provider=offline`, `npm run eval -- --provider=offline`):
 
-- **Planted traps: 39/39 handled correctly.**
-- **Information, eligibility, policy and abstention gates pass** (0 violations; expected-decline rate 1, coverage 1), except **theme precision 0.667** (gate ≥ 0.7). Game-type accuracy is 1.0 on 17 fills. Neither quality gate is meaningful offline: the rules enricher is a deliberately simple keyword baseline.
-- **Ranking gates fail, as expected without a model:** nDCG@5 0.497, lift over raw text −0.026, bad-recommendation rate 0.663. The oracle row has bad-rec rate 0 and precision@5 of 1; random is far below `enriched`.
-- **Clusters (raw text → enriched):** Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.613 → 0.600.
+A software check only, not the shipped system (see "Trap results, disclosed").
 
-**These differ from the prototype's offline numbers on purpose.** This build's rail also skips a game whose displayed name matches the seed's or an accepted item's (spec 02 §6.2, `quality:duplicate_title`). The offline `live_game_show` cluster has "Prize Wheel Live" ×3 and "Big Show Live" ×3 across studios, so its rails now fall below three items and decline: served recall 0 for that cluster. With the title rule switched off, this evaluator reproduces every prototype value exactly (coverage 0.979, nDCG@5 0.549, bad-rec 0.606, served Recall@5 0.863 → 0.850). That shows the difference is the rule and not the evaluator (`REBUILD_NOTES.md`, "Baselines superseded"). The numbers computed before `recommend()` (cluster Recall@5, MRR, intrusion, theme precision, game-type accuracy, the 39 traps) are unchanged.
+**Current offline results, with `quality:no_shared_theme`:**
+- **Planted traps: 38/39.** The one miss is g-003's cold-start decline.
+- **Gates.** Information, eligibility, policy and abstention gates pass (0 violations; expected-decline rate 1; coverage 0.9), except **theme precision 0.667** (gate ≥ 0.7). Game-type accuracy is 1.0 on 17 fills. Neither quality gate is meaningful offline: the rules enricher is a deliberately simple keyword baseline.
+- **Ranking.** nDCG@5 0.778 passes; lift over raw text −0.029 and bad-rec 0.229 fail. Ranking-gate failures are expected offline.
+- **Coverage.** Coverage against the oracle without the rule is 0.714 over 84 queries. liberty/NJ has no rails here either: 0 of 23 answered, with 22 eligible games across 13 themes.
+- **Clusters (raw text → enriched):** Recall@5 0.825 → 0.8, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.713 → 0.75.
 
-**Since `quality:no_shared_theme`** (next section), the offline figures above predate the rule. The committed offline artefacts are schema 2 and need `npm run build:index -- --provider=offline` before `npm run eval -- --provider=offline` will read them. The same build in memory (`tests/evaluation.test.ts`, catalogue hash `5caf2bbb0f343546`) now gives: nDCG@5 0.778 (passes), lift over raw text −0.029, bad-rec 0.229, coverage 0.9, traps 38/39. The one miss is a real false abstention: g-003 "Crypt Legends", the only horror game, which the labels relate to 5 eligible slots through mechanics.
+**Before the rule**, the offline figures were:
+- planted traps 39/39;
+- nDCG@5 0.497, lift −0.026, bad-rec 0.663;
+- served Recall@5 0.613 → 0.600.
+
+**The pre-rule figures differ from the prototype's offline numbers on purpose.** This build's rail also skips a game whose displayed name matches the seed's or an accepted item's (spec 02 §6.2, `quality:duplicate_title`). The offline `live_game_show` cluster has "Prize Wheel Live" ×3 and "Big Show Live" ×3 across studios, so its rails now fall below three items and decline: served recall 0 for that cluster. With the title rule switched off, this evaluator reproduces every prototype value exactly (coverage 0.979, nDCG@5 0.549, bad-rec 0.606, served Recall@5 0.863 → 0.850). That shows the difference is the rule and not the evaluator (`REBUILD_NOTES.md`, "Baselines superseded"). The numbers computed before `recommend()` (cluster Recall@5, MRR, intrusion, theme precision, game-type accuracy, the 39 traps) are unchanged.
+
+The in-memory build in `tests/evaluation.test.ts` (catalogue hash `5caf2bbb0f343546`) gives the same current figures.
 
 ### OpenAI build (index `ef13f1ecf784`, `gpt-4o-mini` + `enrich-game.v2`, `text-embedding-3-small`, threshold 0.45)
 
@@ -217,7 +242,7 @@ From `eval/reports/latest.md`. **14 of 15 gates pass; `ndcgLiftOverRawText` fail
 | Lift over raw text (≥ 0) | +0.008 | **−0.003 (FAIL)** |
 | Bad-rec rate (≤ 0.15) | **0.531 (FAIL)** | 0.137 |
 | Coverage (≥ 0.8), as gated | 1.0 | 1.0 |
-| Coverage against the pre-rule oracle (not gated) | 1.0 | 0.843 |
+| Coverage against the oracle without the rule (not gated; in the report) | 1.0 | 0.843 (70 queries) |
 | Answered / 184 queries | 145 | 67 |
 | Declines: `INSUFFICIENT_SOURCE_DATA` + `NO_CONFIDENT_MATCHES` | 28 + 11 = 39 | 28 + 89 = 117 |
 | `random` nDCG@5 / bad-rec | 0.123 / 0.894 | 0.689 / 0.17 |
@@ -244,7 +269,7 @@ Spec 02 §6.2: a candidate must share at least one (guarded, enriched) theme wit
 **Same studio was proposed and dropped.** The first version of the rule also accepted a candidate from the same studio. Measured on this build, that gave bad-rec 0.385 (still failing), lift −0.016, and 53 `NO_CONFIDENT_MATCHES` (81 declines in all). The catalogue has 6 studios for 113 records, so "same studio" relates each seed to about a fifth of the catalogue whatever its theme. Series adds nothing on this build, because every series-mate also shares a theme, but it's kept as the visible relation it is.
 
 **What else changed, disclosed:**
-- **Coverage, as gated, is measured against an oracle that obeys the same rule.** The oracle runs through `recommend()` (spec 06), so it now answers 58 queries, not 70, and coverage is 1.0 against those. Against the pre-rule oracle's 70 it would be 0.843. That still passes the gate, but it's the honest figure. The gap (0.843, against 0.971 with perfect themes in the analysis) is theme-enrichment misses turned into declines.
+- **Coverage, as gated, is measured against an oracle that obeys the same rule.** The oracle runs through `recommend()` (spec 06), so it now answers 58 queries, not 70, and coverage is 1.0 against those. Against the pre-rule oracle's 70 it's 0.843, which the report now prints as "coverage against an oracle without `quality:no_shared_theme`". That still passes the gate, but it's the honest figure. The gap (0.843, against 0.971 with perfect themes in the analysis) is theme-enrichment misses turned into declines.
 - **The cold-start trap row was revised** (spec 02 §7). A `NO_CONFIDENT_MATCHES` decline is now ok when ground truth has fewer than three related, eligible games for the seed in that context. Otherwise it's a false abstention. g-013 "Pharaoh's Secrets" on liberty/NJ (2 related) is ok. **g-050 "Roulette Royale" on aurora/GB is a MISS**: ground truth has 4 related tables, but the rule removes them for not sharing a theme. The labels grade same-type non-slots as related whatever their theme. That's a real cost of the rule for table and live games, and it's left visible.
 - **The lift gate now fails** (−0.003). It's within noise on 67 answered queries. It isn't waived: the gate is the release decision.
 
@@ -260,7 +285,7 @@ What to look for, from the inspection of the OpenAI catalogue (`docs/notes/opena
 - **Copy that contradicts its own metadata** (g-003 "cluster pays" in the copy only; g-042 cascading reels and a jackpot; g-098 and its escalation twin g-104 with "Jackpot" in the title; g-064 and g-082 with no mechanics). An enricher that reads the copy correctly is scored *wrong* on these, because the canonical record is the truth. Expect them among the wrong fills.
 - **"Live dealer" copy on tables that lost the mechanic**, which enrichment will re-infer, scored as wrong fills.
 - **Card games and game shows on a "single-zero wheel" layout**, which pull them towards roulette in the embedding text.
-- **Threshold.** Demo case 3 (a fruit slot on liberty/NJ) shows a weak tail of loosely related games clearing 0.45. The sweep, not a hand edit, should decide whether 0.45 is the right operating point.
+- **Threshold.** Before the theme rule, demo case 3 (a fruit slot on liberty/NJ) showed a weak tail of loosely related games clearing 0.45. The sweep, not a hand edit, should decide whether 0.45 is the right operating point. Since the rule, case 3 declines: liberty/NJ has no rails (Status, at the top).
 
 ## Known limitations
 
@@ -273,6 +298,7 @@ What to look for, from the inspection of the OpenAI catalogue (`docs/notes/opena
 - **The real-name deny-list isn't exhaustive** (`src/catalogue/real-names.ts`). It's a backstop to reviewing a build's titles, not a replacement. "Gods of Olympus" isn't listed, because it couldn't be confirmed as a real title.
 - **Supplier-feed mess is left in the OpenAI catalogue on purpose:** card games and game shows on "single-zero wheel" layouts, table copy that still says "live dealer", metadata that contradicts its copy, and games with no mechanics. Real feeds look like this, and the pipeline exists to handle it. Expect it in the wrong fills and failure cases.
 - **Win-promise copy is left in descriptions** (8 of 108 in the first OpenAI build: "massive wins", "chance to win big"). Descriptions are never shown to players, and the guard discards any summary that echoes banned language. The cost is that those records may embed with an empty summary.
+- **A whole brand has no rails.** liberty/NJ declines every query on both builds (Status, at the top). That's catalogue breadth meeting the relatedness rule: 22 eligible NJ games across 13 themes. The ADR's revisit criteria list it (spec 08 §3.9).
 - **`quality:no_shared_theme` is graded by labels that encode it.** Its bad-rec gain is not independent evidence (see "The theme-overlap rule"). It also turns every missed theme into a decline, and it declines same-type tables and live games with different themes, which the labels count as related (g-050).
 - **Near-duplicate titles pass the display-title dedupe**, which compares normalised titles exactly: "Mystic Forest Quest" and "Mystical Forest Quest" can share a rail. Fuzzy matching would need its own threshold, and a false positive would silently hide a different game.
 - **The "wheel" and "jackpot" keyword mappings** in the rules enricher tag every roulette game with a "single-zero wheel" as `wheel_bonus`, and anything saying "jackpot" as `progressive_jackpot`. This pulls roulette tables towards the game-show cluster in the `rules_enriched` and offline numbers. It's kept because the rules enricher is a deliberately simple baseline.

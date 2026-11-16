@@ -591,9 +591,9 @@ function makeRanker(w: World, queries: Query[]) {
     return pool;
   };
 
-  const run = (neighbours: Neighbours, config: ServiceConfig): QueryOutcome[] =>
+  const run = (neighbours: Neighbours, config: ServiceConfig, games: RecommendationIndex["games"] = w.index.games): QueryOutcome[] =>
     queries.map((query) => {
-      const result = recommend({ games: w.index.games, neighbours, embedding: w.index.embedding } satisfies RecommendIndex, config, { gameId: query.gameId, brand: query.brand, market: query.market, month: JULY, limit: K });
+      const result = recommend({ games, neighbours, embedding: w.index.embedding } satisfies RecommendIndex, config, { gameId: query.gameId, brand: query.brand, market: query.market, month: JULY, limit: K });
       const grades = result.items.map((i) => gradeOf(query.gameId, i.gameId));
       const ndcg = result.status === "ok" && !query.abstain ? ndcgAtK(grades, idealPool(query), K) : null;
       return { query, result, grades, ndcg };
@@ -639,6 +639,34 @@ export function oracleNeighbours(games: RecommendationIndex["games"], truthFor: 
   }));
 }
 
+/**
+ * The same games with every theme on every record, so `quality:no_shared_theme` never fires. Only the
+ * oracle run on it, to measure coverage against what the catalogue allows without that rule: the gated
+ * oracle obeys the rule too, which makes gated coverage flattering (spec 06 §5.2).
+ */
+export function withThemeRuleOff(games: RecommendationIndex["games"]): RecommendationIndex["games"] {
+  const allThemes = [...new Set(Object.values(games).flatMap((g) => g.themes))].sort();
+  return Object.fromEntries(Object.entries(games).map(([id, g]) => [id, { ...g, themes: allThemes }]));
+}
+
+export interface ContextCoverage {
+  brand: string;
+  market: Market;
+  /** Non-abstaining ranking queries in this context. */
+  queries: number;
+  answered: number;
+  allQueryCoverage: number | null;
+  answerableByOracle: number;
+  coverage: number | null;
+  declineReasons: Record<string, number>;
+  /** Canonical games live and eligible here by ground truth in July, with a record not flagged insufficient: what a rail could draw on. */
+  eligibleGames: number;
+  /** Distinct (true) themes among those games. */
+  eligibleThemes: number;
+  /** Of those themes, how many fewer than `minResults` of the eligible games carry: alone, they can't fill a rail. */
+  themesBelowMinResults: number;
+}
+
 /** Sweep points `round(base + k × 0.05, 2)`, k = −5…7, positive only (spec 06 §5.3, P-28). */
 export const sweepThresholds = (base: number): number[] =>
   Array.from({ length: 13 }, (_, i) => round(base + (i - 5) * 0.05, 2)).filter((t) => t > 0);
@@ -672,6 +700,45 @@ function rankingQuality(w: World) {
   outcomes.random = ranker.run(randomNeighbours(w.index.games), flat);
   outcomes["oracle (ceiling)"] = oracle;
   const summaries = Object.entries(outcomes).map(([v, o]) => ranker.summarise(v, o, oracleAnswered));
+
+  // Coverage against an oracle the theme rule doesn't constrain. Reported, not gated.
+  const ruleFree = ranker.run(oracleNeighbours(w.index.games, w.truthFor), flat, withThemeRuleOff(w.index.games));
+  const ruleFreeAnswered = new Set(ruleFree.filter((o) => !o.query.abstain && o.result.status === "ok").map((o) => queryKey(o.query)));
+  const shippedAgainstRuleFree = ranker.summarise("enriched", outcomes.enriched!, ruleFreeAnswered);
+  const oracleWithoutThemeRule = { answerable: ruleFreeAnswered.size, coverage: shippedAgainstRuleFree.coverage };
+
+  // Per brand and market, so a context where every rail declines is visible (spec 06 §5.2).
+  const byContext = new Map<string, QueryOutcome[]>();
+  for (const o of outcomes.enriched!) {
+    if (o.query.abstain) continue;
+    const k = `${o.query.brand}|${o.query.market}`;
+    byContext.set(k, [...(byContext.get(k) ?? []), o]);
+  }
+  const perContext: ContextCoverage[] = [...byContext.entries()].map(([k, os]) => {
+    const [brand, market] = k.split("|") as [string, Market];
+    const ctx: Context = { brand, market, month: JULY };
+    // As the ideal pool counts them: records flagged insufficient can never be shown, so they don't count.
+    const eligible = [...new Set(w.ids.filter((id) => !w.index.games[id]!.insufficient && eligibilityProblems(w.truthGame(id), ctx, w.config).length === 0).map(w.canonicalIdOf))];
+    const themeCounts: Record<string, number> = {};
+    for (const c of eligible) for (const t of w.canon.get(c)!.themes) bump(themeCounts, t);
+    const answered = os.filter((o) => o.result.status === "ok").length;
+    const answerable = os.filter((o) => oracleAnswered.has(queryKey(o.query)));
+    const reasons: Record<string, number> = {};
+    for (const o of os) if (o.result.status === "declined") bump(reasons, o.result.reason!);
+    return {
+      brand, market,
+      queries: os.length,
+      answered,
+      allQueryCoverage: r3(ratio(answered, os.length)),
+      answerableByOracle: answerable.length,
+      coverage: r3(ratio(answerable.filter((o) => o.result.status === "ok").length, answerable.length)),
+      declineReasons: sortedCounts(reasons),
+      eligibleGames: eligible.length,
+      eligibleThemes: Object.keys(themeCounts).length,
+      themesBelowMinResults: Object.values(themeCounts).filter((n) => n < w.config.recommendation.minResults).length,
+    };
+  }).sort((a, b) => a.brand.localeCompare(b.brand) || a.market.localeCompare(b.market));
+  const contextsWithNoRails = perContext.filter((c) => c.queries > 0 && c.answered === 0).map((c) => `${c.brand}/${c.market}`);
 
   const sweep: SweepPoint[] = sweepThresholds(base).map((t) => {
     const s = ranker.summarise("enriched", ranker.run(w.inputs.variants.enriched!, withThreshold(w.config, embedderId, t)), oracleAnswered);
@@ -712,7 +779,11 @@ function rankingQuality(w: World) {
     abstainingQueries: queries.filter((q) => q.abstain).length,
     answerableQueries: oracleAnswered.size,
     threshold: base,
+    minResults: w.config.recommendation.minResults,
     variants: summaries,
+    oracleWithoutThemeRule,
+    perContext,
+    contextsWithNoRails,
     sweep,
     suggestion,
     failureCases: { lowestNdcg: lowest, topSlotUnrelated },

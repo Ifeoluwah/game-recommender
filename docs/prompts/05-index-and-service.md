@@ -212,7 +212,7 @@ The score threshold belongs to an embedding model. A new model needs its own thr
 
 **`scripts/demo.ts`:** load the index in-process: the committed OpenAI build by default, or the offline one with `--provider=offline` (section 3; exit 1 if it's missing). Pick games from that build's enriched catalogue and index by scanning in id order, so the choice is deterministic. Print one block per case, using `app.inject`, with its status code and reason. The picks:
 - cases 1 and 2: the first game that returns `ok` on `aurora`/GB and on `harbour`/GB;
-- case 3: the first game that returns `ok` on `liberty`/NJ;
+- case 3: the first game that returns `ok` on `liberty`/NJ. **If none does, the first game that declines there with `NO_CONFIDENT_MATCHES`, expected as that decline and printed with a note saying no liberty/NJ seed gets a rail in this build.** That's the case on both committed builds since `quality:no_shared_theme` (spec 02 §6.2): about 22 live, eligible games serve NJ, spread over many themes, so no seed finds three theme-mates. A reviewer's first command must work on the committed build, so the demo shows the decline instead of exiting 1. The pick lives in `scripts/demo-cases.ts` so both branches are tested (`tests/demo-cases.test.ts`);
 - case 4: the first game flagged `insufficient`;
 - case 5: the first game not licensed in GB, requested on `aurora`/GB;
 - cases 6–10: fixed inputs.
@@ -220,7 +220,7 @@ The score threshold belongs to an embedding model. A new model needs its own thr
 The cases:
 1. normal (a well-described slot on `aurora`/GB);
 2. the same game on another brand;
-3. an NJ player on `liberty`/NJ;
+3. an NJ player on `liberty`/NJ → `ok`, or the documented `NO_CONFIDENT_MATCHES` decline when no NJ seed gets a rail;
 4. a thin seed → `INSUFFICIENT_SOURCE_DATA`;
 5. a seed not licensed in the market → `SEED_NOT_AVAILABLE`;
 6. a restricted player → `PLAYER_RESTRICTED`;
@@ -251,7 +251,7 @@ The gate runs on the **committed** artefacts, so CI needs no API key.
 3. **`tests/boundaries.test.ts`:**
    - no file in `src/` (except `config.ts`), `scripts/build-index.ts` or `scripts/demo.ts` references the canonical catalogue, the reference data or the `eval/` folder, whether by file name or by importing `config.ts`'s path constants for them;
    - no file in `src/service/` imports `openai` or the AI providers module.
-4. **Commands:** `npm run build:index -- --provider=offline`, then `npm run demo -- --provider=offline`, show all 10 cases with the expected status codes and reasons. `npm run demo` without the flag, with no OpenAI build present, exits 1 with a clear message. `npm start` serves on port 3000.
+4. **Commands:** `npm run build:index -- --provider=offline`, then `npm run demo -- --provider=offline`, show all 10 cases with the expected status codes and reasons (case 3 as §8 allows), and exit 0. So does `npm run demo` on the committed OpenAI build. `npm run demo` without the flag, with no OpenAI build present, exits 1 with a clear message. `npm start` serves on port 3000.
 
 ## 11. Known open questions
 

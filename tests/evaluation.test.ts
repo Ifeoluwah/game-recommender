@@ -5,10 +5,10 @@ import { enrichCatalogue } from "../src/pipeline/enrich.js";
 import { normaliseRecord } from "../src/pipeline/normalise.js";
 import { loadServiceConfig } from "../src/service/service-config.js";
 import { jsonFileText, sha256 } from "../src/util/misc.js";
-import { evaluate, sweepThresholds, suggestOperatingPoint } from "../eval/evaluate.js";
+import { evaluate, sweepThresholds, suggestOperatingPoint, withThemeRuleOff } from "../eval/evaluate.js";
 import type { EvalInputs, EvalReport } from "../eval/evaluate.js";
 import { loadGates } from "../eval/gates.js";
-import { renderMarkdown, trapLine } from "../eval/report.js";
+import { noRailsLine, renderMarkdown, trapLine } from "../eval/report.js";
 import { offlineDataset } from "./helpers/offline-dataset.js";
 
 /**
@@ -109,6 +109,36 @@ describe("the offline evaluation (spec 06 §9)", () => {
 
   it("is deterministic for a given set of artefacts", () => {
     expect(jsonFileText(evaluate(inputs))).toBe(jsonFileText(report));
+  });
+
+  it("reports coverage per brand and market, and names a context where every rail declines (spec 06 §5.2)", () => {
+    const pc = report.ranking.perContext;
+    const nonAbstaining = report.header.rankingQueries - report.ranking.abstainingQueries;
+    expect(pc.reduce((n, c) => n + c.queries, 0)).toBe(nonAbstaining);
+    expect(pc.reduce((n, c) => n + c.answered, 0)).toBe(report.ranking.variants.find((v) => v.variant === "enriched")!.answered);
+    // Known since the theme rule, on both builds: liberty/NJ has no rails. Pinned so a change is noticed.
+    const nj = pc.find((c) => c.brand === "liberty" && c.market === "NJ")!;
+    expect(nj.answered).toBe(0);
+    expect(nj.themesBelowMinResults).toBeGreaterThan(0);
+    expect(report.ranking.contextsWithNoRails).toEqual(["liberty/NJ"]);
+    expect(noRailsLine(report)).toContain("liberty/NJ");
+    const md = renderMarkdown(report);
+    expect(md).toContain("### Coverage per brand and market");
+    expect(md).toContain("**Every rail declines in: liberty/NJ.**");
+  });
+
+  it("reports coverage against an oracle the theme rule doesn't constrain, which answers at least as much", () => {
+    const free = report.ranking.oracleWithoutThemeRule;
+    expect(free.answerable).toBeGreaterThanOrEqual(report.ranking.answerableQueries);
+    expect(free.coverage).not.toBeNull();
+    expect(renderMarkdown(report)).toContain("against an oracle without `quality:no_shared_theme` (not gated)");
+  });
+
+  it("withThemeRuleOff gives every game the same themes and changes nothing else", () => {
+    const games = withThemeRuleOff(inputs.index.games);
+    const themeSets = new Set(Object.values(games).map((g) => g.themes.join(",")));
+    expect(themeSets.size).toBe(1);
+    for (const [id, g] of Object.entries(games)) expect({ ...g, themes: [] }).toEqual({ ...inputs.index.games[id]!, themes: [] });
   });
 
   it("counts the rules' work across the exhaustive check", () => {

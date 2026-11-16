@@ -241,3 +241,65 @@ Record in docs/EVALUATION.md and REBUILD_NOTES.md:
 
 Add tests: shared theme allowed, same series allowed, same studio allowed, none of the three removed with the diagnostics key, and an unknown-theme seed. Run typecheck, tests, then npm run eval on the OpenAI build and report the gate table and sweep. Don't run generate or build:index. 
 </pasted_content id="89c2">
+
+## 2026-11-16 03:47:05
+
+Read @AGENTS.md and implement @docs/prompts/07-production-hardening.md, following milestone 7 in @docs/plan.md and @REBUILD_NOTES.md. Take the baseline first, before any changes, as the spec requires. Where the appendix gives exact code or values, use them exactly. Run npm run typecheck and npm test, then the offline build, eval and demo to confirm results are unchanged. Don't run generate or build:index with --provider=openai. Tick milestone 7 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Don't commit; I make the commits. Finish by reporting the test results, the before-and-after comparison, and anything you had to interpret.
+
+## 2026-11-16 03:56:28
+
+<pasted_content id="89c2">
+Keep the theme-or-series rule. Three changes, spec first where needed:
+
+1. Demo: case 3 must accept a documented decline when no liberty/NJ seed gets a rail, labelled as expected, instead of exiting 1. A reviewer's first command has to work on the committed build. Update spec 05's demo case list.
+
+2. Document the brand-level consequence prominently:
+- README: a status block on the first screen saying the service declines about 117 of 184 queries and that liberty/NJ returns no rails, with the reason (about 22 live eligible NJ games across many themes, so no seed finds three theme-mates);
+- EVALUATION.md: the same, plus that the fix is catalogue breadth rather than a looser rule, and add per-brand coverage to the eval report so this can't go unnoticed again;
+- the ADR's revisit criteria: a brand or market whose rails all decline is evidence to revisit the relatedness rule or minResults.
+
+3. Offline traps are 38/39: g-003's cold-start decline. Disclose it in EVALUATION.md next to the other trap disclosures, and say the offline build is a software check only.
+
+Run typecheck, tests, the offline build, demo and eval, then npm run eval on the OpenAI build. Don't run generate or build:index with --provider=openai. 
+
+Add a "Trade-offs and limitations" section to the README, directly after the status block, using only figures from eval/reports/latest.json and saying which build they come from:
+
+- Precision over coverage: the service answers 67 of 184 ranking queries and declines the rest; give the all-query coverage figure from the report. State the deliberate choice: on a regulated lobby, a decline the lobby can fall back on beats an unrelated rail.
+- Why coverage is structurally low here: 108 games across 5 markets, 4 brands and many themes, several with only one or two eligible titles, so a relatedness requirement often has nothing to offer. Say that a larger catalogue would be expected to raise it, as an expectation with that mechanism, not as a measured result.
+- liberty/NJ returns no rails: about 22 live eligible NJ games across many themes. Name it as the clearest example of the above.
+- Quality when it does answer: nDCG@5, bad-rec rate and gated coverage, each with its gate. For coverage, use 0.843 against the pre-rule oracle and explain why the reported 1.0 is flattering (the oracle obeys the same rule).
+- Lift over raw text −0.003: enrichment is ranking-neutral at noise level on this catalogue; its measured value is the fill rates and forcing thin records to decline. Quote the fill-rate figures.
+- Cases where it gets it wrong, from the report, correctly attributed: the four lowest-nDCG seeds, the offline cold-start decline g-003 (38/39 traps offline), and the two vacuous misleading-title rows. Do not call g-050 a false abstention; it answers.
+
+No claim in this section may be unsupported by the report. Keep it under a screen.
+</pasted_content id="89c2">
+
+## 2026-11-16 07:16:36
+
+<pasted_content id="47bf">
+Keep the theme-or-series rule. Three changes, spec first where needed:
+
+1. Demo: case 3 must accept a documented decline when no liberty/NJ seed gets a rail, labelled as expected, instead of exiting 1. A reviewer's first command has to work on the committed build. Update spec 05's demo case list.
+
+2. Document the brand-level consequence prominently:
+- README: a status block on the first screen saying the service declines about 117 of 184 queries and that liberty/NJ returns no rails, with the reason (about 22 live eligible NJ games across many themes, so no seed finds three theme-mates);
+- EVALUATION.md: the same, plus that the fix is catalogue breadth rather than a looser rule, and add per-brand coverage to the eval report so this can't go unnoticed again;
+- the ADR's revisit criteria: a brand or market whose rails all decline is evidence to revisit the relatedness rule or minResults.
+
+3. Offline traps are 38/39: g-003's cold-start decline. Disclose it in EVALUATION.md next to the other trap disclosures, and say the offline build is a software check only.
+
+Run typecheck, tests, the offline build, demo and eval, then npm run eval on the OpenAI build. Don't run generate or build:index with --provider=openai. 
+
+Add a "Trade-offs and limitations" section to the README, directly after the status block, using only figures from eval/reports/latest.json and saying which build they come from:
+
+- Precision over coverage: the service answers 67 of 184 ranking queries and declines the rest; give the all-query coverage figure from the report. State the deliberate choice: on a regulated lobby, a decline the lobby can fall back on beats an unrelated rail.
+- Why coverage is structurally low here: 108 games across 5 markets, 4 brands and many themes, several with only one or two eligible titles, so a relatedness requirement often has nothing to offer. Say that a larger catalogue would be expected to raise it, as an expectation with that mechanism, not as a measured result.
+- liberty/NJ returns no rails: about 22 live eligible NJ games across many themes. Name it as the clearest example of the above.
+- Quality when it does answer: nDCG@5, bad-rec rate and gated coverage, each with its gate. For coverage, use 0.843 against the pre-rule oracle and explain why the reported 1.0 is flattering (the oracle obeys the same rule).
+- Lift over raw text −0.003: enrichment is ranking-neutral at noise level on this catalogue; its measured value is the fill rates and forcing thin records to decline. Quote the fill-rate figures.
+- Cases where it gets it wrong, from the report, correctly attributed: the four lowest-nDCG seeds, the offline cold-start decline g-003 (38/39 traps offline), and the two vacuous misleading-title rows. Do not call g-050 a false abstention; it answers.
+
+No claim in this section may be unsupported by the report. Keep it under a screen.
+</pasted_content id="47bf">

@@ -54,6 +54,7 @@ const guarded = [
   ...tsFiles(SRC).filter((f) => rel(f) !== "src/config.ts"),
   join(REPO_ROOT, "scripts", "build-index.ts"),
   join(REPO_ROOT, "scripts", "demo.ts"),
+  join(REPO_ROOT, "scripts", "demo-cases.ts"),
 ];
 
 describe("evaluation labels never reach the system under test (AGENTS.md rule 9)", () => {

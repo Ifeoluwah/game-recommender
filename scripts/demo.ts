@@ -5,6 +5,7 @@ import { loadIndex } from "../src/service/index-store.js";
 import { recommend } from "../src/service/recommender.js";
 import { buildServer } from "../src/service/server.js";
 import { loadServiceConfig } from "../src/service/service-config.js";
+import { pickNjCase } from "./demo-cases.js";
 
 // npm run demo [-- --provider=offline]
 // Every path through the service, in-process with app.inject. Reads the committed OpenAI build unless
@@ -42,7 +43,9 @@ const pick = (what: string, test: (id: string) => boolean): string => {
   return id;
 };
 const normal = pick("ok on aurora/GB and harbour/GB", (id) => okOn(id, "aurora", "GB") && okOn(id, "harbour", "GB"));
-const nj = pick("ok on liberty/NJ", (id) => okOn(id, "liberty", "NJ"));
+// Case 3 accepts a documented decline: no liberty/NJ seed gets a rail since the theme rule (spec 05 §8).
+const nj = pickNjCase(index, config, month);
+if (!nj) throw new Error("no game in this build for: a well-described seed on liberty/NJ");
 // The first insufficient game that passes the seed checks on aurora/GB. The first insufficient game
 // overall may be unlicensed in GB, and the seed-availability check (which runs first) would answer.
 const thin = pick("flagged insufficient and available on aurora/GB", (id) => {
@@ -51,12 +54,12 @@ const thin = pick("flagged insufficient and available on aurora/GB", (id) => {
 });
 const unlicensed = pick("not licensed in GB", (id) => !index.games[id]!.markets.includes("GB"));
 
-interface Case { title: string; expect: string; url: string; headers?: Record<string, string> }
+interface Case { title: string; expect: string; url: string; headers?: Record<string, string>; note?: string | null }
 const related = (gameId: string, brand: string, market: string) => `/v1/games/${encodeURIComponent(gameId)}/related?brand=${brand}&market=${market}`;
 const cases: Case[] = [
   { title: "Normal: a well-described seed", expect: "200 ok", url: related(normal, "aurora", "GB") },
   { title: "The same game on another brand", expect: "200 ok", url: related(normal, "harbour", "GB") },
-  { title: "An NJ player on liberty", expect: "200 ok", url: related(nj, "liberty", "NJ") },
+  { title: "An NJ player on liberty", expect: nj.expect, url: related(nj.gameId, "liberty", "NJ"), note: nj.note },
   { title: "A thin seed", expect: "200 declined INSUFFICIENT_SOURCE_DATA", url: related(thin, "aurora", "GB") },
   { title: "A seed not licensed in the market", expect: "200 declined SEED_NOT_AVAILABLE", url: related(unlicensed, "aurora", "GB") },
   { title: "A restricted player", expect: "200 declined PLAYER_RESTRICTED (private, no-store)", url: related(normal, "aurora", "GB"), headers: { "x-player-restricted": "true" } },
@@ -77,6 +80,7 @@ for (const [i, c] of cases.entries()) {
   console.log(`   GET ${c.url}${c.headers ? `  (${Object.entries(c.headers).map(([k, v]) => `${k}: ${v}`).join(", ")})` : ""}`);
   if (body.seedTitle) console.log(`   seed: ${body.seedTitle}`);
   console.log(`   → ${outcome}   [expected ${c.expect}]   cache-control: ${res.headers["cache-control"] ?? "-"}`);
+  if (c.note) console.log(`   note: ${c.note}`);
   for (const item of body.items ?? []) console.log(`     ${item.score.toFixed(4)}  ${item.gameId}  ${item.title}`);
 }
 

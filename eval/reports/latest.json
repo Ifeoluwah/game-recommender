@@ -636,6 +636,7 @@
     "abstainingQueries": 15,
     "answerableQueries": 58,
     "threshold": 0.45,
+    "minResults": 3,
     "variants": [
       {
         "variant": "enriched",
@@ -712,6 +713,63 @@
           "NO_CONFIDENT_MATCHES": 98
         }
       }
+    ],
+    "oracleWithoutThemeRule": {
+      "answerable": 70,
+      "coverage": 0.843
+    },
+    "perContext": [
+      {
+        "brand": "aurora",
+        "market": "GB",
+        "queries": 64,
+        "answered": 29,
+        "allQueryCoverage": 0.453,
+        "answerableByOracle": 25,
+        "coverage": 1,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 6,
+          "NO_CONFIDENT_MATCHES": 29
+        },
+        "eligibleGames": 51,
+        "eligibleThemes": 17,
+        "themesBelowMinResults": 8
+      },
+      {
+        "brand": "harbour",
+        "market": "GB",
+        "queries": 80,
+        "answered": 38,
+        "allQueryCoverage": 0.475,
+        "answerableByOracle": 33,
+        "coverage": 1,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 4,
+          "NO_CONFIDENT_MATCHES": 38
+        },
+        "eligibleGames": 66,
+        "eligibleThemes": 21,
+        "themesBelowMinResults": 11
+      },
+      {
+        "brand": "liberty",
+        "market": "NJ",
+        "queries": 25,
+        "answered": 0,
+        "allQueryCoverage": 0,
+        "answerableByOracle": 0,
+        "coverage": null,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 3,
+          "NO_CONFIDENT_MATCHES": 22
+        },
+        "eligibleGames": 22,
+        "eligibleThemes": 13,
+        "themesBelowMinResults": 10
+      }
+    ],
+    "contextsWithNoRails": [
+      "liberty/NJ"
     ],
     "sweep": [
       {

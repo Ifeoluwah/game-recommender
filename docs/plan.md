@@ -610,13 +610,13 @@ Done 2026-11-16: typecheck clean; 442 tests pass (13 files), 28 of them new in `
 
 ### Checklist
 
-- [ ] §3.1 Cache key includes `llm.id` and `ENRICH_PIPELINE_VERSION`; the guard is outside the key.
-- [ ] §3.2 `withRetry` delay = `base × 2^attempt × (0.5 + Math.random())`, base 500 ms, 3 attempts; `mapLimit` defaults to 5; `writeFileAtomic` is used for all artefacts and data files in both builds and for the cache; checkpoints every 10 proposals and in `finally`.
-- [ ] §3.3 The two number patterns are in the summary lint.
-- [ ] §3.4 `cached` and `proposedAt` follow the rules.
-- [ ] §3.5 Serializer is `{ id, method, url }`; `x-request-id`; no `recommendation` line for restricted requests; `logStream`.
-- [ ] §3.6 Carry the seed-availability rows into the M8 ADR checklist.
-- [ ] No new dependencies; no change to ranking, rules, thresholds or gates.
+- [x] §3.1 Cache key includes `llm.id` and `ENRICH_PIPELINE_VERSION`; the guard is outside the key.
+- [x] §3.2 `withRetry` delay = `base × 2^attempt × (0.5 + Math.random())`, base 500 ms, 3 attempts; `mapLimit` defaults to 5; `writeFileAtomic` is used for all artefacts and data files in both builds and for the cache; checkpoints every 10 proposals and in `finally`.
+- [x] §3.3 The two number patterns are in the summary lint.
+- [x] §3.4 `cached` and `proposedAt` follow the rules.
+- [x] §3.5 Serializer is `{ id, method, url }`; `x-request-id`; no `recommendation` line for restricted requests; `logStream`.
+- [x] §3.6 Carry the seed-availability rows into the M8 ADR checklist.
+- [x] No new dependencies; no change to ranking, rules, thresholds or gates.
 
 ### Files
 
@@ -666,7 +666,18 @@ Get-ChildItem artifacts, data, .cache -Recurse -Filter *.tmp -ErrorAction Silent
 >    - the gate values match the previous report (the offline report isn't committed, so keep a copy of `eval/reports/offline/latest.json` from before the change);
 >    - 39/39 planted traps are handled.
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 `[ ]` AC5 `[ ]` AC6 `[ ]` AC7
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[x]` AC4 `[x]` AC5 `[x]` AC6 `[x]` AC7 *(traps unchanged at 38/39, not 39/39: see below)*
+
+Done 2026-11-16: verification only, as P-3 expects. Every §3 requirement was already in the code from milestones 1, 4 and 5, and no source file changed. The tests for AC2–AC6 already existed under spec 04 and spec 05 names; they now also carry their spec 07 AC number, and AC6 has an explicit "no port under any key" assertion. Typecheck clean; 451 tests pass (13 files).
+
+**AC7, against a baseline taken before any change** (a fresh offline generate, build, eval and demo of the then-current code):
+- After regenerating and rebuilding, the raw feed is byte-identical (`5caf2bbb0f343546`) and the index version is unchanged (`928bc5903b8b`).
+- The gate rows are identical. The whole JSON and Markdown reports are identical apart from the index `builtAt`, and the demo output is identical.
+- No `.tmp` files are left.
+- **Planted traps are 38/39 before and after**, not AC7's 39/39. The one miss (g-003, a cold-start false abstention) comes from `quality:no_shared_theme`, added after milestone 6, and this milestone doesn't change it.
+- **The demo fails before and after** (exit 1, "no game in this build for: ok on liberty/NJ"). Since the theme rule, no game answers on liberty/NJ in either build, so case 3 has no pick. Not fixed here: spec 07 forbids ranking changes, and the demo case is a spec 05 decision.
+
+See `REBUILD_NOTES.md`.
 
 ---
 

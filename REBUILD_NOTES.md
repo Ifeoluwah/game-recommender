@@ -374,3 +374,32 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
 - **Coverage's denominator moved.** The oracle runs through `recommend()`, so it obeys the rule too, and answers 58 queries instead of 70. Gated coverage is 1.0. Against the pre-rule oracle it would be 0.843. Disclosed, not redefined.
 - **Offline ranking gates:** nDCG@5 now passes offline (0.778). The test asserts lift and bad-rec fail instead, which spec 06 AC2 allows ("ranking gates may fail").
 - **How the alternatives were measured:** scratch copies of `recommender.ts` and `evaluate.ts` with a rule switch (off / theme / theme+series / theme+series+studio, each with the oracle with and without the rule), run on the committed artefacts. Nothing in `src/` or `eval/` was switched. The shipped rule's numbers come from `npm run eval`.
+
+### Milestone 7 (spec 07)
+
+- **Verification only, as P-3 expects.** Each §3 requirement was checked against the code, and every one was already met by milestones 1, 4 and 5. No file in `src/`, `scripts/` or `eval/` changed.
+  - §3.1: `cacheKey` = `sha256(sourceHash|llm.id|promptVersion|ENRICH_PIPELINE_VERSION)`, `enrich-pipeline.v1`; the guard runs outside the key, on hits too.
+  - §3.2: `retryDelayMs` = `base × 2^attempt × (0.5 + random)`, base 500 ms, 3 attempts; `mapLimit` defaults to 5. `writeFileAtomic` (`<path>.<pid>.tmp`, then rename) is used for all four data files, all three artefacts, the cache, and the eval reports. Checkpoint every 10 new proposals, plus a save in `finally`.
+  - §3.3: both number patterns are in `BANNED_SUMMARY_PATTERNS`.
+  - §3.4: `cached` / `proposedAt` follow the rules (entry `createdAt` on a hit, now on a fresh call, null for rules and skipped records and for old entries).
+  - §3.5: the request serializer is `{ id, method, url }`, with `requestIdHeader: "x-request-id"` and no `recommendation` line for restricted requests; `ServerDeps.logStream` exists.
+  - §3.6: carried to milestone 8, whose ADR checklist already lists the seed-availability rows.
+- **The number patterns carry an `/i` flag** like the other banned patterns, where spec 04 §6 and spec 07 §3.3 write them without flags. Kept: case-insensitivity can't change a match on digits, `%` or currency symbols.
+- **Tests.** AC2–AC6 were already tested, under spec 04's AC12–14 and spec 05's logging test (built early, milestone 5 notes). Those test names now also carry their spec 07 AC number. AC6 gains an explicit check that no `port` or `remotePort` key appears anywhere in the logs (the list of forbidden strings only covered `remotePort`). The test count is unchanged at 451.
+- **AC7's baseline was taken fresh, before any change.** The committed-at-the-time offline artefacts were schema 2 and couldn't load after the theme rule. So the baseline was a new offline `generate` → `build:index` → `eval` → `demo` of the code as it stood, with copies of the report, index and raw feed kept outside the repo.
+  - After regenerating and rebuilding, the raw feed is byte-identical, the index version is unchanged (`928bc5903b8b`), and the gate rows are identical. The JSON and Markdown reports are identical except for `builtAt`, and the manifest differs only in `generatedAt`. No `.tmp` files are left.
+- **AC7 says 39/39 traps; the baseline and the rebuild both give 38/39.** The miss is the cold-start false abstention on g-003 that `quality:no_shared_theme` introduced (see the previous section). Read as "unchanged by this milestone", which holds; the spec's 39/39 predates the rule.
+- **Found while running the demo: the theme rule leaves liberty/NJ with no rails at all.** In both builds, all 32 liberty/NJ seeds decline (OpenAI 27 `NO_CONFIDENT_MATCHES` + 5 `INSUFFICIENT_SOURCE_DATA`; offline 25 + 7). Only about 22 live, eligible candidates serve NJ, spread over many themes, so no seed has three theme-mates.
+  - So `npm run demo` (either build) stops at case 3 with "no game in this build for: ok on liberty/NJ" and exits 1, before and after this milestone. Spec 05 AC4 no longer holds.
+  - Not fixed here. Spec 07 forbids ranking changes, and whether case 3 should expect a decline, or whether a whole brand with no rail is acceptable, is a product decision. It also wasn't caught when the rule was added, because the offline artefacts weren't rebuilt then and the demo wasn't run.
+
+### Follow-up to milestone 7: liberty/NJ, the demo and per-brand coverage
+
+- **The theme-or-series rule is kept.** The fix for liberty/NJ is catalogue breadth, not a looser rule (`docs/EVALUATION.md`, Status).
+- **Demo case 3 accepts a documented decline** (spec 05 §8, AC4). `scripts/demo-cases.ts` picks the first liberty/NJ seed that's `ok`, else the first that declines `NO_CONFIDENT_MATCHES`, expected as that and printed with a note. Both demos now exit 0 with all 10 cases as expected. The pick is a separate module so `tests/demo-cases.test.ts` can test both branches; it's under the label-boundary test like `demo.ts`.
+- **Two ungated report additions** (spec 06 §5.2, §7). Gates, thresholds and the gated figures are unchanged; the report diff only adds lines.
+  - **Coverage per brand and market**, with what a rail could draw on in each context. A context with no rails is also printed on the console. "Eligible games" counts canonical games, and excludes records flagged insufficient, as the ideal pool does. That gives the "about 22" for NJ (27 with insufficient records included).
+  - **Coverage against an oracle without the theme rule**, so the 0.843 is in the report and no longer only in these notes. It's measured by running the oracle on the same games with every theme on every record (`withThemeRuleOff`), so no file in `src/` changed.
+  - It reproduces 0.843 over 70 queries, the figure from the scratch-copy measurement. Offline it's 0.714 over 84.
+- **The ADR doesn't exist yet** (milestone 8). The new revisit criterion is in spec 08 §3.9, and spec 08 §5 now keeps the README's status block and "Trade-offs and limitations" section.
+- **g-050 is reported as declining**, because the OpenAI report says so (`aurora/GB: declined NO_CONFIDENT_MATCHES`, MISS). A probe of every brand and market that carries it gives `NO_CONFIDENT_MATCHES` (or `BRAND_DISABLED` on meridian). The README calls it this build's one trap miss and doesn't call it a false abstention. Gated coverage doesn't count it, because the gated oracle declines it too.

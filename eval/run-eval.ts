@@ -11,7 +11,7 @@ import { evaluate } from "./evaluate.js";
 import type { Neighbours } from "./evaluate.js";
 import { gateExitCode, loadGates } from "./gates.js";
 import { missingInputsMessage, repoRelative } from "./inputs.js";
-import { clusterMacroLine, gateTableText, renderMarkdown, trapLine } from "./report.js";
+import { clusterMacroLine, gateTableText, noRailsLine, renderMarkdown, trapLine } from "./report.js";
 
 // npm run eval [-- --provider=offline]     the report
 // npm run eval:gate [-- --provider=offline] the report, then exit 1 if any release gate fails
@@ -86,6 +86,8 @@ console.log(gateTableText(report));
 console.log("");
 console.log(clusterMacroLine(report));
 console.log(trapLine(report));
+const noRails = noRailsLine(report);
+if (noRails) console.log(noRails);
 // Nothing to say when the current threshold is already the suggested operating point (spec 06 §5.3).
 if (report.ranking.suggestion) console.log(report.ranking.suggestion.text);
 console.log(`Report: ${rel(out.markdown)} (and ${rel(out.json)})`);

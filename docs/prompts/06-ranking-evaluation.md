@@ -112,6 +112,9 @@ Diversity caps are ignored. The grade of a returned record of the seed's own gam
   - **Coverage (answerable):** share answered among the queries the oracle answers. Where three genuinely related, eligible games don't exist, declining is correct. 1 − coverage = false abstention.
   - **All-query coverage:** share answered among all non-abstaining queries.
   - Decline reasons, counted.
+- **Reported, not gated** (added after `quality:no_shared_theme` left liberty/NJ with no rails unnoticed):
+  - **Coverage per brand and market** for `enriched`: per context, the non-abstaining queries, answered, all-query coverage, the oracle's answers, coverage, decline reasons, and what a rail could draw on there: canonical games live and eligible by ground truth in July (records flagged `insufficient` excluded), their distinct themes, and how many of those themes fewer than `minResults` of the games carry. A context where every rail declines is named in the report and on the console.
+  - **Coverage against an oracle without `quality:no_shared_theme`:** the oracle run on the same games with every theme on every record, so the rule never fires. The gated oracle runs through `recommend()` and obeys the rule, so gated coverage can't count a decline the rule causes as a false abstention; this figure can.
 
 ### 5.3 Threshold sweep
 
@@ -156,12 +159,14 @@ Sections, in this order:
    - a table of candidates removed per rule (from diagnostics) across all queries, showing the rules are doing work.
 7. **Layer 4 and ranking quality:**
    - the variants table (nDCG@5, P@5, bad-rec rate, coverage, all-query coverage, expected-decline rate);
+   - coverage against the oracle without the theme rule; coverage per brand and market (§5.2);
    - decline reasons; the threshold sweep; failure cases.
 
 **Console output:**
 - the gate table;
 - the cluster macro line;
 - "Planted traps: X/Y handled correctly", listing misses;
+- "Every rail declines in: …", when any brand and market answers no query;
 - the threshold suggestion;
 - the report path.
 
