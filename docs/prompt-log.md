@@ -181,3 +181,15 @@ Read @AGENTS.md and implement @docs/prompts/06-ranking-evaluation.md, following 
  Finish by reporting the test results, the offline gate table, the trap count, and anything you had to interpret.
 
 </pasted_content id="0f25">
+
+## 2026-11-16 03:20:19
+
+<pasted_content id="0f25">
+Read-only analysis of eval/reports/latest.json and the committed index; change nothing, call no model. Save to docs/notes/threshold-analysis.md.
+1. For every answered query, how many of its grade-0 items share the seed's game type but no theme? Give the share of all bad items.
+2. For each of g-003, g-004, g-014 and g-016: what does the oracle return, and where do those games sit in the seed's neighbour list and scores? Is a relevant game present but outranked, or absent from the top 40 entirely?
+3. How many canonical games share each seed theme? List the themes with fewer than 3 games.
+4. Simulate (don't implement) a quality rule requiring at least one shared theme with the seed: what are bad-rec rate, coverage, nDCG@5 and the declined count at thresholds 0.45, 0.5, 0.55, 0.6 and 0.65?
+5. Simulate raising the neighbour count K above 40 for the four failure seeds: would a theme-mate appear?
+Then list the options with their trade-offs, including accepting a failing gate. Don't implement any of them.
+</pasted_content id="0f25">

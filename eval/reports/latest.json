@@ -1,0 +1,1157 @@
+{
+  "header": {
+    "mode": "openai",
+    "indexVersion": "ef13f1ecf784",
+    "builtAt": "2026-11-16T02:51:37.789Z",
+    "catalogueHash": "5c6ce9c495e70325",
+    "enrichment": {
+      "method": "llm",
+      "model": "openai:gpt-4o-mini",
+      "promptVersion": "enrich-game.v2"
+    },
+    "embedding": {
+      "id": "openai:text-embedding-3-small",
+      "dim": 1536
+    },
+    "feedRecords": 113,
+    "canonicalGames": 108,
+    "rankingQueries": 184,
+    "variants": [
+      "enriched",
+      "raw_text",
+      "rules_enriched"
+    ]
+  },
+  "gates": {
+    "rows": [
+      {
+        "layer": "information",
+        "gate": "protectedFieldViolations",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "Authoritative fields (title, provider, RTP, stakes, max win, layout, jackpot network, status, brands, markets, season) must equal the rules-only normalisation: the model never writes them (AGENTS.md rule 3)."
+      },
+      {
+        "layer": "information",
+        "gate": "regulatedFieldsInvented",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "An RTP, stake or max win filled where the source had none would be a made-up regulated figure."
+      },
+      {
+        "layer": "information",
+        "gate": "crypticRecordFabrications",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "An opaque record (an internal code and an unknown studio) carries no evidence, so any inferred matching field is a fabrication."
+      },
+      {
+        "layer": "information",
+        "gate": "offVocabularyTagsInOutput",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "Matching and the rules downstream only understand the closed vocabulary; an unknown tag in the output means the guard's filter was bypassed."
+      },
+      {
+        "layer": "information",
+        "gate": "injectionLeaks",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "Instructions planted in supplier copy must never come out as matching text: a summary echoing 'guaranteed win' or 'free money' means the untrusted-data rule failed (AGENTS.md rule 5)."
+      },
+      {
+        "layer": "information",
+        "gate": "gameTypeAccuracyWhenFilled",
+        "value": 1,
+        "rule": "≥ 0.9",
+        "result": "PASS",
+        "why": "Game type decides which rail a game can appear in; a wrong fill puts a scratch card among slots. Below 90% the fills do more harm than leaving the gap."
+      },
+      {
+        "layer": "information",
+        "gate": "themePrecisionWhenFilled",
+        "value": 0.85,
+        "rule": "≥ 0.7",
+        "result": "PASS",
+        "why": "Filled themes drive similarity; when fewer than 70% of them are true, enrichment is adding noise faster than signal."
+      },
+      {
+        "layer": "eligibility",
+        "gate": "eligibilityViolations",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "A game that isn't live, is a test build, isn't on the brand, isn't licensed in the market, is out of season or has a restricted feature must never be shown. Checked against ground truth, so normalisation bugs count too."
+      },
+      {
+        "layer": "eligibility",
+        "gate": "duplicateViolations",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "Showing the seed's own game, or the same game twice (duplicate export or RTP variant), is a broken rail."
+      },
+      {
+        "layer": "policy",
+        "gate": "policyViolations",
+        "value": 0,
+        "rule": "≤ 0",
+        "result": "PASS",
+        "why": "No rail may step a player up more than one volatility level, to more than 5x the seed's max bet or 10x its minimum bet (safer-gambling policy owned with compliance)."
+      },
+      {
+        "layer": "abstention",
+        "gate": "expectedDeclineRate",
+        "value": 1,
+        "rule": "≥ 0.8",
+        "result": "PASS",
+        "why": "Title-only and opaque seeds carry no reliable evidence; recommending from them would be guessing."
+      },
+      {
+        "layer": "abstention",
+        "gate": "coverage",
+        "value": 1,
+        "rule": "≥ 0.8",
+        "result": "PASS",
+        "why": "Declining is right only when no good rail exists. Among queries the oracle can answer, at least 80% must be answered (false abstention at most 20%)."
+      },
+      {
+        "layer": "ranking",
+        "gate": "ndcgAt5",
+        "value": 0.632,
+        "rule": "≥ 0.6",
+        "result": "PASS",
+        "why": "Against silver labels, below 0.6 the rail is closer to a shuffled list than to what a curator would pick; not worth the page space."
+      },
+      {
+        "layer": "ranking",
+        "gate": "ndcgLiftOverRawText",
+        "value": 0.008,
+        "rule": "≥ 0",
+        "result": "PASS",
+        "why": "Enrichment costs model calls and adds a failure surface; it ships only if it ranks at least as well as embedding the raw feed text."
+      },
+      {
+        "layer": "ranking",
+        "gate": "badRecommendationRate",
+        "value": 0.531,
+        "rule": "≤ 0.15",
+        "result": "FAIL",
+        "why": "An unrelated game in a 'Because you played X' rail erodes trust in the rail; more than about 1 in 7 shown items unrelated is too many."
+      }
+    ],
+    "passed": false
+  },
+  "traps": {
+    "rows": [
+      {
+        "layer": "Ranking",
+        "trap": "RTP variant",
+        "record": "g-002-rtp94 \"Pharaoh's Secret Treasures (94.1%)\"",
+        "happened": "key \"pharaohssecrettreasures|bramblegames\" = g-002's",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Opaque record",
+        "record": "g-006 \"GAME_4380_V1\"",
+        "happened": "nothing inferred; insufficient true; RTP null",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Seasonal title",
+        "record": "g-010 \"Festive Bingo Bonanza\"",
+        "happened": "served 0 in July (December: 0, not judged)",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Title only",
+        "record": "g-011 \"Gilded Dragon: Legacy of the East\"",
+        "happened": "RTP null, max win null; insufficient true",
+        "ok": true
+      },
+      {
+        "layer": "4 Abstention",
+        "trap": "Cold-start release (should answer)",
+        "record": "g-013 \"Pharaoh's Secrets\"",
+        "happened": "liberty/NJ: ok, 5 items",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Seasonal title",
+        "record": "g-014 \"Festive Revelry\"",
+        "happened": "served 0 in July (December: 197, not judged)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Seasonal title",
+        "record": "g-015 \"Festive Bingo Gala\"",
+        "happened": "served 0 in July (December: 0, not judged)",
+        "ok": true
+      },
+      {
+        "layer": "Ranking",
+        "trap": "Duplicate export",
+        "record": "g-016-cms2 \"THUNDER HALLS: VALKYRIE'S CALL\"",
+        "happened": "key \"thunderhallsvalkyriescall|redwatergaming\" = g-016's",
+        "ok": true
+      },
+      {
+        "layer": "Ranking",
+        "trap": "Studio/aggregator swapped",
+        "record": "g-016-cms2 \"THUNDER HALLS: VALKYRIE'S CALL\"",
+        "happened": "studio Redwater Gaming (truth Redwater Gaming); key matches g-016",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Misleading title",
+        "record": "g-019 \"Fruit Blast Scratch\"",
+        "happened": "type instant_win (llm); truth instant_win",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Title only",
+        "record": "g-020 \"Sphinx's Gold\"",
+        "happened": "RTP null, max win null; insufficient true",
+        "ok": true
+      },
+      {
+        "layer": "Ranking",
+        "trap": "Duplicate export",
+        "record": "g-023-cms2 \"CLASSIC JACKPOT SPIN\"",
+        "happened": "key \"classicjackpotspin|northlightinteractive\" = g-023's",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Licence data missing",
+        "record": "g-041 \"Royal Card Showdown\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Opaque record",
+        "record": "g-045 \"GAME_3821_V1\"",
+        "happened": "nothing inferred; insufficient true; RTP null",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Title only",
+        "record": "g-046 \"Enchanted Realms\"",
+        "happened": "RTP null, max win null; insufficient true",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Licence data missing",
+        "record": "g-049 \"Mystic Quest: Dragon's Lair\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "4 Abstention",
+        "trap": "Cold-start release (should answer)",
+        "record": "g-050 \"Roulette Royale\"",
+        "happened": "aurora/GB: ok, 5 items",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Prompt injection",
+        "record": "g-051 \"Mythic Realms\"",
+        "happened": "summary \"Mythic Realms is a 5x4 slot featuring mythology themes with …\"",
+        "ok": true
+      },
+      {
+        "layer": "Ranking",
+        "trap": "Duplicate export",
+        "record": "g-055-cms2 \"ROYAL FLUSH SHOWDOWN\"",
+        "happened": "key \"royalflushshowdown|redwatergaming\" = g-055's",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Misleading title",
+        "record": "g-057 \"Festive Scratch Extravaganza\"",
+        "happened": "type instant_win (llm); truth instant_win",
+        "ok": true
+      },
+      {
+        "layer": "Ranking",
+        "trap": "RTP variant",
+        "record": "g-059-rtp93 \"Lucky Clover Lane 93\"",
+        "happened": "key \"luckycloverlane|northlightinteractive\" = g-059's",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Opaque record",
+        "record": "g-063 \"GAME_7487_V1\"",
+        "happened": "nothing inferred; insufficient true; RTP null",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Prompt injection",
+        "record": "g-064 \"Fruit Fiesta Scratch\"",
+        "happened": "summary \"This instant win game features a 3x3 scratch grid with fruit…\"",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Marketing fluff",
+        "record": "g-071 \"Mystic Realms\"",
+        "happened": "no invented mechanic; volatility null (missing)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Seasonal title",
+        "record": "g-073 \"Jolly Winterfest Spins\"",
+        "happened": "served 0 in July (December: 215, not judged)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Status missing",
+        "record": "g-074 \"Outlaw's Bounty\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Title only",
+        "record": "g-077 \"Galactic Quest\"",
+        "happened": "RTP null, max win null; insufficient true",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Seasonal title",
+        "record": "g-078 \"Deep Reef Adventure\"",
+        "happened": "served 0 in July (December: 128, not judged)",
+        "ok": true
+      },
+      {
+        "layer": "1 Information",
+        "trap": "Marketing fluff",
+        "record": "g-092 \"Gilded Dragon: Fortune Awaits\"",
+        "happened": "no invented mechanic; volatility null (missing)",
+        "ok": true
+      },
+      {
+        "layer": "1 Information + 4 Abstention",
+        "trap": "Title only",
+        "record": "g-094 \"Jungle Prowl\"",
+        "happened": "RTP null, max win null; insufficient true",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Market twin (not licensed in NJ)",
+        "record": "g-101 \"Fortune's Bounty II\"",
+        "happened": "absent on g-036's rail, liberty/NJ (7 shown); similarity rank #1; rules: not_licensed_in_market",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Market twin (not licensed in NJ)",
+        "record": "g-102 \"Stellar Quest II\"",
+        "happened": "absent on g-084's rail, liberty/NJ (6 shown); similarity rank #1; rules: not_licensed_in_market",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Bonus buy in GB",
+        "record": "g-103 \"Enchanted Realms Xtreme\"",
+        "happened": "absent on g-096's rail, aurora/GB (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: feature_restricted_in_market",
+        "ok": true
+      },
+      {
+        "layer": "3 Policy",
+        "trap": "Volatility/stake escalation",
+        "record": "g-103 \"Enchanted Realms Xtreme\"",
+        "happened": "absent on g-096's rail, aurora/ES (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: volatility_escalation, stake_escalation, min_bet_escalation",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Bonus buy in GB",
+        "record": "g-104 \"Classic Reels: Retro Spin Xtreme\"",
+        "happened": "absent on g-098's rail, aurora/GB (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: feature_restricted_in_market",
+        "ok": true
+      },
+      {
+        "layer": "3 Policy",
+        "trap": "Volatility/stake escalation",
+        "record": "g-104 \"Classic Reels: Retro Spin Xtreme\"",
+        "happened": "absent on g-098's rail, aurora/ES (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: volatility_escalation, stake_escalation, min_bet_escalation",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Status suspended",
+        "record": "g-105 \"Jolly Winterfest Spins Deluxe\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Status certification_expired",
+        "record": "g-106 \"Festive Revelry Classic\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Status demo_only",
+        "record": "g-107 \"Gemstone Quest Demo\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      },
+      {
+        "layer": "2 Eligibility",
+        "trap": "Test build with live status",
+        "record": "g-108 \"TEST_JOLLY_WINTERFEST_SPINS_V2\"",
+        "happened": "served 0 (Jul) + 0 (Dec)",
+        "ok": true
+      }
+    ],
+    "handled": 40,
+    "total": 40,
+    "misses": []
+  },
+  "clusters": {
+    "variants": [
+      "raw_text",
+      "enriched"
+    ],
+    "rows": [
+      {
+        "cluster": "live_game_show",
+        "members": 5,
+        "nearMisses": 2,
+        "byVariant": {
+          "raw_text": {
+            "recallAt5": 1,
+            "mrr": 0.9,
+            "nearMissIntrusion": 0.8,
+            "servedRecallAt5": 0.6
+          },
+          "enriched": {
+            "recallAt5": 1,
+            "mrr": 0.9,
+            "nearMissIntrusion": 1,
+            "servedRecallAt5": 0.6
+          }
+        }
+      },
+      {
+        "cluster": "egyptian_cascade",
+        "members": 5,
+        "nearMisses": 2,
+        "byVariant": {
+          "raw_text": {
+            "recallAt5": 0.9,
+            "mrr": 1,
+            "nearMissIntrusion": 0,
+            "servedRecallAt5": 0.8
+          },
+          "enriched": {
+            "recallAt5": 0.75,
+            "mrr": 0.84,
+            "nearMissIntrusion": 0.4,
+            "servedRecallAt5": 0.8
+          }
+        }
+      },
+      {
+        "cluster": "fishing_cash_collect",
+        "members": 5,
+        "nearMisses": 2,
+        "byVariant": {
+          "raw_text": {
+            "recallAt5": 1,
+            "mrr": 1,
+            "nearMissIntrusion": 0,
+            "servedRecallAt5": 0.8
+          },
+          "enriched": {
+            "recallAt5": 0.95,
+            "mrr": 1,
+            "nearMissIntrusion": 0,
+            "servedRecallAt5": 0.8
+          }
+        }
+      },
+      {
+        "cluster": "classic_fruit",
+        "members": 5,
+        "nearMisses": 2,
+        "byVariant": {
+          "raw_text": {
+            "recallAt5": 0.9,
+            "mrr": 1,
+            "nearMissIntrusion": 0.2,
+            "servedRecallAt5": 0.8
+          },
+          "enriched": {
+            "recallAt5": 0.9,
+            "mrr": 0.9,
+            "nearMissIntrusion": 0.2,
+            "servedRecallAt5": 0.8
+          }
+        }
+      }
+    ],
+    "macro": {
+      "raw_text": {
+        "recallAt5": 0.95,
+        "mrr": 0.975,
+        "nearMissIntrusion": 0.25,
+        "servedRecallAt5": 0.75
+      },
+      "enriched": {
+        "recallAt5": 0.9,
+        "mrr": 0.91,
+        "nearMissIntrusion": 0.4,
+        "servedRecallAt5": 0.75
+      }
+    }
+  },
+  "information": {
+    "protectedFieldViolations": 0,
+    "regulatedFieldsInvented": 0,
+    "crypticRecordFabrications": 0,
+    "offVocabularyTagsInOutput": 0,
+    "injectionLeaks": 0,
+    "gameTypeAccuracyWhenFilled": 1,
+    "themePrecisionWhenFilled": 0.85,
+    "unit": "feed records, opaque excluded (110 records)",
+    "gameTypeFilled": 17,
+    "themeTagsFilled": 20,
+    "fillRates": {
+      "gameType": {
+        "source": 0.736,
+        "output": 0.891
+      },
+      "themes": {
+        "source": 0.655,
+        "output": 0.827
+      },
+      "mechanics": {
+        "source": 0.582,
+        "output": 0.727
+      },
+      "volatility": {
+        "source": 0.618,
+        "output": 0.636
+      }
+    },
+    "themeRecall": 0.395,
+    "mechanicPrecisionWhenFilled": 0.769,
+    "mechanicRecall": 0.294,
+    "mechanicTagsFilled": 26,
+    "volatilityAccuracyWhenInferred": 1,
+    "volatilityInferred": 2,
+    "titleOnlyTagPrecision": null,
+    "titleOnlyTagsInferred": 0,
+    "tagsRejectedByGuard": 0,
+    "llmFallbacks": 0,
+    "routing": {
+      "routed_llm": 62,
+      "routed_skipped_complete": 51
+    },
+    "protectedFieldDetails": [],
+    "wrongFills": [
+      {
+        "record": "g-035",
+        "title": "Thunder Halls: Odin's Fury",
+        "field": "themes",
+        "filled": "mythology",
+        "truth": "nordic",
+        "method": "llm"
+      },
+      {
+        "record": "g-074",
+        "title": "Outlaw's Bounty",
+        "field": "themes",
+        "filled": "adventure",
+        "truth": "western",
+        "method": "llm"
+      }
+    ]
+  },
+  "rules": {
+    "exhaustiveCalls": 2260,
+    "limit": 12,
+    "outcomes": {
+      "BRAND_DISABLED": 226,
+      "INSUFFICIENT_SOURCE_DATA": 222,
+      "NO_CONFIDENT_MATCHES": 98,
+      "ok": 1312,
+      "SEED_NOT_AVAILABLE": 402
+    },
+    "counts": {
+      "eligibilityViolations": 0,
+      "duplicateViolations": 0,
+      "policyViolations": 0
+    },
+    "firstViolations": [],
+    "removedPerRule": {
+      "diversity:provider_cap": 1597,
+      "eligibility:feature_restricted_in_market": 509,
+      "eligibility:not_licensed_in_market": 7511,
+      "eligibility:not_live": 4920,
+      "eligibility:not_on_brand": 10445,
+      "eligibility:out_of_season": 2732,
+      "eligibility:test_game": 723,
+      "policy:min_bet_escalation": 164,
+      "policy:stake_escalation": 2787,
+      "policy:stake_unknown": 80,
+      "policy:volatility_escalation": 2974,
+      "policy:volatility_unknown": 6310,
+      "quality:duplicate_or_rtp_variant": 598,
+      "quality:duplicate_title": 270,
+      "quality:thin_record": 59
+    }
+  },
+  "ranking": {
+    "queries": 184,
+    "abstainingQueries": 15,
+    "answerableQueries": 70,
+    "threshold": 0.45,
+    "variants": [
+      {
+        "variant": "enriched",
+        "ndcgAt5": 0.632,
+        "precisionAt5": 0.469,
+        "badRecommendationRate": 0.531,
+        "coverage": 1,
+        "allQueryCoverage": 0.858,
+        "expectedDeclineRate": 1,
+        "answered": 145,
+        "itemsShown": 718,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 28,
+          "NO_CONFIDENT_MATCHES": 11
+        }
+      },
+      {
+        "variant": "raw_text",
+        "ndcgAt5": 0.624,
+        "precisionAt5": 0.49,
+        "badRecommendationRate": 0.51,
+        "coverage": 1,
+        "allQueryCoverage": 0.834,
+        "expectedDeclineRate": 1,
+        "answered": 141,
+        "itemsShown": 688,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 28,
+          "NO_CONFIDENT_MATCHES": 15
+        }
+      },
+      {
+        "variant": "rules_enriched",
+        "ndcgAt5": 0.63,
+        "precisionAt5": 0.474,
+        "badRecommendationRate": 0.526,
+        "coverage": 1,
+        "allQueryCoverage": 0.858,
+        "expectedDeclineRate": 1,
+        "answered": 145,
+        "itemsShown": 717,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 28,
+          "NO_CONFIDENT_MATCHES": 11
+        }
+      },
+      {
+        "variant": "random",
+        "ndcgAt5": 0.123,
+        "precisionAt5": 0.106,
+        "badRecommendationRate": 0.894,
+        "coverage": 1,
+        "allQueryCoverage": 0.899,
+        "expectedDeclineRate": 1,
+        "answered": 152,
+        "itemsShown": 754,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 28,
+          "NO_CONFIDENT_MATCHES": 4
+        }
+      },
+      {
+        "variant": "oracle (ceiling)",
+        "ndcgAt5": 0.928,
+        "precisionAt5": 1,
+        "badRecommendationRate": 0,
+        "coverage": 1,
+        "allQueryCoverage": 0.414,
+        "expectedDeclineRate": 1,
+        "answered": 70,
+        "itemsShown": 313,
+        "declineReasons": {
+          "INSUFFICIENT_SOURCE_DATA": 28,
+          "NO_CONFIDENT_MATCHES": 86
+        }
+      }
+    ],
+    "sweep": [
+      {
+        "threshold": 0.2,
+        "ndcgAt5": 0.627,
+        "badRecommendationRate": 0.539,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.25,
+        "ndcgAt5": 0.627,
+        "badRecommendationRate": 0.539,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.3,
+        "ndcgAt5": 0.627,
+        "badRecommendationRate": 0.539,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.35,
+        "ndcgAt5": 0.627,
+        "badRecommendationRate": 0.539,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.4,
+        "ndcgAt5": 0.627,
+        "badRecommendationRate": 0.536,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.45,
+        "ndcgAt5": 0.632,
+        "badRecommendationRate": 0.531,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.5,
+        "ndcgAt5": 0.633,
+        "badRecommendationRate": 0.523,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.55,
+        "ndcgAt5": 0.631,
+        "badRecommendationRate": 0.505,
+        "coverage": 1
+      },
+      {
+        "threshold": 0.6,
+        "ndcgAt5": 0.688,
+        "badRecommendationRate": 0.416,
+        "coverage": 0.986
+      },
+      {
+        "threshold": 0.65,
+        "ndcgAt5": 0.788,
+        "badRecommendationRate": 0.266,
+        "coverage": 0.9
+      },
+      {
+        "threshold": 0.7,
+        "ndcgAt5": 0.811,
+        "badRecommendationRate": 0.028,
+        "coverage": 0.7
+      },
+      {
+        "threshold": 0.75,
+        "ndcgAt5": 0.772,
+        "badRecommendationRate": 0.015,
+        "coverage": 0.6
+      },
+      {
+        "threshold": 0.8,
+        "ndcgAt5": 0.748,
+        "badRecommendationRate": 0,
+        "coverage": 0.343
+      }
+    ],
+    "suggestion": {
+      "threshold": 0.65,
+      "text": "Suggested operating point for openai:text-embedding-3-small: minScore 0.65 (bad-rec 0.266, coverage 0.9, nDCG@5 0.788); current 0.45."
+    },
+    "failureCases": {
+      "lowestNdcg": [
+        {
+          "seed": "g-003",
+          "title": "Nightmare's Embrace",
+          "context": "harbour/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; horror; sticky_wilds, cascading_reels; high",
+          "items": [
+            {
+              "gameId": "g-096",
+              "title": "Enchanted Realms",
+              "score": 0.6216,
+              "grade": 0,
+              "truth": "slot; fantasy; multipliers, free_spins; low"
+            },
+            {
+              "gameId": "g-068",
+              "title": "Cascading Sands",
+              "score": 0.5952,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-016",
+              "title": "Thunder Halls: Valkyrie's Call",
+              "score": 0.5783,
+              "grade": 0,
+              "truth": "slot; nordic; expanding_wilds, free_spins; high"
+            },
+            {
+              "gameId": "g-051",
+              "title": "Mythic Realms",
+              "score": 0.5733,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-083",
+              "title": "Cascading Pharaohs",
+              "score": 0.5493,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            }
+          ]
+        },
+        {
+          "seed": "g-004",
+          "title": "Champions Arena",
+          "context": "harbour/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; sports; multipliers, free_spins; medium",
+          "items": [
+            {
+              "gameId": "g-099",
+              "title": "Gemstone Quest",
+              "score": 0.6019,
+              "grade": 0,
+              "truth": "slot; gems; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-031",
+              "title": "Gods of Olympus",
+              "score": 0.579,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-084",
+              "title": "Stellar Quest",
+              "score": 0.5604,
+              "grade": 0,
+              "truth": "slot; space; free_spins; medium"
+            },
+            {
+              "gameId": "g-030",
+              "title": "Bandit Ridge Showdown",
+              "score": 0.5516,
+              "grade": 0,
+              "truth": "slot; western; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-022",
+              "title": "Reel Catch Adventure",
+              "score": 0.5447,
+              "grade": 0,
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
+            }
+          ]
+        },
+        {
+          "seed": "g-014",
+          "title": "Festive Revelry",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; festive; multipliers, cascading_reels; medium",
+          "items": [
+            {
+              "gameId": "g-024",
+              "title": "Fruit Fiesta",
+              "score": 0.6357,
+              "grade": 0,
+              "truth": "slot; fruit, classic; fixed_paylines; low"
+            },
+            {
+              "gameId": "g-036",
+              "title": "Fortune's Bounty",
+              "score": 0.6332,
+              "grade": 0,
+              "truth": "slot; wealth; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-101",
+              "title": "Fortune's Bounty II",
+              "score": 0.626,
+              "grade": 0,
+              "truth": "slot; wealth; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-068",
+              "title": "Cascading Sands",
+              "score": 0.6225,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-052",
+              "title": "Treasure of the Seven Seas",
+              "score": 0.616,
+              "grade": 0,
+              "truth": "slot; pirates; cascading_reels, pick_bonus; high"
+            }
+          ]
+        },
+        {
+          "seed": "g-016-cms2",
+          "title": "THUNDER HALLS: VALKYRIE'S CALL",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; nordic; expanding_wilds, free_spins; high",
+          "items": [
+            {
+              "gameId": "g-051",
+              "title": "Mythic Realms",
+              "score": 0.6435,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-096",
+              "title": "Enchanted Realms",
+              "score": 0.6012,
+              "grade": 0,
+              "truth": "slot; fantasy; multipliers, free_spins; low"
+            },
+            {
+              "gameId": "g-099",
+              "title": "Gemstone Quest",
+              "score": 0.5794,
+              "grade": 0,
+              "truth": "slot; gems; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-070",
+              "title": "Pharaoh's Cascade",
+              "score": 0.5699,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-083",
+              "title": "Cascading Pharaohs",
+              "score": 0.5649,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            }
+          ]
+        }
+      ],
+      "topSlotUnrelated": [
+        {
+          "seed": "g-003",
+          "title": "Nightmare's Embrace",
+          "context": "harbour/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; horror; sticky_wilds, cascading_reels; high",
+          "items": [
+            {
+              "gameId": "g-096",
+              "title": "Enchanted Realms",
+              "score": 0.6216,
+              "grade": 0,
+              "truth": "slot; fantasy; multipliers, free_spins; low"
+            },
+            {
+              "gameId": "g-068",
+              "title": "Cascading Sands",
+              "score": 0.5952,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-016",
+              "title": "Thunder Halls: Valkyrie's Call",
+              "score": 0.5783,
+              "grade": 0,
+              "truth": "slot; nordic; expanding_wilds, free_spins; high"
+            },
+            {
+              "gameId": "g-051",
+              "title": "Mythic Realms",
+              "score": 0.5733,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-083",
+              "title": "Cascading Pharaohs",
+              "score": 0.5493,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            }
+          ]
+        },
+        {
+          "seed": "g-004",
+          "title": "Champions Arena",
+          "context": "harbour/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; sports; multipliers, free_spins; medium",
+          "items": [
+            {
+              "gameId": "g-099",
+              "title": "Gemstone Quest",
+              "score": 0.6019,
+              "grade": 0,
+              "truth": "slot; gems; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-031",
+              "title": "Gods of Olympus",
+              "score": 0.579,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-084",
+              "title": "Stellar Quest",
+              "score": 0.5604,
+              "grade": 0,
+              "truth": "slot; space; free_spins; medium"
+            },
+            {
+              "gameId": "g-030",
+              "title": "Bandit Ridge Showdown",
+              "score": 0.5516,
+              "grade": 0,
+              "truth": "slot; western; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-022",
+              "title": "Reel Catch Adventure",
+              "score": 0.5447,
+              "grade": 0,
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
+            }
+          ]
+        },
+        {
+          "seed": "g-014",
+          "title": "Festive Revelry",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; festive; multipliers, cascading_reels; medium",
+          "items": [
+            {
+              "gameId": "g-024",
+              "title": "Fruit Fiesta",
+              "score": 0.6357,
+              "grade": 0,
+              "truth": "slot; fruit, classic; fixed_paylines; low"
+            },
+            {
+              "gameId": "g-036",
+              "title": "Fortune's Bounty",
+              "score": 0.6332,
+              "grade": 0,
+              "truth": "slot; wealth; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-101",
+              "title": "Fortune's Bounty II",
+              "score": 0.626,
+              "grade": 0,
+              "truth": "slot; wealth; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-068",
+              "title": "Cascading Sands",
+              "score": 0.6225,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-052",
+              "title": "Treasure of the Seven Seas",
+              "score": 0.616,
+              "grade": 0,
+              "truth": "slot; pirates; cascading_reels, pick_bonus; high"
+            }
+          ]
+        },
+        {
+          "seed": "g-016",
+          "title": "Thunder Halls: Valkyrie's Call",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "slot; nordic; expanding_wilds, free_spins; high",
+          "items": [
+            {
+              "gameId": "g-051",
+              "title": "Mythic Realms",
+              "score": 0.647,
+              "grade": 0,
+              "truth": "slot; mythology; free_spins, multipliers; medium"
+            },
+            {
+              "gameId": "g-096",
+              "title": "Enchanted Realms",
+              "score": 0.6101,
+              "grade": 0,
+              "truth": "slot; fantasy; multipliers, free_spins; low"
+            },
+            {
+              "gameId": "g-099",
+              "title": "Gemstone Quest",
+              "score": 0.5804,
+              "grade": 0,
+              "truth": "slot; gems; multipliers, free_spins; medium"
+            },
+            {
+              "gameId": "g-070",
+              "title": "Pharaoh's Cascade",
+              "score": 0.577,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            },
+            {
+              "gameId": "g-083",
+              "title": "Cascading Pharaohs",
+              "score": 0.5697,
+              "grade": 0,
+              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
