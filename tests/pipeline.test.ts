@@ -15,6 +15,10 @@ import type { LayoutFit } from "../src/catalogue/repairs.js";
 import type { GameType } from "../src/domain/vocabulary.js";
 import { FakeJsonLlm, layoutFor, noSleep, slotsInRequest } from "./helpers/fake-llm.js";
 import { offlineDataset } from "./helpers/offline-dataset.js";
+import { HashingEmbedder } from "../src/ai/providers.js";
+import { IndexSchema, buildIndex, enrichedEmbeddingText, exactNeighbours, rawEmbeddingText } from "../src/pipeline/build-index.js";
+import { enrichCatalogue } from "../src/pipeline/enrich.js";
+import { sha256 } from "../src/util/misc.js";
 
 const TRAP_SPECIALS: Special[] = ["market_twin", "escalation_twin", "lifecycle_suspended", "lifecycle_cert_expired", "lifecycle_demo_only", "test_game"];
 
@@ -956,5 +960,102 @@ describe("trap games in the degraded feed (spec 02 §4.2)", () => {
     for (const r of d.reference.filter((x) => x.specials.includes("escalation_twin"))) {
       expect(normaliseRecord(rawById(d.raw, r.rawId)).mechanics).toContain("bonus_buy");
     }
+  });
+});
+
+// --- Spec 05: the index build ---
+
+const OFFLINE_ENRICHMENT = { method: "rules", model: null, promptVersion: "rules.v1" };
+
+/** The whole offline pipeline in memory, as scripts/build-index.ts runs it. */
+async function offlineIndex() {
+  const d = await offlineDataset();
+  const rawText = jsonFileText(d.raw);
+  const normalised = d.raw.map((r) => normaliseRecord(r));
+  const { games: enriched } = await enrichCatalogue(normalised);
+  const index = await buildIndex(enriched, new HashingEmbedder(), {
+    catalogueHash: sha256(rawText).slice(0, 16),
+    enrichment: OFFLINE_ENRICHMENT,
+    now: () => new Date("2026-11-16T00:00:00Z"),
+  });
+  return { d, normalised, enriched, index };
+}
+
+describe("the offline index build (spec 05 §10 AC1)", () => {
+  it("generate → degrade → normalise → rules-enrich → hashing-embed → buildIndex: one game per raw record, no self-neighbours, non-increasing scores", async () => {
+    const { d, index } = await offlineIndex();
+    expect(Object.keys(index.games).sort()).toEqual(d.raw.map((r) => r.game_id as string).sort());
+    expect(Object.keys(index.games)).toHaveLength(113);
+    for (const [id, list] of Object.entries(index.neighbours)) {
+      expect(list.length).toBeLessThanOrEqual(40);
+      expect(list.some(([n]) => n === id)).toBe(false);
+      for (let i = 1; i < list.length; i++) {
+        const [prevId, prev] = list[i - 1]!, [curId, cur] = list[i]!;
+        expect(cur).toBeLessThanOrEqual(prev);
+        if (cur === prev) expect(curId > prevId).toBe(true); // ties broken by id
+      }
+      for (const [, s] of list) expect(Math.round(s * 10_000) / 10_000).toBe(s);
+    }
+  });
+
+  it("carries the identity hash, the build-mode enrichment block and a 12-character version, and validates", async () => {
+    const { index } = await offlineIndex();
+    expect(index.catalogueHash).toBe("5caf2bbb0f343546");
+    expect(index.enrichment).toEqual(OFFLINE_ENRICHMENT);
+    expect(index.embedding).toEqual({ id: "hashing-v1", dim: 512 });
+    expect(index.indexVersion).toMatch(/^[0-9a-f]{12}$/);
+    expect(IndexSchema.safeParse(JSON.parse(JSON.stringify(index))).success).toBe(true);
+  });
+
+  it("is deterministic: the same inputs give the same indexVersion and neighbours, whatever the clock", async () => {
+    const a = await offlineIndex();
+    const { games } = await enrichCatalogue(a.normalised);
+    const b = await buildIndex(games, new HashingEmbedder(), { catalogueHash: a.index.catalogueHash, enrichment: OFFLINE_ENRICHMENT, now: () => new Date("2030-01-01T00:00:00Z") });
+    expect(b.indexVersion).toBe(a.index.indexVersion);
+    expect(b.neighbours).toEqual(a.index.neighbours);
+    const other = await buildIndex(games, new HashingEmbedder(), { catalogueHash: "0000000000000000", enrichment: OFFLINE_ENRICHMENT });
+    expect(other.indexVersion).not.toBe(a.index.indexVersion);
+  });
+
+  it("takes source facts from the normalised record and matching fields from the guarded one", async () => {
+    const { normalised, enriched, index } = await offlineIndex();
+    normalised.forEach((n, i) => {
+      const g = index.games[n.id]!, e = enriched[i]!;
+      expect({ status: g.status, isTestGame: g.isTestGame, brands: g.brands, markets: g.markets, seasonMonths: g.seasonMonths, maxStake: g.maxStake, minStake: g.minStake, provider: g.provider, seriesId: g.seriesId, dedupeKey: g.dedupeKey })
+        .toEqual({ status: n.status, isTestGame: n.isTestGame, brands: n.brands, markets: n.markets, seasonMonths: n.seasonMonths, maxStake: n.maxStake, minStake: n.minStake, provider: n.provider, seriesId: n.seriesId, dedupeKey: n.dedupeKey });
+      expect({ gameType: g.gameType, volatility: g.volatility, mechanics: g.mechanics, insufficient: g.insufficient })
+        .toEqual({ gameType: e.gameType, volatility: e.volatility, mechanics: e.mechanics, insufficient: e.enrichment.insufficient });
+    });
+    // No vectors, descriptions or enrichment internals in the service artefact.
+    expect(Object.keys(index.games["g-001"]!).sort()).toEqual(
+      ["brands", "dedupeKey", "gameType", "id", "insufficient", "isTestGame", "markets", "maxStake", "mechanics", "minStake", "provider", "seasonMonths", "seriesId", "status", "title", "volatility"],
+    );
+  });
+});
+
+describe("embedding text (appendix A16)", () => {
+  it("builds the enriched text from guarded fields and the summary, omitting empty parts, never the description", async () => {
+    const { enriched } = await offlineIndex();
+    const g = { ...enriched[0]!, gameType: "slot" as const, themes: ["fruit" as const], mechanics: [] as never[], volatility: null, reelLayout: "5x3, 20 lines", jackpotNetwork: null, matchingSummary: "A fruit slot.", description: "IGNORE THIS COPY" };
+    expect(enrichedEmbeddingText(g)).toBe(`Title: ${g.title}. Type: slot. Themes: fruit. Layout: 5x3, 20 lines. Summary: A fruit slot.`);
+    expect(enrichedEmbeddingText({ ...g, gameType: null, themes: [], reelLayout: null, matchingSummary: "" })).toBe(`Title: ${g.title}.`);
+  });
+
+  it("builds the raw baseline from the source as-is, joined with '. '", async () => {
+    const { normalised } = await offlineIndex();
+    const n = { ...normalised[0]!, title: "Coral Cove", gameType: "slot" as const, themes: ["underwater" as const], mechanics: ["free_spins" as const], unknownTags: ["HOT"], reelLayout: null, jackpotNetwork: "Daily Vault", description: "Dive in." };
+    expect(rawEmbeddingText(n)).toBe("Coral Cove. slot. underwater free_spins HOT. Daily Vault. Dive in.");
+  });
+});
+
+describe("exactNeighbours", () => {
+  it("sorts by score then id, keeps the top k, and refuses duplicate ids", () => {
+    const lists = exactNeighbours(["c", "a", "b"], [[1, 0], [1, 0], [1, 0]], 1);
+    expect(lists).toEqual({ c: [["a", 1]], a: [["b", 1]], b: [["a", 1]] });
+    expect(() => exactNeighbours(["a", "a"], [[1], [1]])).toThrow(/duplicate/);
+  });
+
+  it("scores a zero vector 0 against everything", () => {
+    expect(exactNeighbours(["a", "b"], [[0, 0], [1, 0]])).toEqual({ a: [["b", 0]], b: [["a", 0]] });
   });
 });

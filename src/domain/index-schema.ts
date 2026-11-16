@@ -30,14 +30,28 @@ export type ServiceGame = z.infer<typeof ServiceGameSchema>;
 
 export const INDEX_SCHEMA_VERSION = 2;
 
-export const IndexSchema = z.object({
-  schemaVersion: z.literal(INDEX_SCHEMA_VERSION),
-  indexVersion: z.string(),
-  builtAt: z.string(),
-  catalogueHash: z.string(),
-  enrichment: z.object({ method: z.string(), model: z.string().nullable(), promptVersion: z.string() }),
-  embedding: z.object({ id: z.string(), dim: z.number().int().positive() }),
-  games: z.record(ServiceGameSchema),
-  neighbours: z.record(z.array(z.tuple([z.string(), z.number()]))),
-});
+export const IndexSchema = z
+  .object({
+    schemaVersion: z.literal(INDEX_SCHEMA_VERSION),
+    indexVersion: z.string().regex(/^[0-9a-f]{12}$/),
+    builtAt: z.string().datetime(),
+    catalogueHash: z.string().regex(/^[0-9a-f]{16}$/),
+    enrichment: z.object({ method: z.string(), model: z.string().nullable(), promptVersion: z.string() }),
+    embedding: z.object({ id: z.string().min(1), dim: z.number().int().positive() }),
+    games: z.record(ServiceGameSchema),
+    neighbours: z.record(z.array(z.tuple([z.string(), z.number()]))),
+  })
+  .superRefine((index, ctx) => {
+    // Referential integrity, so the service never meets an id it can't resolve.
+    for (const [key, g] of Object.entries(index.games)) {
+      if (g.id !== key) ctx.addIssue({ code: "custom", path: ["games", key], message: `game keyed "${key}" has id "${g.id}"` });
+    }
+    for (const [key, list] of Object.entries(index.neighbours)) {
+      if (!index.games[key]) ctx.addIssue({ code: "custom", path: ["neighbours", key], message: `neighbours for unknown game "${key}"` });
+      for (const [id] of list) {
+        if (!index.games[id]) ctx.addIssue({ code: "custom", path: ["neighbours", key], message: `unknown neighbour "${id}"` });
+        if (id === key) ctx.addIssue({ code: "custom", path: ["neighbours", key], message: "a game is its own neighbour" });
+      }
+    }
+  });
 export type RecommendationIndex = z.infer<typeof IndexSchema>;

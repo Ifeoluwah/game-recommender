@@ -54,7 +54,7 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 - **Identity hash (P-8, P-9):** *Reproduced at milestone 2.*
   - `npm run generate -- --provider=offline` writes `data/offline/catalogue.raw.json` hashing to `5caf2bbb0f343546` (108 games / 113 records), with `JSON.stringify(value, null, 2) + "\n"` and offline output left unsanitised.
   - At milestone 1 a scratch preview (A8 inlined) had predicted it. Without the trailing newline the feed hashes to `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`; the M1 feed alone (100 / 105) gives `4de3ec42e6087043`.
-  - Still to confirm: the same value in `artifacts/offline/index.json` at milestone 5.
+  - *Confirmed at milestone 5:* `artifacts/offline/index.json` carries `catalogueHash` `5caf2bbb0f343546`, equal to the raw file's hash. `tests/pipeline.test.ts` checks the same value on the in-memory build. The offline index version is `928bc5903b8b`.
 - **Theme-precision denominator (P-23):** whether including title-only records gives 0.667. *Pending milestone 6.*
 - **Ranking numbers (P-16):** the served numbers are no longer a reproduction target; see "Baselines superseded" below. *At milestone 6, record this build's first offline values for them.*
 
@@ -255,3 +255,59 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
   - checkpointing every 10 proposals, a corrupt cache file, a cache entry without `createdAt`;
   - three rules-enricher behaviours: the description beats a misleading title; sticky wilds add expanding wilds; no volatility from fluff;
   - the whole offline catalogue through the rules enricher, with no authoritative field changed and opaque records left empty and insufficient.
+
+### Milestone 5 (spec 05)
+
+- **Embedders.**
+  - `HashingEmbedder` is appendix A17 verbatim, with `STOPWORDS` from spec 05 §3.
+  - `OpenAiEmbedder` takes an optional `client` (an `EmbeddingsClient`: just `embeddings.create`), so tests can check batching and order without a network. It sorts each batch by the API's `index` field, and it throws on a wrong count or dimension rather than building a malformed index.
+- **The index build** (`src/pipeline/build-index.ts`).
+  - `enrichedEmbeddingText` and `rawEmbeddingText` are A16 verbatim.
+  - Neighbours are sorted on the *rounded* score (4 dp), then by id, so ties after rounding are deterministic.
+  - A zero vector (text that's all stopwords) scores 0 against everything, rather than NaN.
+  - Duplicate game ids throw: the index has one entry per feed record.
+  - `indexVersion` is the first 12 hex characters of `sha256(stableStringify({ catalogueHash, enrichment, embeddingId, neighbours }))`. The spec says "embedding id" without a key name; `embeddingId` is the key used. `builtAt` isn't in it, so a rebuild of the same inputs keeps its version (tested).
+  - `buildIndex` validates its output with `IndexSchema` (on write), and the loader validates again (on load).
+- **`IndexSchema` is stricter than the field list.**
+  - It checks formats: `indexVersion` is 12 hex characters, `catalogueHash` is 16, and `builtAt` is an ISO datetime.
+  - It checks referential integrity: each game's key equals its `id`, every neighbour list and neighbour id names a game in the index, and no game is its own neighbour.
+  - So "a validated index can't contain a dangling neighbour" (milestone 2's `quality:not_in_index` note) now holds by construction.
+- **The build script.**
+  - `catalogueHash` is computed from the raw file's text as read, before parsing.
+  - The file cache (`ENRICHMENT_CACHE_PATH`, `.cache/enrichment-cache.json`) is passed only in OpenAI mode, so offline builds never create `.cache/` (checked: it doesn't exist after the offline build).
+  - The `rules_enriched` variant reruns `enrichCatalogue` without a model.
+  - Write order: `enriched-catalogue.json`, then `eval-variants.json`, then `index.json` last, so whoever sees a new index also finds its variants.
+  - A missing raw feed exits 1, naming the `generate` command.
+- **`loadIndex`.**
+  - It reports at most 5 Zod issues in the "failed validation" message.
+  - A read error other than a missing file (a directory, permissions) gives "could not be read", still without throwing.
+- **The server.**
+  - `buildServer(deps)` takes `{ config, index: LoadIndexResult, now?, logger?, logStream? }`. `main.ts` turns logging on; tests turn it on by passing `logStream`.
+  - **Request ids:** Fastify's `requestIdHeader: "x-request-id"`.
+  - **Brand lookups** use `Object.hasOwn`, so `brand=__proto__` is an unknown brand, not a prototype hit.
+  - **Error bodies:** a 400's `details` is Zod's `flatten().fieldErrors`. `invalid_request` covers a missing or empty brand, a missing or unknown market, and a limit that isn't an integer from 1 to 50.
+  - **The 503 response** carries `cache-control: no-store`, so a CDN doesn't keep serving "unavailable" after the index loads. 400s carry no cache headers. Spec 05 specifies headers only for answered requests.
+  - **The `recommendation` log line** is written for answered requests (ok or declined) only, never for restricted ones. 400s and 503s are covered by Fastify's own request/response lines and the metrics. Its fields are `gameId, brand, market, outcome, reason, items, filtered, latencyMs`, where `items` is the item count.
+  - **`/ready`'s `games`** is the number of games in the index.
+- **Metrics.**
+  - The 503 reason label is `index_not_loaded` (the spec names reasons only for declines and 400s).
+  - Latency is observed for every `/related` request, 400s included.
+  - Without an index, `recs_index_info` has no sample (its HELP/TYPE lines stay).
+  - The content type is `text/plain; version=0.0.4`.
+- **`main.ts`.** A relative `INDEX_PATH` resolves against the working directory. A bad `config/service.json` stops the process, because config ships with the code; a bad index only makes it not ready. SIGINT and SIGTERM close the server, then exit.
+- **The demo** (`scripts/demo.ts`).
+  - **The clock is fixed** at 2026-07-15, so seasonal rules, and so the picks, don't depend on the day it runs.
+  - **Cases 1 and 2:** "the first game that returns ok on aurora/GB and on harbour/GB" is read as one game that's ok on both, because case 2 is "the same game on another brand". It's g-002 "Oasis Quest" offline.
+  - **Case 4:** the literal pick (the first `insufficient` game, g-013) isn't licensed in GB, so the seed-availability check runs first and answers `SEED_NOT_AVAILABLE`, not the case's `INSUFFICIENT_SOURCE_DATA`. The pick is now the first insufficient game that passes the seed checks on aurora/GB (licensed in GB, not a test build). Offline that's "GAME_5487_V1".
+  - **Cases 6–10:** these use case 1's game, except case 8 (`no-such-game`).
+  - **Inputs:** the demo requires both `index.json` and `enriched-catalogue.json`. It picks from the index (`ServiceGame` flags), which carries every flag the picks need.
+  - **Missing build:** the message names the missing file and the `generate` + `build:index` commands. For the OpenAI build, it also points to `--provider=offline`.
+- **Readers' build selection:** `buildModeToRead(argv)` in `src/config.ts` gives `openai` unless `--provider=offline`, never depending on a key. The demo uses it now, and the eval will in milestone 6.
+- **The boundary test** (`tests/boundaries.test.ts`).
+  - **Label check:** forbids the label file names, `evaluationLabelPaths`, `reportPaths` (the eval reports folder), any import from `eval/`, and path literals naming the `eval` folder. It runs on every `src/` file except `config.ts`, plus `scripts/build-index.ts` and `scripts/demo.ts`. A detector test plants each pattern.
+  - **AI check:** walks the import graph from each `src/service/` file and from `src/main.ts`, so an indirect import of `openai` or `src/ai/providers.ts` fails too. Type-only imports are skipped, because they're erased at compile time. `src/pipeline/build-index.ts` names only the `Embedder` type, so it loads no SDK; the script that does is used as the positive control.
+- **CI** (`.github/workflows/check.yml`): `actions/checkout@v4` and `actions/setup-node@v4` with Node 22 and the npm cache, then `npm ci`, typecheck, test, `eval:gate`. It runs on push and pull request.
+- **Extra tests beyond the acceptance criteria:**
+  - **API (`tests/api.test.ts`):** error body shapes for each 400; a disabled brand as a 200 decline; `limit` clamping; the season decided by the injected clock; the `invalid` brand label; the 503 metric; `/ready`'s body; a 400 taking precedence over a 503; dangling-neighbour and bad-record artefacts refused; the spec 07 AC6 log check, done now because the logging was built here.
+  - **Embedders (`tests/providers.test.ts`):** A17's determinism and norms, stopwords and weights; `OpenAiEmbedder` batching (250 texts → 100/100/50, order restored from a reversed response) and dimensions.
+  - **Index build (`tests/pipeline.test.ts`):** A16 strings; neighbour ties and zero vectors; index determinism across clocks; where each `ServiceGame` field comes from.

@@ -14,6 +14,8 @@ export const REPO_ROOT = resolve(fileURLToPath(new URL(".", import.meta.url)), "
 export const PROMPTS_DIR = join(REPO_ROOT, "prompts");
 export const ENV_FILE = join(REPO_ROOT, ".env");
 export const SERVICE_CONFIG_PATH = join(REPO_ROOT, "config", "service.json");
+/** Enrichment proposals by content hash (spec 04 §8). Git-ignored; written only by OpenAI-mode builds. */
+export const ENRICHMENT_CACHE_PATH = join(REPO_ROOT, ".cache", "enrichment-cache.json");
 
 /** openai = the shipped, committed build; offline = the keyless stand-in, git-ignored (spec 05 §3). */
 export type BuildMode = "openai" | "offline";
@@ -46,6 +48,23 @@ export function artifactPaths(mode: BuildMode) {
     evalVariants: join(dir, "eval-variants.json"),
   };
 }
+
+/**
+ * Which build a reader (demo, eval) uses: the OpenAI build unless `--provider=offline`. Unlike the
+ * writers' `resolveProviderMode`, this never depends on an API key, because readers call no model
+ * (spec 05 §3).
+ */
+export function buildModeToRead(argv: readonly string[]): BuildMode {
+  const flag = argv.find((a) => a.startsWith("--provider="));
+  if (!flag) return "openai";
+  const value = flag.slice("--provider=".length);
+  if (value !== "openai" && value !== "offline") throw new Error(`unknown --provider value "${value}" (expected openai or offline)`);
+  return value;
+}
+
+/** The command that creates a build's artefacts, for "missing build" messages. */
+export const buildCommand = (mode: BuildMode): string =>
+  `npm run generate -- --provider=${mode}; npm run build:index -- --provider=${mode}`;
 
 export function reportPaths(mode: BuildMode) {
   const dir = join(REPO_ROOT, REPORTS_DIR[mode]);

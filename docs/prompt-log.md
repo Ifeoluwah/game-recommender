@@ -144,3 +144,9 @@ Finish by reporting the test results, which acceptance criterion each test cover
 Read @AGENTS.md and implement @docs/prompts/04-enrichment-and-guard.md, following milestone 4 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. The prompt file in prompts/ is given; don't edit it. Write every test in spec 04's acceptance criteria using a fake JsonLlm, then run npm run typecheck and npm test. Build and run everything offline; write the OpenAI path but don't run it. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 4 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
 
 Finish by reporting the test results, which acceptance criterion each test covers, and anything you had to interpret.
+
+## 2026-11-16 02:35:32
+
+Read @AGENTS.md and implement @docs/prompts/05-index-and-service.md, following milestone 5 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then npm run build:index -- --provider=offline and npm run demo -- --provider=offline. Build and run everything offline; write the OpenAI paths but don't run them. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 5 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Finish by reporting the test results, the demo cases with their status codes and reasons, and anything you had to interpret.

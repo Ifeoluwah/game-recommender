@@ -416,45 +416,45 @@ Done 2026-11-16: typecheck clean; 342 tests pass (8 files), 40 of them in `tests
 
 ### Checklist
 
-- [ ] `src/ai/providers.ts`:
+- [x] `src/ai/providers.ts`:
   - `Embedder`;
   - `OpenAiEmbedder`: batches of 100, order kept, dimension 1536 or 3072;
   - `HashingEmbedder` (A17 verbatim, plus `STOPWORDS`).
-- [ ] `src/domain/index-schema.ts`: `IndexSchema` complete.
-- [ ] `src/pipeline/build-index.ts`:
+- [x] `src/domain/index-schema.ts`: `IndexSchema` complete.
+- [x] `src/pipeline/build-index.ts`:
   - `enrichedEmbeddingText` and `rawEmbeddingText` (A16 verbatim);
   - exact cosine similarity, top 40, scores rounded to 4 decimals, sorted by score descending then id ascending;
   - `buildIndex`;
   - `indexVersion` cut to 12 characters;
   - the build-mode `enrichment` block (P-22);
   - re-exports `IndexSchema`.
-- [ ] `scripts/build-index.ts`:
+- [x] `scripts/build-index.ts`:
   - reads the mode's data folder, writes the mode's artefact folder (`artifacts/` or `artifacts/offline/`);
   - normalise → `enrichCatalogue` (file cache injected; log stats, warn on fallbacks) → `buildIndex`;
   - variants `enriched`, `raw_text`, and `rules_enriched` in OpenAI mode only;
   - atomic writes; `catalogueHash` = the raw file text's sha256, cut to 16 characters;
   - never reads the canonical or reference files.
-- [ ] `src/service/index-store.ts`: `loadIndex` never throws, with the four error texts.
-- [ ] `src/service/server.ts`:
+- [x] `src/service/index-store.ts`: `loadIndex` never throws, with the four error texts.
+- [x] `src/service/server.ts`:
   - the routes; Zod validation;
   - 400 bodies `{status:"error", error:<code>, details?}`; 503 `{status:"unavailable", items:[]}`;
   - the headers; the injectable clock;
   - the `{ id, method, url }` serializer; `x-request-id`; no `recommendation` line for restricted requests;
   - `ServerDeps.logStream`.
-- [ ] `src/service/metrics.ts`: the counter with `outcome ∈ ok|declined|invalid|unavailable` and `brand` = a configured brand or `invalid`; the latency histogram; `recs_index_info`.
-- [ ] `src/main.ts`: `INDEX_PATH` defaulting to `artifacts/index.json`; serves while not ready; `127.0.0.1:${PORT ?? 3000}`; graceful close.
-- [ ] `scripts/demo.ts`:
+- [x] `src/service/metrics.ts`: the counter with `outcome ∈ ok|declined|invalid|unavailable` and `brand` = a configured brand or `invalid`; the latency histogram; `recs_index_info`.
+- [x] `src/main.ts`: `INDEX_PATH` defaulting to `artifacts/index.json`; serves while not ready; `127.0.0.1:${PORT ?? 3000}`; graceful close.
+- [x] `scripts/demo.ts`:
   - the OpenAI build by default, `--provider=offline` for the offline one;
   - exit 1 with a clear message if the build is missing;
   - the deterministic picks in spec 05 §8; all 10 cases.
-- [ ] `.github/workflows/check.yml`: Node 22, `npm ci`, `typecheck`, `test`, `eval:gate`. It's red until an OpenAI build is committed.
-- [ ] `tests/boundaries.test.ts`: AC3, including the path constants.
+- [x] `.github/workflows/check.yml`: Node 22, `npm ci`, `typecheck`, `test`, `eval:gate`. It's red until an OpenAI build is committed.
+- [x] `tests/boundaries.test.ts`: AC3, including the path constants.
 
 ### Files
 
 | Action | Path |
 | --- | --- |
-| modify | `src/ai/providers.ts`, `src/domain/index-schema.ts`, `src/service/recommender.ts` (if needed), `tests/pipeline.test.ts` |
+| modify | `src/ai/providers.ts`, `src/domain/index-schema.ts` (referential checks), `src/config.ts` (`ENRICHMENT_CACHE_PATH`, `buildModeToRead`, `buildCommand`), `tests/pipeline.test.ts`, `tests/providers.test.ts`; `src/service/recommender.ts` unchanged |
 | create | `src/pipeline/build-index.ts`, `scripts/build-index.ts`, `src/service/index-store.ts`, `src/service/server.ts`, `src/service/metrics.ts`, `src/main.ts`, `scripts/demo.ts`, `.github/workflows/check.yml` |
 | create | `tests/api.test.ts`, `tests/boundaries.test.ts` |
 | generate (git-ignored) | `artifacts/offline/index.json`, `enriched-catalogue.json`, `eval-variants.json` |
@@ -518,7 +518,9 @@ If the hash misses, check the serialisation first (spec 01 §10: indentation, tr
 >    - no file in `src/service/` imports `openai` or the AI providers module.
 > 4. **Commands:** `npm run build:index -- --provider=offline`, then `npm run demo -- --provider=offline`, show all 10 cases with the expected status codes and reasons. `npm run demo` without the flag, with no OpenAI build present, exits 1 with a clear message. `npm start` serves on port 3000.
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 `[ ]` identity hash `5caf2bbb0f343546`
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[x]` AC4 `[x]` identity hash `5caf2bbb0f343546`
+
+Done 2026-11-16: typecheck clean; 414 tests pass (10 files). `npm run build:index -- --provider=offline` writes index `928bc5903b8b` (113 games, `hashing-v1`); `catalogueHash` `5caf2bbb0f343546` in `artifacts/offline/index.json` matches the raw file hash. `npm run demo -- --provider=offline` shows all 10 cases with the expected codes and reasons; `npm run demo` exits 1 naming the missing OpenAI build. The live server on port 3000 answered every probe in the verification block. The OpenAI paths (`OpenAiEmbedder`, LLM enrichment with the file cache, the `rules_enriched` variant) are written, not run. CI is red until an OpenAI build is committed, as specified. See `REBUILD_NOTES.md`.
 
 ---
 
