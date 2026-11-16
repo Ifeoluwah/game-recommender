@@ -28,6 +28,34 @@ export function relativeLinks(md: string): string[] {
   return out;
 }
 
+/** The text under a Markdown heading, up to the next heading of the same or a higher level; undefined if absent. */
+export function sectionBody(md: string, heading: string): string | undefined {
+  const level = /^#+/.exec(heading)?.[0].length ?? 0;
+  const lines = md.split(/\r?\n/);
+  const start = lines.findIndex((line) => line.trim() === heading);
+  if (start < 0) return undefined;
+  const body: string[] = [];
+  for (const line of lines.slice(start + 1)) {
+    const m = /^(#+)\s/.exec(line);
+    if (m && m[1]!.length <= level) break;
+    body.push(line);
+  }
+  return body.join("\n").trim();
+}
+
+/** For each label, the text after it up to the next label (in any order); undefined if the label is absent. */
+export function labelledItems(md: string, labels: string[]): [string, string | undefined][] {
+  const at = labels.map((label) => md.indexOf(label));
+  return labels.map((label, i) => {
+    if (at[i]! < 0) return [label, undefined];
+    const later = at.filter((p) => p > at[i]!);
+    return [label, md.slice(at[i]! + label.length, later.length ? Math.min(...later) : undefined)];
+  });
+}
+
+/** True when there's more than Markdown punctuation and whitespace. */
+const hasText = (text: string) => text.replace(/[\s>*_.:#-]/g, "") !== "";
+
 describe("docs consistency (spec 08 §8)", () => {
   it("1. the ADR names every DeclineReason in backticks", () => {
     const adr = read(ADR);
@@ -95,14 +123,30 @@ describe("docs consistency (spec 08 §8)", () => {
     expect(template).toContain("```mermaid");
   });
 
-  it("leaves the candidate's own sections as marked placeholders (spec 08 §6)", () => {
-    const placeholder = (doc: string, heading: string) =>
-      expect(read(doc), `${doc}: ${heading}`).toMatch(new RegExp(`${heading}[\\s\\S]{0,40}?\\[CANDIDATE TO WRITE\\]`));
-    placeholder("docs/AI_USAGE.md", "## Division of work");
-    placeholder("docs/AI_USAGE.md", "## Time spent");
-    placeholder("docs/AI_USAGE.md", "## What wasn't kept");
-    placeholder("docs/EVALUATION.md", "### Commentary");
-    const readme = read("README.md");
-    for (const item of ["Time allocation", "AI tools used", "One output I changed or rejected"]) expect(readme, item).toContain(`[CANDIDATE TO WRITE] ${item}`);
+  it("has every candidate section, each with content under its heading (spec 08 §6)", () => {
+    const written = (doc: string, heading: string) => {
+      const body = sectionBody(read(doc), heading);
+      expect(body, `${doc}: ${heading} is missing`).toBeDefined();
+      expect(hasText(body!), `${doc}: ${heading} is empty`).toBe(true);
+    };
+    written("docs/AI_USAGE.md", "## Division of work");
+    written("docs/AI_USAGE.md", "## Time spent");
+    written("docs/AI_USAGE.md", "## What wasn't kept");
+    written("docs/EVALUATION.md", "### Commentary");
+    const notes = sectionBody(read("README.md"), "## Notes from the candidate");
+    expect(notes, "README.md: ## Notes from the candidate is missing").toBeDefined();
+    for (const [item, text] of labelledItems(notes!, ["Time allocation", "AI tools used", "One output I changed or rejected"])) {
+      expect(text, `README.md: ${item} is missing`).toBeDefined();
+      expect(hasText(text!), `README.md: ${item} is empty`).toBe(true);
+    }
+  });
+
+  it("sectionBody and labelledItems find missing and empty sections", () => {
+    const md = "# T\n## A\ntext\n### A.1\nmore\n## B\n\n## C\n**X.** one\n**Y.**\n";
+    expect(sectionBody(md, "## A")).toBe("text\n### A.1\nmore");
+    expect(sectionBody(md, "## B")).toBe("");
+    expect(sectionBody(md, "## D")).toBeUndefined();
+    const items = labelledItems(sectionBody(md, "## C")!, ["X", "Y", "Z"]);
+    expect(items.map(([, t]) => (t === undefined ? undefined : hasText(t)))).toEqual([true, false, undefined]);
   });
 });
