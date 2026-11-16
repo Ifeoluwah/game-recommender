@@ -62,9 +62,10 @@ Offline builds go to `data/offline/`, `artifacts/offline/` and `eval/reports/off
 - **Dataset:** 108 canonical games and 113 feed records. The slate mix is 70 slot, 9 table, 9 live, 7 instant win and 5 bingo, with 4 benchmark clusters.
 - **Planted traps:** "39/39 handled correctly".
 - **Identity check:** the feed's `catalogueHash` in `artifacts/offline/index.json` is `5caf2bbb0f343546`. If it matches, the dataset is byte for byte the prototype's and every number below will match too. If it doesn't, check the file serialisation first (spec 01 §10). Then look at the draw order in the appendix (A1, A3, A5–A8).
-- **Clusters (raw text → enriched):** Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.863 → 0.850.
-- **Gates:** information, eligibility, policy and abstention pass, including coverage (0.979, gate ≥ 0.8). The exception is theme precision (0.667), which spec 06 expects to fail offline.
-- **Ranking gates fail, as expected without a model:** nDCG@5 0.549, lift over raw text −0.026, bad-recommendation rate 0.606.
+- **Clusters (raw text → enriched):** Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.613 → 0.600.
+- **Gates:** information, eligibility, policy and abstention pass, including coverage (1.0, gate ≥ 0.8). The exception is theme precision (0.667), which spec 06 expects to fail offline.
+- **Ranking gates fail, as expected without a model:** nDCG@5 0.497, lift over raw text −0.026, bad-recommendation rate 0.663.
+- **Why served recall, coverage and the ranking numbers differ from the prototype's** (0.863 → 0.850; 0.979; 0.549 / −0.026 / 0.606): this build's rail also skips a game with the same displayed name as the seed or an accepted item (spec 02 §6.2, `quality:duplicate_title`). With that rule switched off, the evaluator reproduces the prototype's values exactly. See `REBUILD_NOTES.md`, "Baselines superseded". Everything computed before `recommend()` (cluster Recall@5, MRR, intrusion, theme precision, the traps, the hash) is unchanged.
 - **`npm run eval:gate` and `npm run check` exit 1** until you build with OpenAI. They gate the committed OpenAI build, so before it exists they stop with a "no OpenAI build" message. `npm run eval:gate -- --provider=offline` also exits 1, on the ranking gates.
 
 Keep this file, or fold it into the README: it's part of the record of how the repo was built.

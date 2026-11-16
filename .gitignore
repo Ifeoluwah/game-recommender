@@ -1,6 +1,7 @@
 node_modules/
 .env
-.cache/
+.cache/*
+!.cache/enrichment-cache.json
 *.log
 # Offline (keyless) builds: software checks only, never the submitted build (spec 01 §6.4, spec 05 §9)
 data/offline/

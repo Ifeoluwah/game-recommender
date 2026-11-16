@@ -530,10 +530,10 @@ Done 2026-11-16: typecheck clean; 414 tests pass (10 files). `npm run build:inde
 
 ### Checklist
 
-- [ ] `eval/relevance.ts`: A11 verbatim.
-- [ ] `eval/gates.ts`: a pure `evaluateGates(values, gates)`. A missing (n/a) value fails.
-- [ ] `eval/release-gates.json`: add the seven spec 06 §6 gates, each with a `why`.
-- [ ] `eval/run-eval.ts`:
+- [x] `eval/relevance.ts`: A11 verbatim.
+- [x] `eval/gates.ts`: a pure `evaluateGates(values, gates)`. A missing (n/a) value fails.
+- [x] `eval/release-gates.json`: add the seven spec 06 §6 gates, each with a `why`.
+- [x] `eval/run-eval.ts`:
   - **Build selection.** The OpenAI build by default, the offline one with `--provider=offline`. A missing input exits 1, naming the file and the command that builds it, and never falls back. Fail if the variants file's `indexVersion` differs from the index.
   - **Layer 1 metrics.** Feed-record unit, opaque records excluded, title-only records included when filled (spec 06 §4). Plus the wrong-fills sample.
   - **Exhaustive ground-truth check:** every game × every configured brand (disabled included) × served market, in July and December, at `limit = 12`; served counts summed over both months.
@@ -545,13 +545,14 @@ Done 2026-11-16: typecheck clean; 414 tests pass (10 files). `npm run build:inde
   - **Removed-per-rule table.**
   - **Output:** the report, in the §7 order, to `eval/reports/` or `eval/reports/offline/`, with the offline callout. Console output as in §7. `--gate` exits 1 on any failure.
   - Record the theme-precision outcome (0.667?) in `REBUILD_NOTES.md`.
-- [ ] `docs/EVALUATION.md`: first version, covering every point in AC5 below. Include the duplicate effect on the ideal pool under known limitations (spec 06 §5.2), and every item in `REBUILD_NOTES.md` "Known limitations". That includes the disclosure that the OpenAI report's 39/39 planted traps contains one vacuous misleading-title row (g-019), named. Failure analysis marked *pending the OpenAI run*.
+- [x] `docs/EVALUATION.md`: first version, covering every point in AC5 below. Include the duplicate effect on the ideal pool under known limitations (spec 06 §5.2), and every item in `REBUILD_NOTES.md` "Known limitations". That includes the disclosure that the OpenAI report's 39/39 planted traps contains one vacuous misleading-title row (g-019), named. Failure analysis marked *pending the OpenAI run*.
 
 ### Files
 
 | Action | Path |
 | --- | --- |
 | create | `eval/relevance.ts`, `eval/gates.ts`, `eval/run-eval.ts`, `docs/EVALUATION.md`, `tests/relevance.test.ts`, `tests/gates.test.ts` |
+| create (build choice) | `eval/evaluate.ts`, `eval/report.ts`, `eval/inputs.ts`, `tests/evaluation.test.ts` |
 | modify | `eval/release-gates.json`, `REBUILD_NOTES.md` |
 | generate (git-ignored) | `eval/reports/offline/latest.md`, `eval/reports/offline/latest.json` |
 
@@ -597,7 +598,9 @@ Compare with START_HERE §3:
 >    - the need for a curator golden set and an online A/B test with safer-gambling guardrails;
 >    - the label revision (non-slot types and table/live pairings, made after the oracle showed the first labels were too strict, and before any LLM build was evaluated). This happened during spec development, on the prototype. Document the labels as specified and note that history; don't present the revision as something that happened in this repo.
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 `[ ]` AC5 `[ ]` M2 AC4 `[ ]` M3 AC5
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[x]` AC4 `[x]` AC5 `[x]` M2 AC4 `[x]` M3 AC5
+
+Done 2026-11-16: typecheck clean; 442 tests pass (13 files), 28 of them new in `tests/relevance.test.ts`, `tests/gates.test.ts` and `tests/evaluation.test.ts`. `npm run eval -- --provider=offline` takes about 2.5 s and writes both files to `eval/reports/offline/` with the offline callout. Planted traps 39/39. Every information, eligibility, policy and abstention gate passes (coverage 1.0) except theme precision 0.667 (title-only included, as specified). Game-type accuracy is 1.0. Ranking gates fail as expected: nDCG@5 0.497, lift −0.026, bad-rec 0.663. Oracle: bad-rec 0, P@5 1. Clusters: Recall@5 0.825 → 0.800, MRR 1 → 1, intrusion 0.15 → 0 (kept values), served 0.613 → 0.600 (re-baselined). With the title rule switched off, the evaluator reproduces every prototype number, so the title rule explains the served differences. `npm run eval:gate -- --provider=offline` exits 1. `npm run eval` with `artifacts/index.json` moved aside exits 1, naming the file and command. The OpenAI eval wasn't run. `catalogueHash` is still `5caf2bbb0f343546`. The OpenAI report will include two vacuous misleading-title rows (g-019 and g-057, not only g-019), disclosed in `docs/EVALUATION.md`. See `REBUILD_NOTES.md`.
 
 ---
 

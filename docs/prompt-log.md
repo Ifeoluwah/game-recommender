@@ -150,3 +150,34 @@ Finish by reporting the test results, which acceptance criterion each test cover
 Read @AGENTS.md and implement @docs/prompts/05-index-and-service.md, following milestone 5 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then npm run build:index -- --provider=offline and npm run demo -- --provider=offline. Build and run everything offline; write the OpenAI paths but don't run them. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 5 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
 
 Finish by reporting the test results, the demo cases with their status codes and reasons, and anything you had to interpret.
+
+## 2026-11-16 02:54:50
+
+<pasted_content id="2fae">
+Read @AGENTS.md and implement @docs/prompts/06-ranking-evaluation.md, following milestone 6 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. This milestone also closes the acceptance criteria deferred from specs 02 and 03. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, including the pure gate function on passing, failing and n/a values. Run npm run typecheck and npm test, then npm run eval -- --provider=offline and npm run eval:gate -- --provider=offline. Don't run the OpenAI eval; I'll run it. Write docs/EVALUATION.md's first version per the spec, with the failure-analysis section marked as pending the OpenAI run, and use docs/notes/openai-catalogue-inspection.md for the data findings, including the vacuous misleading-title row. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 6 off in docs/plan.md and record new choices in REBUILD_NOTES.md.
+
+</pasted_content id="2fae">
+
+## 2026-11-16 03:00:08
+
+<pasted_content id="0f25">
+Both good. Three things worth noting before you commit.
+1. Matching is working well on the strong cases. "Pharaoh's Secret Treasures" returns Pharaoh's Gold (0.83), Cascading Pharaohs (0.80), Pharaoh's Cascade (0.79) and two more Egyptian cascade games. That's the egyptian_cascade cluster recovering cleanly.
+2. Case 3's tail is weak, and it's a preview of the threshold question. A fruit slot on liberty/NJ gets "Fruit Fiesta" (0.70) and "Candy Dreams" (0.66), then "Gemstone Quest" (0.62), "Fortune's Bounty" (0.59), "Stellar Quest" (0.57) and "Cosmic Drift" (0.57). The last three are filler clearing a low threshold. Don't touch it now; milestone 6's sweep is what should decide the threshold, with evidence.
+3. The index version changed on identical input: b964076a9f4a → ef13f1ecf784, with 0 LLM calls and 62 cache hits. Enrichment is fully reproducible; embeddings are not, because OpenAI's values vary slightly between calls. Record that as a known limitation.
+Commit nudge:
+git status
+git add -A
+git commit -m "OpenAI index, enriched catalogue and variants"
+
+Optional, one line, and genuinely useful for reviewers: commit the enrichment cache so they can rebuild without paying for 62 calls. In .gitignore, replace .cache/ with:
+.cache/*
+!.cache/enrichment-cache.json
+
+Embeddings would still be recomputed, so the index version can still move, but the enrichment would be identical.
+Then milestone 6, the evaluation. /clear and:
+Read @AGENTS.md and implement @docs/prompts/06-ranking-evaluation.md, following milestone 6 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. This milestone also closes the acceptance criteria deferred from specs 02 and 03. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, including the pure gate function on passing, failing and n/a values. Run npm run typecheck and npm test, then npm run eval -- --provider=offline and npm run eval:gate -- --provider=offline. Don't run the OpenAI eval; I'll run it. Write docs/EVALUATION.md's first version per the spec, with the failure-analysis section marked as pending the OpenAI run, and use docs/notes/openai-catalogue-inspection.md for the data findings, including the vacuous misleading-title row. The offline catalogueHash must stay 5caf2bbb0f343546. Tick milestone 6 off in docs/plan.md and record new choices in REBUILD_NOTES.md.
+
+ Finish by reporting the test results, the offline gate table, the trap count, and anything you had to interpret.
+
+</pasted_content id="0f25">

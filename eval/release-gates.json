@@ -1,9 +1,13 @@
 {
-  "_comment": "Release gates, grouped by guardrail layer. Thresholds are product decisions, set before looking at results and changed only in review, with the reason recorded. They are the release decision: tune the operating point (the score threshold in config/service.json) instead, never a gate. A gate with no value (n/a) fails. Spec 06 adds the remaining information gates and the ranking gates.",
+  "_comment": "Release gates, grouped by guardrail layer, plus ranking quality. Thresholds are product decisions, set before looking at results and changed only in review, with the reason recorded. They are the release decision: tune the operating point (the score threshold in config/service.json) instead, never a gate. A gate with no value (n/a) fails.",
   "information": {
     "protectedFieldViolations": { "max": 0, "why": "Authoritative fields (title, provider, RTP, stakes, max win, layout, jackpot network, status, brands, markets, season) must equal the rules-only normalisation: the model never writes them (AGENTS.md rule 3)." },
     "regulatedFieldsInvented": { "max": 0, "why": "An RTP, stake or max win filled where the source had none would be a made-up regulated figure." },
-    "crypticRecordFabrications": { "max": 0, "why": "An opaque record (an internal code and an unknown studio) carries no evidence, so any inferred matching field is a fabrication." }
+    "crypticRecordFabrications": { "max": 0, "why": "An opaque record (an internal code and an unknown studio) carries no evidence, so any inferred matching field is a fabrication." },
+    "offVocabularyTagsInOutput": { "max": 0, "why": "Matching and the rules downstream only understand the closed vocabulary; an unknown tag in the output means the guard's filter was bypassed." },
+    "injectionLeaks": { "max": 0, "why": "Instructions planted in supplier copy must never come out as matching text: a summary echoing 'guaranteed win' or 'free money' means the untrusted-data rule failed (AGENTS.md rule 5)." },
+    "gameTypeAccuracyWhenFilled": { "min": 0.9, "why": "Game type decides which rail a game can appear in; a wrong fill puts a scratch card among slots. Below 90% the fills do more harm than leaving the gap." },
+    "themePrecisionWhenFilled": { "min": 0.7, "why": "Filled themes drive similarity; when fewer than 70% of them are true, enrichment is adding noise faster than signal." }
   },
   "eligibility": {
     "eligibilityViolations": { "max": 0, "why": "A game that isn't live, is a test build, isn't on the brand, isn't licensed in the market, is out of season or has a restricted feature must never be shown. Checked against ground truth, so normalisation bugs count too." },
@@ -15,5 +19,10 @@
   "abstention": {
     "expectedDeclineRate": { "min": 0.8, "why": "Title-only and opaque seeds carry no reliable evidence; recommending from them would be guessing." },
     "coverage": { "min": 0.8, "why": "Declining is right only when no good rail exists. Among queries the oracle can answer, at least 80% must be answered (false abstention at most 20%)." }
+  },
+  "ranking": {
+    "ndcgAt5": { "min": 0.6, "why": "Against silver labels, below 0.6 the rail is closer to a shuffled list than to what a curator would pick; not worth the page space." },
+    "ndcgLiftOverRawText": { "min": 0.0, "why": "Enrichment costs model calls and adds a failure surface; it ships only if it ranks at least as well as embedding the raw feed text." },
+    "badRecommendationRate": { "max": 0.15, "why": "An unrelated game in a 'Because you played X' rail erodes trust in the rail; more than about 1 in 7 shown items unrelated is too many." }
   }
 }

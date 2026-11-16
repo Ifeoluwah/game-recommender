@@ -55,8 +55,8 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
   - `npm run generate -- --provider=offline` writes `data/offline/catalogue.raw.json` hashing to `5caf2bbb0f343546` (108 games / 113 records), with `JSON.stringify(value, null, 2) + "\n"` and offline output left unsanitised.
   - At milestone 1 a scratch preview (A8 inlined) had predicted it. Without the trailing newline the feed hashes to `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`; the M1 feed alone (100 / 105) gives `4de3ec42e6087043`.
   - *Confirmed at milestone 5:* `artifacts/offline/index.json` carries `catalogueHash` `5caf2bbb0f343546`, equal to the raw file's hash. `tests/pipeline.test.ts` checks the same value on the in-memory build. The offline index version is `928bc5903b8b`.
-- **Theme-precision denominator (P-23):** whether including title-only records gives 0.667. *Pending milestone 6.*
-- **Ranking numbers (P-16):** the served numbers are no longer a reproduction target; see "Baselines superseded" below. *At milestone 6, record this build's first offline values for them.*
+- **Theme-precision denominator (P-23):** *Resolved at milestone 6: including title-only records gives 0.667, so that's the specified choice.* With title-only records: 30 records with a theme fill, 28 of 42 filled themes true (0.667). Without them: 27 records, 25 of 38 (0.658).
+- **Ranking numbers (P-16):** *Recorded at milestone 6*, in "Baselines superseded" below.
 
 ## Baselines superseded
 
@@ -64,15 +64,17 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 
 **The test for each number:** does it go through `recommend()`? The title rule lives only there, in the quality step. Anything computed upstream of it, on the dataset, the enriched records or the precomputed neighbour lists, can't see it.
 
-**Re-baselined: what the recommender serves.** These are prototype numbers, superseded by this build's first offline evaluation at milestone 6 (`npm run eval -- --provider=offline`). Record the new values here, then update START_HERE §3 to quote them with this reason.
+**Re-baselined: what the recommender serves.** The prototype numbers are superseded by this build's first offline evaluation (milestone 6, 2026-11-16, `npm run eval -- --provider=offline` on index `928bc5903b8b`). START_HERE §3 now quotes the new values with this reason.
 
-| Metric | Prototype value | Why it moves |
-| --- | --- | --- |
-| Served Recall@5 (clusters) | 0.863 → 0.850 | Computed on `recommend()`'s output (spec 03 §7). The `live_game_show` members and near-misses that share a name with one another now dedupe, so fewer fellow members can be served |
-| nDCG@5 | 0.549 | Computed on the items `recommend()` returns, against an ideal pool that still counts same-title games separately (spec 06 §5.2) |
-| Lift over raw text | −0.026 | The difference between two nDCG@5 values, both served. The rule affects the `enriched` and `raw_text` variants differently, depending on which same-title games each ranks highly |
-| Bad-recommendation rate | 0.606 | The share of grade-0 items among those shown. Removing a same-title item lets the next candidate in, with its own grade |
-| Coverage | 0.979 | Whether `recommend()` answers at all. A rail that loses same-title items can fall below `minResults` and decline |
+| Metric | Prototype value | This build (offline) | Why it moves |
+| --- | --- | --- | --- |
+| Served Recall@5 (clusters) | 0.863 → 0.850 | **0.613 → 0.600** | Computed on `recommend()`'s output (spec 03 §7). The `live_game_show` members and near-misses that share a name with one another now dedupe, so fewer fellow members can be served. In fact every `live_game_show` member's rail now declines (`NO_CONFIDENT_MATCHES`): with "Big Show Live" ×3 and "Prize Wheel Live" ×3, only 2 items survive. That cluster's served recall goes to 0, which accounts for the whole drop (−0.25 on a 4-cluster macro) |
+| nDCG@5 | 0.549 | **0.497** | Computed on the items `recommend()` returns, against an ideal pool that still counts same-title games separately (spec 06 §5.2) |
+| Lift over raw text | −0.026 | **−0.026** | The difference between two nDCG@5 values, both served. Here the rule moved both variants by about the same amount |
+| Bad-recommendation rate | 0.606 | **0.663** | The share of grade-0 items among those shown. Removing a same-title item lets the next candidate in, with its own grade |
+| Coverage | 0.979 | **1.0** | Answerable coverage is measured against the oracle, which runs through the same `recommend()`, so the rule also removes same-title items from the oracle's rails and changes which queries count as answerable. In this build `enriched` answers every query the oracle answers |
+
+**Verified attribution.** With the `duplicate_title` check switched off (a temporary one-line edit to `recommend()`, reverted straight after), this evaluator reproduced every prototype value exactly: coverage 0.979, nDCG@5 0.549, lift −0.026, bad-rec 0.606, served Recall@5 0.863 → 0.850. So the evaluator implements the prototype's definitions, and the title rule explains every difference above.
 
 **Kept as expected values: what the title rule can't touch.** These are still the targets for this build.
 
@@ -88,6 +90,8 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 | `eligibilityViolations`, `duplicateViolations`, `policyViolations` | 0 | A stricter dedupe only removes items from a rail; it can never add one that violates a rule |
 
 **Caveat on "kept":** these stay expected only while the rules enricher, the embedding text and the hashing embedder copy appendix A9, A16 and A17 exactly. If one of them differs at milestone 5 or 6, that's a rebuild discrepancy to investigate, not something the title rule explains.
+
+*Checked at milestone 6: every kept value holds.* Cluster Recall@5 0.825 → 0.800, MRR 1 → 1, intrusion 0.15 → 0, theme precision 0.667, game-type accuracy 1.0, `catalogueHash` `5caf2bbb0f343546`, 39/39 traps, and 0 eligibility, duplicate and policy violations.
 
 ## Known limitations
 
@@ -111,11 +115,17 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
   - empty-mechanics records go to the LLM rather than being "complete" evidence.
 
   Expect all of it in spec 06's wrong-fills sample and failure cases.
-- **One misleading-title trap is vacuous in the OpenAI build.**
-  - g-019 came back as "Mega Scratch: Fruity Adventure". The model put the true type ("Scratch") in the title, and neither "Megaways" nor "Spins".
-  - Its trap row (spec 02 §7: `e.gameType === truth.gameType`) will pass without testing whether enrichment trusts copy over a slot-sounding title. g-057 "Festive Spins Extravaganza" still tests it.
-  - **`EVALUATION.md` must disclose** that the OpenAI report's 39/39 planted traps includes one row that proves nothing, and name it. It's kept rather than regenerated because nothing in the spec checks a misleading title's shape, and adding one is a generator change for later.
-  - The offline build's misleading titles ("… Megaways") are unaffected.
+- **Both misleading-title traps are vacuous in the committed OpenAI build** (corrected at milestone 6).
+  - In the 02:06 build, g-019 came back as "Mega Scratch: Fruity Adventure", with the true type ("Scratch") in the title and neither "Megaways" nor "Spins"; g-057 "Festive Spins Extravaganza" still tested the trap.
+  - **The committed build (generated 02:23) has lost both:** g-019 is "Fruit Blast Scratch" and g-057 is "Festive Scratch Extravaganza". Both are scratch cards that name their true type. Checked against `data/generated/` at milestone 6.
+  - Their trap rows (spec 02 §7: `e.gameType === truth.gameType`) will pass without testing whether enrichment trusts copy over a slot-sounding title.
+  - **`EVALUATION.md` discloses** that the OpenAI report's planted-trap count includes two rows that prove nothing, and names g-019 and g-057. They're kept rather than regenerated because nothing in the spec checks a misleading title's shape, and adding one is a generator change for later.
+  - The offline build's misleading titles ("Cherry Megaways", "Holly Megaways") are unaffected, and both rows pass offline on the description.
+- **OpenAI embeddings aren't bit-reproducible** (found 2026-11-16, before milestone 6).
+  - Rebuilding the OpenAI index from identical inputs, with 0 LLM calls and 62 cache hits, changed the index version from `b964076a9f4a` to `ef13f1ecf784`.
+  - Enrichment is reproducible, because proposals are cached by content hash. The embedding values from OpenAI vary slightly between calls, so neighbour scores, and the order of near-tied neighbours, can move.
+  - The `indexVersion` hashes the neighbour lists, so it changes too. That's the right behaviour (a different artefact gets a different version), but the version can't serve as a "same inputs" check for OpenAI builds. Compare reports by metrics.
+  - **Kept:** caching embeddings by text hash would make rebuilds reproducible, but isn't specified, and the evaluation reads the committed artefacts rather than rebuilding them.
 - **Near-duplicate titles pass the display-title dedupe.**
   - The rail's dedupe (spec 02 §6.2) compares normalised titles exactly, so near-namesakes can share a rail: "Mystic Forest Quest" and "Mystical Forest Quest"; "Fruit Frenzy Megaways" and "Fruity Megaways Frenzy"; three "Fortune Wheel" names in `live_game_show`. The cluster-title repair can produce one too, since it also uses exact matching.
   - Fuzzy matching (word overlap, stemming, edit distance) is out of scope: it needs a threshold of its own, and a false positive would silently hide a legitimately different game.
@@ -311,3 +321,30 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
   - **API (`tests/api.test.ts`):** error body shapes for each 400; a disabled brand as a 200 decline; `limit` clamping; the season decided by the injected clock; the `invalid` brand label; the 503 metric; `/ready`'s body; a 400 taking precedence over a 503; dangling-neighbour and bad-record artefacts refused; the spec 07 AC6 log check, done now because the logging was built here.
   - **Embedders (`tests/providers.test.ts`):** A17's determinism and norms, stopwords and weights; `OpenAiEmbedder` batching (250 texts → 100/100/50, order restored from a reversed response) and dimensions.
   - **Index build (`tests/pipeline.test.ts`):** A16 strings; neighbour ties and zero vectors; index determinism across clocks; where each `ServiceGame` field comes from.
+
+### Milestone 6 (spec 06)
+
+- **Module layout.** `eval/relevance.ts` (A11 verbatim); `eval/gates.ts` (the pure `evaluateGates` and `gateExitCode`, plus the gates-file loader); `eval/inputs.ts` (the seven required inputs and the "missing build" message, testable without touching the disk); `eval/evaluate.ts` (`evaluate(inputs)`, every metric, pure); `eval/report.ts` (Markdown and console); `eval/run-eval.ts` (reading, writing, exit codes only). So `tests/evaluation.test.ts` runs the real evaluation on an in-memory offline build, without reading build outputs (spec 05 §9).
+- **Extra input checks.** Besides spec 06 §2's checks (a missing file; a variants `indexVersion` that differs from the index), the runner refuses an index whose `catalogueHash` doesn't match the raw feed's hash ("rebuild the index"), and an index that fails `loadIndex`. Evaluating a regenerated catalogue against an old index would compare labels with the wrong games.
+- **Ground truth through the service's own rule functions.** Each canonical record is mapped to `ServiceGame` shape (canonical status → `active`/`withdrawn`, true brands, markets, season, mechanics, volatility, stakes) and passed to the A10 `eligibilityProblems` and `policyProblems`. The rules are the same; only the data is the truth. This is used for the exhaustive check and for the ideal pool.
+- **Exhaustive check counting.** One violation per (rail, item, kind): an item with two eligibility problems counts once, listing both. A duplicate is `seed_game` or `same_game_twice`.
+- **"Removed per rule" table:** the service's diagnostics summed over the exhaustive check's 2,260 calls (both months, every brand), since it's the one run that covers every context.
+- **Trap rows.**
+  - Anchor rows call `recommend()` at `limit = maxLimit` (12), in July, so "absent" means absent from the whole rail. Their "what happened" lists the rules the service's own functions find on the trap in that context (eligibility, plus policy for the policy row).
+  - The cold-start row uses `limit = 5`. The limit doesn't change whether a rail is ok, because `min(minResults, limit)` is 3 either way.
+  - "Original" for the RTP-variant, duplicate and swap rows is the feed record whose id is the canonical id.
+  - Marketing fluff: "inferred" mechanics are those in the output but not in the source, so source mechanics are ignored even when the field's provenance is mixed.
+- **Cluster metrics** use the neighbour list per feed record, with only the seed's own game's records removed, so another game's duplicate export keeps its slot. (Collapsing duplicates by canonical game gave raw-text Recall@5 0.838, not the reference 0.825.) Ranks are by first occurrence of each member. The macro is the mean of the four clusters' values; served macro skips clusters with no context.
+- **Reported-only enrichment metrics.** Recall (themes and mechanics) is over the truth's tags that the source lacked, on every non-opaque record, filled or not. Mechanic precision is over mechanics added to the source's. Title-only tag precision counts themes and mechanics inferred on `title_only`-profile records (opaque excluded). Fill rates are over the 110 non-opaque records.
+- **Ranking details.**
+  - Decline reasons are counted over every query, abstaining seeds included, per variant.
+  - The expected-decline rate counts any decline.
+  - Grades are 0 for an item of the seed's own canonical game (never returned, because of dedupe).
+  - The ideal pool is cached per (seed, brand, market) and shared by every variant and sweep point.
+- **Failure cases.** The 4 lowest-nDCG answered queries of `enriched` with distinct seeds, ties broken by query key. The top-slot list is the first 4 such queries in query order, also with distinct seeds.
+- **Threshold suggestion.** Ties on bad-rec rate are broken by higher nDCG@5, then by the lower threshold. If no point keeps coverage at the gate, the report and console say so. When the current threshold is already the suggestion, the console prints nothing and the report says so. Offline it suggests 0.5 for `hashing-v1` (bad-rec 0.642, coverage 0.94). That's not applied: the offline threshold isn't a shipped operating point.
+- **The JSON report** has no run timestamp (only the index's `builtAt`), so it's byte-identical for the same artefacts (tested). Gate rows are under `gates.rows`, which is what spec 07 AC7's comparison reads.
+- **Gate `why`s** for the seven spec 06 gates are written in `eval/release-gates.json`. The spec gives the rules only. The `_comment` no longer says "spec 06 adds the remaining gates".
+- **Extra tests beyond the acceptance criteria:**
+  - `tests/evaluation.test.ts`: the whole evaluation on the in-memory offline build. It checks 39/39 traps, the gate outcomes of AC2, the oracle and random rows of AC3, the kept cluster values, section order and the offline callout, determinism, and the rules' diagnostics.
+  - `tests/gates.test.ts` covers the missing-input message and that the gates file holds all 15 gates.

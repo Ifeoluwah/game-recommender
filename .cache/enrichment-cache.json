@@ -1,0 +1,1028 @@
+{
+  "82c8407bb55dc074c1102e1f32ee88a6c279f7459e8bd912848e9e03ec7498f5": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "sports"
+      ],
+      "mechanics": [
+        "free_spins",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "A sports-themed slot featuring dynamic gameplay with multipliers and free spins.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:24.235Z"
+  },
+  "00ca5bf1be47ac9dc9138295873f5492931f91735cea9a56d53a2eae01991f05": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:24.282Z"
+  },
+  "71fdf01ff62da505d769408a6c3e36b18358206d472cf85f23b0ceb46f88c6ff": {
+    "proposal": {
+      "gameType": null,
+      "themes": [
+        "egyptian"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features an Egyptian theme and invites players to explore its setting.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:24.321Z"
+  },
+  "7e1e168907707f6d9803af5ef4c4d6b6b74b318c584e34cf7d867cb47c34e409": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "egyptian"
+      ],
+      "mechanics": [
+        "cascading_reels",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "Explore ancient Egyptian treasures with cascading wins and multipliers in this slot game.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:24.425Z"
+  },
+  "12e45ca3249299d4bdd60a389b672afc5818040b9198505820f064ca5cab9174": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [
+        "gems"
+      ],
+      "mechanics": [
+        "scratch_card"
+      ],
+      "volatility": null,
+      "matchingSummary": "This is an instant win scratch card game featuring a colorful gem theme.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:24.449Z"
+  },
+  "0cbf66ecff9c6ce6a6deaa2800f69ce8f94a7d70e0fe5432806a3aa0e91167d7": {
+    "proposal": {
+      "gameType": "bingo",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "Classic 90-Ball Bingo offers a traditional bingo experience.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:25.250Z"
+  },
+  "fef608820fc0d2e7829889ad809946cf3c2c3dccfb744d70e8699fdc13d4cc36": {
+    "proposal": {
+      "gameType": "bingo",
+      "themes": [
+        "festive"
+      ],
+      "mechanics": [
+        "bonus_buy"
+      ],
+      "volatility": null,
+      "matchingSummary": "A 90-ball bingo game with a festive theme and an option to buy into bonus rounds.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:25.323Z"
+  },
+  "40791d6d7abee61a28df8615ab27588b4e1da2fcf9e24c48c0a889a5c96e5a90": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "No gameplay details are provided to describe the game.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:25.364Z"
+  },
+  "3b860c82f37b9e320a78d595ff98bee61bf335a6ba149788b26bffa7262d4b3c": {
+    "proposal": {
+      "gameType": "bingo",
+      "themes": [
+        "festive"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "A vibrant bingo game celebrating the festive season with colorful cards and cheerful music.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:25.524Z"
+  },
+  "985918717bdcde9b1bba98f73ce331f6a07d75757bff8e2e3ff385c981f12961": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "egyptian"
+      ],
+      "mechanics": [],
+      "volatility": "medium",
+      "matchingSummary": "The game features an Egyptian theme and is classified as a slot.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:25.651Z"
+  },
+  "c2fbad7083a74add947e4b4ac2a7b884983e5a69f3d1f8dee4674f9074498166": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "underwater"
+      ],
+      "mechanics": [
+        "cash_collect",
+        "free_spins"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "An underwater adventure slot featuring a cash collect mechanic and free spins.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:26.348Z"
+  },
+  "4e231ab97df6a7d3dacf69b32f1e0c8f842246453750c38ca56126bc39ddccec": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "No gameplay details are provided for this game.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:26.441Z"
+  },
+  "be80e4e979a554f0a2ed6040a6ed8df7d44dba515d36eeb205291f1f6dd0146d": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [
+        "scratch_card",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "This is an instant win game featuring a 3x3 scratch grid with fruit symbols and multipliers.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:26.460Z"
+  },
+  "051dc92fbcc890ac3f8be0e126ebad6f19f2828879b6b64a34e7fc9606b0ef92": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features a harvest theme with a focus on collecting rewards.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:26.640Z"
+  },
+  "ef921c271d2308e02151691508332f3f02fba5b79e1c08d8ab84d5d4902ddf00": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "classic"
+      ],
+      "mechanics": [
+        "fixed_paylines"
+      ],
+      "volatility": null,
+      "matchingSummary": "A straightforward slot featuring traditional card symbols and fixed paylines, suitable for all players.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:26.706Z"
+  },
+  "9780d147ecaeb95e4a14df59d8a4cecd733a369de4daf43649789adacad1685e": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "mythology"
+      ],
+      "mechanics": [
+        "free_spins"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "This game features a mythology theme with free spins mechanics.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:27.354Z"
+  },
+  "617328bb92215d69a7d9ba5bbdac7e0ddfbf0df8f54ffc7fb35c206050b80d4f": {
+    "proposal": {
+      "gameType": null,
+      "themes": [
+        "egyptian"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "Explore ancient Egypt in this game featuring themes of secrets and discovery.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:27.482Z"
+  },
+  "d9c225cb940c049812c74e5866784b162bfe420bcb5e7d539722d10296925b97": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "roulette"
+      ],
+      "mechanics": [
+        "live_dealer"
+      ],
+      "volatility": "low",
+      "matchingSummary": "A live dealer roulette game featuring a single-zero wheel and low volatility.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:27.598Z"
+  },
+  "7e0a4cf4fd4db6ed29fef6fcc6473e2ff8ac20371a53f8cd315df857812e0d0e": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [],
+      "volatility": "low",
+      "matchingSummary": "A nostalgic slot featuring a classic 3x3 layout with 5 fixed paylines and fruit symbols.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:27.647Z"
+  },
+  "63ee177670b678795f062673194015772c1ca9270cc02db54be87641b18fa39d": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "A classic slot featuring fruit symbols on a 3x3 grid.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:27.652Z"
+  },
+  "a34c061497d9583bbb035d2dd9ac1549e7d4bdb56b7517c3e81399529281c93c": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [],
+      "mechanics": [],
+      "volatility": "medium",
+      "matchingSummary": "A live dealer card game focused on high-stakes gaming.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:28.473Z"
+  },
+  "9a8c9845f529517cf92bcaa00506b222d76be3d5afdcd2a4e7626416ba1c0da9": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "cards"
+      ],
+      "mechanics": [
+        "live_dealer"
+      ],
+      "volatility": "low",
+      "matchingSummary": "Classic Blackjack Royale is a live dealer card game that offers a timeless blackjack experience.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:28.493Z"
+  },
+  "0255a407b4ad209a10a1e27cc32db9e1a8c077edaf368c8070012755288b7952": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "mythology"
+      ],
+      "mechanics": [
+        "free_spins",
+        "expanding_wilds",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "A mythology-themed slot featuring free spins with expanding wilds and multipliers.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:28.498Z"
+  },
+  "d47040d174a0dba18386cba5ecab2588e51cf7cf6c6e7d0e161f0d96a93510aa": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "This record lacks a description to provide details about the game's theme and gameplay.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:28.566Z"
+  },
+  "95114ae8d3f5c6928008f30e0a4fd5e89b6cebb2c64ef11f787f1241f62fdb30": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game is titled Melody Spins and is categorized as a slot.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:28.624Z"
+  },
+  "023ecfbc3527aba0292c00104fcfbb19d26cea33b721d2203cd871de0a7aec50": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:29.307Z"
+  },
+  "16047e745b6be964c84fcbf96b06f9c6fb1aeb32818aa7923dd79141d7b35580": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:29.311Z"
+  },
+  "26a610fee03bd608c98847cb30caa0329a27cb4cd253e6801263790e703251e9": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "roulette"
+      ],
+      "mechanics": [],
+      "volatility": "medium",
+      "matchingSummary": "A table game based on the classic roulette format.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:29.508Z"
+  },
+  "288a620712775e4bd5cb4b82a9f35c87b1d61adb894f73979a1b473f0ebca518": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [],
+      "volatility": "low",
+      "matchingSummary": "Classic Fruit Fortune is a low-volatility slot featuring traditional fruit machine elements and 5 fixed paylines.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:29.528Z"
+  },
+  "993d5afb6e50316cdcb3f459f1743ec536aed7e31d71d339999ee1ead8d247e4": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "mythology"
+      ],
+      "mechanics": [
+        "free_spins",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "Mythic Realms is a 5x4 slot featuring mythology themes with free spins and multipliers for enhanced gameplay.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:29.821Z"
+  },
+  "59d94c3320d3c326c00476837a7dcc7788fae1d168343f4361c58d9e164d9c8b": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [
+        "egyptian"
+      ],
+      "mechanics": [
+        "scratch_card"
+      ],
+      "volatility": "low",
+      "matchingSummary": "This is a low-stakes scratch card game themed around ancient Egyptian symbols and treasures.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:30.335Z"
+  },
+  "5c5070e2f2ab7a15aa2c6a075c23ec14397ed450f1c15536ef4dedbc892de71b": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "cards"
+      ],
+      "mechanics": [
+        "live_dealer"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "A live dealer poker game where players compete against each other in a high-stakes card environment.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:30.349Z"
+  },
+  "77ba72356fc16452aea844560e7b0dd43b73713e0b7c61fe5709ffae0ca4d61e": {
+    "proposal": {
+      "gameType": "live",
+      "themes": [],
+      "mechanics": [
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "A live game show experience featuring a bonus wheel and multipliers.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:30.397Z"
+  },
+  "c0be10e5f412ac58165764489dae1654098076301cca2f061df560242b5abefa": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "cards"
+      ],
+      "mechanics": [
+        "live_dealer"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "A live dealer poker game where players compete against each other in a high-stakes card environment.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:30.728Z"
+  },
+  "24707ffa3c552ac4c1929cfb4d964504ea5d2e5bc5f529a505e9fb87bfbb5e41": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [
+        "festive"
+      ],
+      "mechanics": [
+        "scratch_card"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "A vibrant scratch card game with festive symbols and hidden prizes.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:30.911Z"
+  },
+  "241a3574f6d49b78b3d068dc505b297a5daecff59e8a7b18eba453301c483def": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "No gameplay details are provided to describe the game.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:31.248Z"
+  },
+  "1270f23fa17c6efd071c18bb4c2c7afe546a6d6f0aaf544a5fa10648b7cef2df": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "irish"
+      ],
+      "mechanics": [
+        "free_spins",
+        "multipliers"
+      ],
+      "volatility": null,
+      "matchingSummary": "An Irish-themed slot featuring free spins and multipliers for potential rewards.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:31.400Z"
+  },
+  "77060e9b7dc58e77704bb63328e171f3144af7d219bab8e0103a133baaeeaf1d": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "irish"
+      ],
+      "mechanics": [
+        "multipliers",
+        "free_spins"
+      ],
+      "volatility": null,
+      "matchingSummary": "An Irish-themed slot featuring multipliers and free spins for potential rewards.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:31.428Z"
+  },
+  "4c4365e0d55bf20290b789d469146ec1e0c15eb0059cc5f40c472c9b470fedfe": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:31.723Z"
+  },
+  "574a6f228cc6fd89fdbd68e18a111e29274b9a5b4fcc77be9c6f3eabff82e9b8": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [],
+      "volatility": "high",
+      "matchingSummary": "This is a high-volatility slot featuring a vibrant fruit theme with a 6x5 reel layout and 50 paylines.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:31.964Z"
+  },
+  "8d4f4b661f46d3dbf76c69dc78060c9e3a94683c68c15fac4827e24b9973bf1a": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [
+        "scratch_card"
+      ],
+      "volatility": null,
+      "matchingSummary": "This instant win game features a 3x3 scratch grid with fruit symbols for players to reveal winnings.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:32.302Z"
+  },
+  "2e15a41d13f81e519617e58192564b6a83db62baf4087c1b5475fafd422d6fcb": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [
+        "roulette"
+      ],
+      "mechanics": [],
+      "volatility": "medium",
+      "matchingSummary": "Classic European Roulette features a single-zero wheel with various betting options for players.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:32.387Z"
+  },
+  "ac935b4bc661b962dafb477d39e193d812a206f890ed1473eb1929f9b68479bb": {
+    "proposal": {
+      "gameType": "live",
+      "themes": [
+        "game_show"
+      ],
+      "mechanics": [
+        "wheel_bonus",
+        "multipliers",
+        "live_dealer"
+      ],
+      "volatility": null,
+      "matchingSummary": "A live game show experience featuring a spinning wheel with multipliers and bonuses, hosted by a live dealer.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:32.580Z"
+  },
+  "a269bfdf661b659e0bfd414f240484bbbb4def40b4da39885106c45b1ddf4a78": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fishing",
+        "underwater"
+      ],
+      "mechanics": [
+        "cash_collect",
+        "free_spins"
+      ],
+      "volatility": null,
+      "matchingSummary": "Explore vibrant underwater landscapes in this slot featuring cash collect and free spins mechanics.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:32.795Z"
+  },
+  "82af28938549153cbd5c54f99af490bd12180a4e861d166f6c26d9239d5f3c35": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "egyptian",
+        "adventure"
+      ],
+      "mechanics": [
+        "cascading_reels",
+        "multipliers"
+      ],
+      "volatility": "high",
+      "matchingSummary": "This high-volatility slot features cascading reels and multipliers set in an Egyptian adventure theme.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:33.349Z"
+  },
+  "9e37d7b41594bafdc8690fa708a2eebf8b150c1c71d10f8a47183d0422b4e662": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "This is a table game featuring the traditional American roulette wheel where players can place bets on numbers.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:33.402Z"
+  },
+  "ab99e39ca1724fcda846e17e7dcb5d2caf2f30fa2f84711f03d09169aa4427f5": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features a magical theme with an immersive experience.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:33.441Z"
+  },
+  "87ae08cd20e205bcbec2daed7ff15ef62698e3d0f9809e67665d306ca70570f2": {
+    "proposal": {
+      "gameType": null,
+      "themes": [
+        "adventure"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features an adventure theme centered around outlaws.",
+      "confidence": "medium",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:33.659Z"
+  },
+  "2af6eeb69b32ecaa23770d08651bffad28ac3a0b961d252e2994cfae46941b93": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "mythology"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "A slot game themed around ancient mythology featuring a 5x3 reel layout with 25 paylines.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:34.115Z"
+  },
+  "9a8eecf8d58803cc3b3d96f35e43d440738b34086c766e3396a1b67524a9290f": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "No gameplay details are provided for this game.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:34.323Z"
+  },
+  "f53485160459eac4bb11077c81f7414f3c3ff8d4e3651fbbc61f623200a4eb1c": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "No gameplay details provided for Galactic Quest.",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:34.330Z"
+  },
+  "750e9e09d63eaac1ae91ada7e659dc4d04152e0377c022d451bae85a4ff831a6": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "underwater",
+        "festive"
+      ],
+      "mechanics": [
+        "cascading_reels",
+        "multipliers"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "Explore an underwater world with cascading reels and multipliers featuring colorful aquatic creatures and festive treasures.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:34.495Z"
+  },
+  "e5a21c68960f4668c426a2f504b168fef211fa0595b09246bc2d6f92b0bb0d1c": {
+    "proposal": {
+      "gameType": "live",
+      "themes": [],
+      "mechanics": [
+        "wheel_bonus",
+        "multipliers"
+      ],
+      "volatility": "medium",
+      "matchingSummary": "A live dealer game featuring a single-zero wheel with multipliers and bonuses.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:34.694Z"
+  },
+  "2399747293a9a0972cfa0572bf63581980c74905d226ca7f37efbd9b7e9e5f12": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features a dazzling experience with magical elements.",
+      "confidence": "low",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:35.416Z"
+  },
+  "e19aa72d4da41fb831e40e45cc7c871e9d70318cf59f2f5f7f77710c71bfaa24": {
+    "proposal": {
+      "gameType": null,
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "",
+      "confidence": "low",
+      "insufficientInformation": true
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:35.466Z"
+  },
+  "1507aaf3666b7f8514bbccef557cd43e89817f7012f0b7aa3d55a008b218cfd7": {
+    "proposal": {
+      "gameType": "instant_win",
+      "themes": [],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "The game features an opulent theme related to fortune and tides.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:35.524Z"
+  },
+  "a0618524ebdc4fccf7b3a3b64f3af2db036065f6e379f32f29ceead8d4a1d81a": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [],
+      "volatility": null,
+      "matchingSummary": "A slot game featuring a fruit theme with a focus on a juicy experience.",
+      "confidence": "medium",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:35.812Z"
+  },
+  "264c63c22beffc1456bbd6a408e6cbedb6a788b745a6db0639421625ccdefc62": {
+    "proposal": {
+      "gameType": "table",
+      "themes": [],
+      "mechanics": [],
+      "volatility": "medium",
+      "matchingSummary": "Classic Roulette Royale offers a traditional roulette experience with elegant design and smooth gameplay.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:35.827Z"
+  },
+  "3b1348b0f1cbd533baaf7d81c6ab77ba025acba191318d04189b5a868ad0c19e": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fantasy"
+      ],
+      "mechanics": [
+        "multipliers",
+        "free_spins"
+      ],
+      "volatility": null,
+      "matchingSummary": "A fantasy-themed slot featuring mystical creatures, multipliers, and free spins.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:36.501Z"
+  },
+  "fddb686834b3cf943eb1ba3bdece2fb269251789f1e23dee165a04b8679c281a": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "fruit"
+      ],
+      "mechanics": [
+        "megaways",
+        "bonus_buy"
+      ],
+      "volatility": null,
+      "matchingSummary": "This game features a fruit theme with Megaways mechanics and a bonus buy option.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:36.503Z"
+  },
+  "ed2ef259cbaef75efdcb58846823b38344351461b0ef1a6cfb6dcc96eee251a8": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "classic"
+      ],
+      "mechanics": [
+        "fixed_paylines"
+      ],
+      "volatility": null,
+      "matchingSummary": "A classic slot game featuring a 3x3 layout and a single payline, offering straightforward gameplay.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:36.606Z"
+  },
+  "3be49d9c10c3328e6d8b7dbc4a79055f25803691688cde4b5c89d7417b5ea804": {
+    "proposal": {
+      "gameType": "slot",
+      "themes": [
+        "space"
+      ],
+      "mechanics": [
+        "free_spins"
+      ],
+      "volatility": null,
+      "matchingSummary": "A space-themed slot featuring free spins and a 5x3 reel layout with 25 lines.",
+      "confidence": "high",
+      "insufficientInformation": false
+    },
+    "model": "openai:gpt-4o-mini",
+    "promptVersion": "enrich-game.v2",
+    "createdAt": "2026-11-16T02:49:37.288Z"
+  }
+}
