@@ -67,6 +67,15 @@ npm run eval -- --provider=offline           # → eval/reports/offline/
 npm start                                    # serves artifacts/index.json on 127.0.0.1:3000
 ```
 
+### CI: two workflows, two questions
+
+| Workflow | Runs | Answers | Today |
+| --- | --- | --- | --- |
+| [`check`](.github/workflows/check.yml) | `npm ci`, typecheck, tests, demo | Does the code work? | Expected green |
+| [`release-gate`](.github/workflows/release-gate.yml) | `npm ci`, `eval:gate` on the committed OpenAI build | Is this build fit to ship? | **Red, as intended:** `ndcgLiftOverRawText` −0.003 (gate ≥ 0) |
+
+They're separate because software tests and AI evaluation answer different questions, so they report separately. A test pass says nothing about AI quality, and a gate failure says nothing about the code. **A red release gate is the system working as designed:** the code works, the build misses the release bar, and the release is blocked pending review. Neither workflow uses `continue-on-error`. The way to green is a better build or a reviewed gate change, never a tuned gate. Both need no API key, because they read committed artefacts.
+
 Offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`. They're a software check, not the shipped system. `demo` and `eval` read the committed OpenAI build unless given `--provider=offline`, and they never fall back from one build to the other. To serve an offline index, set `INDEX_PATH=artifacts/offline/index.json`. On a `.env` with a key, always pass `--provider=offline` to `generate` and `build:index`.
 
 ### The API
@@ -105,7 +114,7 @@ npm run build:index -- --provider=openai      # → artifacts/ (the enrichment c
 npm run eval:gate                             # exit 1 if any release gate fails
 ```
 
-Commit `data/generated/`, `artifacts/` and `eval/reports/` so CI gates the build. **Only `text-embedding-3-small` has a score threshold** (`config/service.json`). The service refuses an index built with any other embedding model until that model gets its own threshold from the sweep (spec 05 §6.3). Tune the threshold from the report's sweep; never tune a gate.
+Commit `data/generated/`, `artifacts/` and `eval/reports/` so CI can demo and gate the build. **Only `text-embedding-3-small` has a score threshold** (`config/service.json`). The service refuses an index built with any other embedding model until that model gets its own threshold from the sweep (spec 05 §6.3). Tune the threshold from the report's sweep; never tune a gate.
 
 ## Dataset design
 
@@ -172,7 +181,7 @@ catalogue.raw.json ──► normalise.ts ──► evidence check              
 - **The evaluation as a release gate:** 15 gates as data, `eval:gate` exits 1, deterministic and free to run. It also reports per-brand coverage, so a brand with no rails is named.
 - **Versioning:** content-addressed enrichment cache, versioned prompts, `indexVersion` derived from the inputs, schema-checked artefacts, atomic writes and checkpointed caches.
 - **A keyless offline path** for tests and CI.
-- **Operations:** structured logs with no player data, Prometheus metrics, `/health` and `/ready`, CDN-friendly cache headers with a restricted-player bypass, and a CI workflow.
+- **Operations:** structured logs with no player data, Prometheus metrics, `/health` and `/ready`, CDN-friendly cache headers with a restricted-player bypass, and two CI workflows (`check` for the code, `release-gate` for the build).
 
 **Left out:**
 

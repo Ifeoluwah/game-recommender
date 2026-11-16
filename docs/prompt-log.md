@@ -317,3 +317,35 @@ Also create docs/notes/candidate-notes.md, for me rather than as a deliverable, 
 
 Run typecheck, tests and npm run eval. Tick milestone 8 off. .
 </pasted_content id="47bf">
+
+## 2026-11-16 08:27:42
+
+<pasted_content id="47bf">
+Split CI into two workflows, neither using continue-on-error:
+- .github/workflows/check.yml: npm ci, typecheck, test, demo. Answers "does the code work".
+- .github/workflows/release-gate.yml: npm ci then eval:gate on the committed OpenAI build. Answers "is this build fit to ship". It fails today on ndcgLiftOverRawText, which is intended.
+Update spec 05 §9, START_HERE and the README to describe both and why they're separate: software tests and AI evaluation answer different questions, so they report separately; the red release gate is the system working as designed, and the release is blocked pending review. Don't commit.
+</pasted_content id="47bf">
+
+## 2026-11-16 08:29:38
+
+<pasted_content id="47bf">
+Read-only audit of the repository ; change nothing.
+1. Any secret or key anywhere in tracked files, including .cache/enrichment-cache.json and the eval reports. Confirm .env is untracked and has never been committed (check git log --all -- .env).
+2. Any stray or accidentally created file at the repo root or elsewhere; any file whose name looks like a mistyped shell command.
+3. Any absolute path from my machine (C:\Users\...) in a tracked file.
+4. Any TODO or placeholder that isn't one of the deliberate [CANDIDATE TO WRITE] markers; list those markers and their files.
+5. Confirm docs/brief.md exists and holds the brief.
+Report findings with file and line. 
+</pasted_content id="47bf">
+
+.
+
+## 2026-11-16 08:37:05
+
+<pasted_content id="47bf">
+Fix three stale notes left over from before the OpenAI build:
+- docs/prompts/05-index-and-service.md:278 keeps an open question that the build resolved; resolve it with the answer and a Decisions row.
+- docs/plan.md milestone 1 AC4 is unticked as "pending key: OpenAI path written, not run"; the OpenAI generation has run and is committed, so tick it and say which commit.
+- docs/plan.md:729–730 still expects EVALUATION.md's failure analysis to be "marked pending"; it's written now.
+</pasted_content id="47bf">

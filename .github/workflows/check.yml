@@ -1,8 +1,8 @@
 name: check
 
-# Typecheck, software tests and the release gates on the committed (OpenAI) build. No API key is
-# needed: the gate reads committed artefacts. Until the first OpenAI build is committed, eval:gate
-# fails with a "no OpenAI build" message, which is correct: there is no releasable index yet.
+# "Does the code work?" Typecheck, the software tests and the demo (every path through the service,
+# on the committed OpenAI build). No API key: tests build their own offline data in memory, and the
+# demo reads committed artefacts. AI quality is judged separately, in release-gate.yml (spec 05 §9).
 
 on:
   push:
@@ -20,4 +20,4 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-      - run: npm run eval:gate
+      - run: npm run demo

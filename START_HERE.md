@@ -80,7 +80,11 @@ npm run eval
 ```
 
 1. Tune the score threshold from the sweep in `eval/reports/latest.md`; never tune the gates.
-2. Commit the OpenAI build (`data/generated/`, `artifacts/`, `eval/reports/`), so CI gates it. CI fails until this is committed.
+2. Commit the OpenAI build (`data/generated/`, `artifacts/`, `eval/reports/`), so CI can demo and gate it. CI runs two workflows, and they report separately because software tests and AI evaluation answer different questions (spec 05 §9):
+   - **`check`** (`.github/workflows/check.yml`: typecheck, tests, demo) asks "does the code work?";
+   - **`release-gate`** (`.github/workflows/release-gate.yml`: `eval:gate`) asks "is this build fit to ship?".
+
+   Both exit 1 until the OpenAI build is committed. After that, a red `release-gate` with a green `check` means the code works but the build misses the release bar. That's the system working as designed: the release is blocked pending review. On the committed build it's red today, on `ndcgLiftOverRawText` (−0.003, gate ≥ 0).
 3. Two things are left for you, not the agent:
    - the "division of work" section in `docs/AI_USAGE.md`;
    - the failure-analysis section in `docs/EVALUATION.md`, written from the OpenAI report's real cases.

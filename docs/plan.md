@@ -153,7 +153,7 @@ $canon | Group-Object gameType | Sort-Object Name | Format-Table Name, Count
 > 3. `npm run generate -- --provider=offline` writes all four files to `data/offline/`; the manifest says "offline".
 > 4. With a key, `npm run generate -- --provider=openai` succeeds, writes to `data/generated/`, and the manifest records the model and prompt version.
 
-Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[ ]` AC4 *(pending key: OpenAI path written, not run)*
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[x]` AC4 *(OpenAI generation run and committed: the shipped `data/generated/` is in `ca7749b`, with the first generated build in `37e881b`. `manifest.json` records provider `openai`, model `openai:gpt-4o-mini`, prompt version `generate-catalogue.v2`, and 22 repairs)*
 
 Done 2026-11-16: typecheck clean; 169 tests pass (4 files); offline generate writes 100 canonical / 105 feed records to `data/offline/`, byte-identical on rerun. M1-alone `catalogueHash` `4de3ec42e6087043` (the expected `5caf2bbb0f343546` needs M2 traps; a scratch preview with A8 inlined reproduced it). See `REBUILD_NOTES.md`.
 
@@ -724,10 +724,11 @@ See `REBUILD_NOTES.md`.
 ```powershell
 npm run typecheck
 if ($LASTEXITCODE -eq 0) { npm test }
-npx vitest run tests/docs.test.ts                                              # passes; logs pending eval/reports links
+npx vitest run tests/docs.test.ts                                              # passes; no pending links (the OpenAI report is committed)
 Select-String -Path docs/ADR-001-recommender-architecture.md -Pattern '```mermaid'
 Select-String -Path docs/AI_USAGE.md -Pattern 'Division of work' -Context 0,3    # placeholder, not filled in
-Select-String -Path docs/EVALUATION.md -Pattern 'pending' -Context 0,2           # failure analysis marked pending
+Select-String -Path docs/EVALUATION.md -Pattern '### 1. Wrongly declines' -Context 0,2   # failure analysis written from the OpenAI report
+Select-String -Path docs/EVALUATION.md -Pattern '### Commentary' -Context 0,2    # candidate's commentary: placeholder, not filled in
 # Optional Mermaid render check (downloads a package; or view the file on GitHub):
 # npx -y @mermaid-js/mermaid-cli -i docs/ADR-001-recommender-architecture.md -o "$env:TEMP\adr-render.md"
 ```

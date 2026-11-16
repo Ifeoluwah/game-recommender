@@ -231,11 +231,25 @@ The cases:
 
 ## 9. CI
 
-`.github/workflows/check.yml`: Node 22, `npm ci`, `typecheck`, `test`, `eval:gate`.
+Two workflows, both on Node 22, on push and pull request. Neither uses `continue-on-error`.
 
-The gate runs on the **committed** artefacts, so CI needs no API key.
+| Workflow | Steps | Question it answers |
+| --- | --- | --- |
+| `.github/workflows/check.yml` | `npm ci`, `typecheck`, `test`, `demo` | **Does the code work?** |
+| `.github/workflows/release-gate.yml` | `npm ci`, `eval:gate` | **Is this build fit to ship?** |
 
-**Which artefacts are committed:** the shipped build (`--provider=openai`) in `data/generated/`, `artifacts/` and `eval/reports/`. Offline builds live in git-ignored folders (section 3), so they can't be committed by accident. Until the first OpenAI build is committed, CI fails at `eval:gate`, which exits 1 with a "no OpenAI build" message. That's correct: there is no releasable index yet. Tests never read either build's files; they build their own offline ones in memory.
+**Why they're separate.** Software tests and AI evaluation answer different questions (AGENTS.md: "don't present one as the other"), so they report separately.
+- A red `check` means the code is broken.
+- A red `release-gate` means the code works but the committed build doesn't meet the release bar. That's the gate doing its job: **the release is blocked pending review**.
+- In one workflow, a gate failure would hide whether the tests passed, and the pressure to get CI green would fall on the gates. `continue-on-error` would hide the failure instead. Neither is acceptable.
+
+**Today `release-gate` is red, as intended:** `ndcgLiftOverRawText` is −0.003 against a gate of ≥ 0 (`eval/reports/latest.md`). The fix is a better build or a reviewed gate change, never a tuned gate.
+
+Both run on the **committed** artefacts, so CI needs no API key.
+- `demo` and `eval:gate` read the committed OpenAI build.
+- Tests never read either build's files; they build their own offline ones in memory.
+
+**Which artefacts are committed:** the shipped build (`--provider=openai`) in `data/generated/`, `artifacts/` and `eval/reports/`. Offline builds live in git-ignored folders (section 3), so they can't be committed by accident. Until the first OpenAI build is committed, both `demo` and `eval:gate` exit 1 with a "no OpenAI build" message. That's correct: there is nothing to demo or release yet.
 
 ## 10. Acceptance criteria (no API key)
 
@@ -257,11 +271,16 @@ The gate runs on the **committed** artefacts, so CI needs no API key.
 
 These are recorded so that a reviewer, or the next agent, decides them on purpose rather than by accident.
 
-1. **Policy runs on volatility the model may have inferred.**
+1. **Policy runs on volatility the model may have inferred.** *Resolved by the OpenAI build: Option A* (see Decisions).
    - When the source has no volatility, the service uses the guarded inferred value. A mechanic the model inferred (e.g. `bonus_buy`) can only make the rules stricter, but an inferred volatility *lower* than the truth can loosen the cap for one candidate. That sits uneasily with AGENTS.md rules 3 and 6.
-   - **Option A** (current): use the inferred value. The exhaustive ground-truth policy check (spec 02 §7) is the backstop, and it gates at 0 violations. It's 0 on the offline build.
+   - **Option A** (kept): use the inferred value. The exhaustive ground-truth policy check (spec 02 §7) is the backstop, and it gates at 0 violations.
    - **Option B**: use source volatility only, so inferred counts as unknown and fails closed. Measured on the offline build, B lowers nDCG@5 from 0.549 to 0.463, raises the bad-recommendation rate from 0.606 to 0.665, and lowers coverage from 0.979 to 0.964. Blocking more candidates lets weaker ones in.
-   - Kept A pending the OpenAI build. Revisit if the ground-truth policy gate ever fails, or if compliance prefers B regardless of ranking cost.
+   - **The answer, from the committed OpenAI build** (index `ef13f1ecf784`, `eval/reports/latest.md`):
+     - `policyViolations` is 0 in the exhaustive check's 2,260 calls, judged on the **true** volatility and stakes, so no inferred volatility loosened a cap;
+     - the model inferred volatility for only 2 records, both correct (volatility accuracy when inferred: 1). The volatility fill rate moves only from 0.618 to 0.636.
+
+     So A carries no measured risk here, and B's ranking cost buys nothing.
+   - Still revisit if the ground-truth policy gate ever fails, or if compliance prefers B regardless of ranking cost.
 2. **Feature flags as a supplier field.** Restricted features are currently carried as tags that degradation must not drop (spec 01 §7.4). A real integration should take them as a structured, authoritative compliance field.
 3. **A curator golden set** to replace the silver relevance labels (spec 06 §3) before launch.
 
@@ -280,7 +299,9 @@ These are recorded so that a reviewer, or the next agent, decides them on purpos
 | Where `IndexSchema` lives | **`src/domain/index-schema.ts`**, re-exported by `build-index.ts` | Importing it from `build-index.ts` would load the OpenAI SDK into the service, against rule 1 |
 | Boundary test scope | **Includes `config.ts`'s path constants** | A file name check alone misses code that imports the constant |
 | Error bodies and the request counter | **Specified** (§6.2, §7): one error shape; every request counted; unknown brands labelled `invalid` | Free-text label values would let any client grow the metric series without bound |
+| Policy on inferred volatility (§11.1) | **Option A: use the guarded inferred value** when the source has none; the ground-truth policy gate is the backstop | On the OpenAI build, 0 policy violations in 2,260 calls against true volatility. Only 2 volatilities were inferred, both correct. Option B costs ranking quality offline (nDCG@5 0.549 → 0.463) for no measured safety gain. Revisit if the policy gate fails or compliance asks for B |
 | Index-level `enrichment` | **Describes the build mode** | A build mixes `llm`, `skipped_complete` and `rules_fallback` records, so one record's method can't describe it |
+| CI workflows | **Two: `check` (typecheck, tests, demo) and `release-gate` (`eval:gate`), with no `continue-on-error`** | Tests and evaluation answer different questions. One workflow would let a gate failure mask the tests' result, and invite tuning a gate to get CI green. A red release gate is a blocked release, reported as one |
 | CI Node version | **22** | Full ICU and `process.loadEnvFile`. The dataset's formatting depends on ICU (spec 01 §11) |
 
 ### Compared with a common alternative design

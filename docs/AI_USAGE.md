@@ -33,7 +33,7 @@ In production the chat model would be on Bedrock (ADR §4). Every model sits beh
 | [`.claude/skills/productionise-ai-prototype/`](../.claude/skills/productionise-ai-prototype/) | Part B: the reusable skill and its ADR template ([`LEVERAGE.md`](LEVERAGE.md)) |
 | [`prompts/`](../prompts/) | The versioned runtime prompts the product sends to models, with the version in the file name |
 | [`eval/release-gates.json`](../eval/release-gates.json) | The release gates as data: a threshold and a `why` for each, changed only in review |
-| [`.github/workflows/check.yml`](../.github/workflows/check.yml) | CI: typecheck, tests and the release gates, with no API key |
+| [`.github/workflows/check.yml`](../.github/workflows/check.yml), [`release-gate.yml`](../.github/workflows/release-gate.yml) | CI, with no API key: `check` runs typecheck, tests and the demo ("does the code work?"); `release-gate` runs the release gates on the committed build ("is it fit to ship?") |
 | [`docs/notes/`](notes/) | Agent-written inspection and analysis notes that fed decisions (the OpenAI catalogue inspection, the threshold analysis) |
 
 ## How it was built

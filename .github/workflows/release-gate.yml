@@ -1,0 +1,24 @@
+name: release-gate
+
+# "Is this build fit to ship?" The 15 release gates (eval/release-gates.json) on the committed OpenAI
+# build. No API key and no model call: the evaluation reads committed artefacts. Kept apart from
+# check.yml because software tests and AI evaluation answer different questions (spec 05 §9).
+#
+# A red run here is the system working as designed: the release is blocked pending review. It fails
+# today on ndcgLiftOverRawText (-0.003, gate >= 0). Never make it pass by tuning a gate.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run eval:gate

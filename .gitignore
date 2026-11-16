@@ -7,3 +7,4 @@ node_modules/
 data/offline/
 artifacts/offline/
 eval/reports/offline/
+.claude/settings.local.json
