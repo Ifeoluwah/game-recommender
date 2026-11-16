@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { GENERATION_TEMPERATURE, assertUniqueTitleStudio, generateOffline, generateWithLlm } from "../src/catalogue/creative.js";
 import type { CreativeGame } from "../src/catalogue/creative.js";
-import { generateDataset } from "../src/catalogue/dataset.js";
+import { evaluationDimensions, generateDataset } from "../src/catalogue/dataset.js";
 import { assembleCanonical, degrade, idForSlot } from "../src/catalogue/degrade.js";
 import { addTrapGames } from "../src/catalogue/traps.js";
 import type { Special } from "../src/catalogue/degrade.js";
-import { buildSlate } from "../src/catalogue/slate.js";
+import { BENCHMARK_CLUSTERS, buildSlate } from "../src/catalogue/slate.js";
 import type { RawRecord } from "../src/domain/types.js";
-import { JACKPOT_NETWORKS, PROVIDERS, type Mechanic, type Theme } from "../src/domain/vocabulary.js";
+import { JACKPOT_NETWORKS, MECHANICS, PROVIDERS, TAG_SYNONYMS, THEMES, type Mechanic, type Theme } from "../src/domain/vocabulary.js";
 import { normaliseRecord } from "../src/pipeline/normalise.js";
 import { jsonFileText } from "../src/util/misc.js";
 import { FakeJsonLlm, noSleep, slotsInRequest } from "./helpers/fake-llm.js";
@@ -363,6 +363,159 @@ describe("title and studio uniqueness", () => {
 
   it("allows the same title from different studios", () => {
     expect(() => assertUniqueTitleStudio([game(1, "Gold Rush", "Lumen Studios"), game(2, "Gold Rush", "Kestrel Play")])).not.toThrow();
+  });
+});
+
+describe("benchmark clusters (spec 03)", () => {
+  const MEMBER_VOLATILITY: Record<string, string[]> = {
+    egyptian_cascade: ["high"],
+    fishing_cash_collect: ["medium", "high"],
+    classic_fruit: ["low"],
+    live_game_show: ["medium"],
+  };
+
+  it("has the vocabulary the clusters need", () => {
+    expect(THEMES).toContain("fishing");
+    expect(MECHANICS).toContain("cash_collect");
+    expect(TAG_SYNONYMS).toMatchObject({ fish: "fishing", angler: "fishing", "cash collect": "cash_collect", "coin collect": "cash_collect" });
+  });
+
+  it("puts 28 cluster entries in the slate and keeps the overall mix", () => {
+    const slate = buildSlate();
+    const clustered = slate.filter((s) => s.cluster);
+    expect(clustered).toHaveLength(28);
+    expect(clustered.every((s) => s.forced && s.clusterRole)).toBe(true);
+    // Outside the clusters: 9 table, 2 live, 5 instant win, 4 bingo, and the rest slots.
+    const others = slate.filter((s) => !s.cluster);
+    const count = (t: string) => others.filter((s) => s.gameType === t).length;
+    expect([count("table"), count("live"), count("instant_win"), count("bingo")]).toEqual([9, 2, 5, 4]);
+  });
+
+  it("has exactly 5 members and 2 near-misses per cluster, with the spec's attributes", async () => {
+    const { canonical } = await offlineDataset();
+    for (const c of BENCHMARK_CLUSTERS) {
+      const members = canonical.filter((g) => g.benchmarkCluster === c.id && g.clusterRole === "member");
+      const nearMisses = canonical.filter((g) => g.benchmarkCluster === c.id && g.clusterRole === "near_miss");
+      expect(members).toHaveLength(5);
+      expect(nearMisses).toHaveLength(2);
+      for (const g of members) {
+        expect(g.themes[0]).toBe(c.theme);
+        expect(g.themes).toEqual([c.theme, ...(c.member.extraThemes ?? [])]);
+        expect(g.gameType).toBe(c.member.gameType);
+        expect(g.mechanics).toEqual(c.member.mechanics);
+        expect(MEMBER_VOLATILITY[c.id]).toContain(g.volatility);
+        expect(g.status).toBe("active");
+        expect([g.minStake, g.maxStake]).toEqual([0.2, 50]);
+        expect(g.jackpotNetwork).toBeNull();
+      }
+      expect(new Set(members.map((g) => g.provider)).size).toBe(5);
+      for (const g of nearMisses) {
+        expect(g.themes[0]).toBe(c.theme);
+        const differs = g.gameType !== c.member.gameType || JSON.stringify(g.mechanics) !== JSON.stringify(c.member.mechanics);
+        expect(differs).toBe(true);
+        expect([g.minStake, g.maxStake]).toEqual([0.2, 50]);
+      }
+    }
+  });
+
+  it("alternates medium and high for the fishing members", async () => {
+    const { canonical } = await offlineDataset();
+    const vols = canonical.filter((g) => g.benchmarkCluster === "fishing_cash_collect" && g.clusterRole === "member").map((g) => g.volatility);
+    expect(vols.filter((v) => v === "medium")).toHaveLength(3);
+    expect(vols.filter((v) => v === "high")).toHaveLength(2);
+  });
+
+  it("makes every cluster game available everywhere in Europe", async () => {
+    const { canonical } = await offlineDataset();
+    for (const g of canonical.filter((x) => x.benchmarkCluster)) {
+      expect(g.brands).toEqual(expect.arrayContaining(["aurora", "harbour", "meridian"]));
+      expect(g.markets).toEqual(expect.arrayContaining(["GB", "ES", "SE", "NL"]));
+      expect(g.status).toBe("active");
+    }
+  });
+
+  it("corrects every forced entry when the LLM returns wrong themes, mechanics and volatility", async () => {
+    const slate = buildSlate();
+    const llm = new FakeJsonLlm((args) => ({
+      games: slotsInRequest(args.user).map(({ slot }) => ({
+        slot,
+        title: `Wrong Game ${slot}`,
+        provider: "Lumen Studios", // the same studio for everything
+        themes: ["horror", "space"],
+        mechanics: ["megaways", "progressive_jackpot"],
+        volatility: "extreme",
+        rtp: 96,
+        minStake: 1,
+        maxStake: 90,
+        reelLayout: "6x7 Megaways, 117,649 ways",
+        maxWinMultiplier: 20000,
+        jackpotNetwork: "Starfall Network",
+        releaseYear: 2020,
+        description: "A horror megaways slot.",
+      })),
+    }));
+    const games = await generateWithLlm(slate, llm, { system: "p" });
+    for (const s of slate.filter((x) => x.forced)) {
+      const g = games.find((x) => x.slot === s.slot)!;
+      expect(g.themes).toEqual([...new Set([s.primaryTheme, ...s.forced!.extraThemes])]);
+      expect(g.mechanics).toEqual(s.forced!.mechanics);
+      expect(g.volatility).toBe(s.forced!.volatility);
+      expect([g.minStake, g.maxStake, g.jackpotNetwork]).toEqual([0.2, 50, null]);
+    }
+    for (const c of BENCHMARK_CLUSTERS) {
+      const members = slate.filter((s) => s.cluster === c.id && s.clusterRole === "member");
+      expect(new Set(members.map((m) => games.find((g) => g.slot === m.slot)!.provider)).size).toBe(5);
+    }
+  });
+});
+
+describe("evaluation dimensions (spec 03 §6)", () => {
+  const LABEL_KEYS = ["gameType", "qualityProfile", "series", "semanticCluster", "clusterRole", "volatilityBand", "marketProfile", "brandScope", "distribution", "trapTypes"];
+
+  it("gives every reference entry exactly the 10 label keys", async () => {
+    const { reference } = await offlineDataset();
+    for (const r of reference) {
+      expect(Object.keys(r.labels).sort()).toEqual([...LABEL_KEYS].sort());
+      expect(r.labels.trapTypes).toEqual(r.specials);
+      expect(r.labels.qualityProfile).toBe(r.profile);
+      expect(["eu_only", "eu_and_nj", "nj_only", "none"]).toContain(r.labels.marketProfile);
+      expect(["single_brand", "multi_brand"]).toContain(r.labels.brandScope);
+      expect(["direct", "aggregated"]).toContain(r.labels.distribution);
+    }
+  });
+
+  it("keeps cluster records rich or partial and free of traps (seasonal excepted)", async () => {
+    const { reference } = await offlineDataset();
+    const clustered = reference.filter((r) => r.labels.semanticCluster);
+    expect(clustered).toHaveLength(28);
+    for (const r of clustered) {
+      expect(["rich", "partial"]).toContain(r.profile);
+      expect(r.specials.every((s) => s === "seasonal")).toBe(true);
+      expect(["member", "near_miss"]).toContain(r.labels.clusterRole);
+    }
+    expect(clustered.some((r) => r.profile === "partial")).toBe(true);
+  });
+
+  it("labels at least one record studio_aggregator_swap", async () => {
+    const { reference } = await offlineDataset();
+    expect(reference.filter((r) => r.labels.trapTypes.includes("studio_aggregator_swap")).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("summarises the dimensions in the manifest, naming every denominator", async () => {
+    const { manifest, canonical, reference } = await offlineDataset();
+    const dims = manifest.evaluation_dimensions as ReturnType<typeof evaluationDimensions>;
+    expect(dims.note).toMatch(/^108 canonical games are represented by 113 feed records; the difference is duplicate exports and RTP variants/);
+    expect(dims.perCanonicalGame.denominator).toBe(108);
+    expect(dims.perFeedRecord.denominator).toBe(113);
+    expect(dims.perCanonicalGame.benchmarkClusters).toEqual(
+      BENCHMARK_CLUSTERS.map((c) => ({ id: c.id, label: c.label, members: 5, nearMisses: 2 })),
+    );
+    const sum = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
+    for (const key of ["gameType", "volatility", "series", "marketProfile", "brandScope", "distribution"] as const) {
+      expect(sum(dims.perCanonicalGame[key])).toBe(canonical.length);
+    }
+    expect(sum(dims.perFeedRecord.qualityProfile)).toBe(reference.length);
+    expect(dims.perCanonicalGame.gameType).toEqual({ bingo: 5, instant_win: 7, live: 9, slot: 78, table: 9 });
   });
 });
 

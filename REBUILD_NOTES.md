@@ -92,3 +92,11 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
 - **`IndexSchema` written now.** It lives in `src/domain/index-schema.ts` with `ServiceGame`, with the spec 05 §4.3 fields; its type is named `RecommendationIndex` (the name appendix A14 uses). Spec 05 builds the artefact against it.
 - **`eval/release-gates.json` shape.** A `_comment`, then layer → gate key → `{ min | max, why }`. Spec 06 adds its gates to the same groups.
 - **Extra test file.** `tests/config.test.ts` checks the service config against spec 02 §6.1 and the gates file's structure.
+
+### Milestone 3 (spec 03)
+
+- **No code change needed.** The cluster definitions (A3), enforcement (A4), availability (A6), profiles and labels (A7), and the manifest's `evaluation_dimensions` (built in `src/catalogue/dataset.ts` since milestone 1) already implemented spec 03. This milestone added the tests and the README section.
+- **"Near-misses differ in type or mechanics"** is tested as: a different game type, or a mechanics list not identical to the members'. Every reference near-miss meets it. Near-misses also get the £0.20/£50 stakes, because `enforceSlate` applies to every forced entry, not only members.
+- **"Allowed volatility"** for members means the cluster's listed values. The fishing members alternate medium/high by slate order (`i % 2`), giving 3 medium and 2 high.
+- **`marketProfile`, `brandScope` and `distribution` per canonical game** are counted from each game's own reference entry (`rawId === canonicalId`), not from duplicates or RTP variants. They come from the canonical record, so a record whose feed lost its markets still counts as `eu_only`/`eu_and_nj` here; the missing markets show up in `trapTypes` instead.
+- **README "Dataset design"** gives label values and denominators, not counts per value, so it stays true for both the offline and the OpenAI build. The counts live in each build's manifest. The rest of the README is left to spec 08.

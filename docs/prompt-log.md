@@ -48,3 +48,9 @@ Read-only: does the normaliser map "uk" to "gb"?some feed records use "ES;UK;NL;
 Read @AGENTS.md and implement @docs/prompts/02-guardrail-layers-and-compliance-traps.md, following milestone 2 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then run npm run generate -- --provider=offline. Build and run everything offline; don't run the OpenAI path. Tick milestone 2 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
 
 Finish by reporting: the test results, the catalogueHash of data/offline/catalogue.raw.json (expected 5caf2bbb0f343546 now that traps are added), the counts of canonical games and feed records, and anything you had to interpret.
+
+## 2026-11-16 01:32:25
+
+Read @AGENTS.md and implement @docs/prompts/03-benchmark-clusters-and-evaluation-dimensions.md, following milestone 3 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then run npm run generate -- --provider=offline. Build and run everything offline; don't run the OpenAI path. Tick milestone 3 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
+
+Don't commit; I make the commits. Finish by reporting: the test results, the offline catalogueHash (must still be 5caf2bbb0f343546), the manifest's evaluation_dimensions summary, and anything you had to interpret.

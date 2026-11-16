@@ -252,29 +252,29 @@ Done 2026-11-16: typecheck clean; 226 tests pass (6 files). Offline generate: 10
 
 ### Checklist
 
-- [ ] `src/domain/vocabulary.ts`: `fishing`, `cash_collect` and their synonyms are present (A2).
-- [ ] `src/catalogue/slate.ts` and `creative.ts`: confirm:
+- [x] `src/domain/vocabulary.ts`: `fishing`, `cash_collect` and their synonyms are present (A2).
+- [x] `src/catalogue/slate.ts` and `creative.ts`: confirm:
   - the 28 cluster entries;
   - the fixed mix of 9 / 2 / 5 / 4;
   - `enforceSlate` on both paths;
   - cluster slate lines that carry `MUST use mechanics=…; volatility=…; also themes=…`.
-- [ ] `src/catalogue/degrade.ts`: confirm:
+- [x] `src/catalogue/degrade.ts`: confirm:
   - cluster games are active, with every EU brand and market;
   - their profile is `rich` or `partial` only, and they're excluded from every pool;
   - `labelsFor` gives every entry 10 keys.
-- [ ] `src/domain/types.ts`: `benchmarkCluster` and `clusterRole` (already in A12).
-- [ ] `scripts/generate-catalogue.ts`: `manifest.evaluation_dimensions` with:
+- [x] `src/domain/types.ts`: `benchmarkCluster` and `clusterRole` (already in A12).
+- [x] `scripts/generate-catalogue.ts`: `manifest.evaluation_dimensions` with:
   - `note`;
   - `perCanonicalGame` (denominator 108): game type, volatility, series, `benchmarkClusters` (label, members, near-misses), market profile, brand scope, distribution;
   - `perFeedRecord` (denominator 113): quality profile, trap types.
-- [ ] `README.md`: create it with the "Dataset design" section only (spec 03 §8).
+- [x] `README.md`: create it with the "Dataset design" section only (spec 03 §8).
 
 ### Files
 
 | Action | Path |
 | --- | --- |
 | modify or verify | `src/domain/vocabulary.ts`, `src/catalogue/slate.ts`, `src/catalogue/creative.ts`, `src/catalogue/degrade.ts`, `src/domain/types.ts` |
-| modify | `scripts/generate-catalogue.ts`, `tests/pipeline.test.ts`, `REBUILD_NOTES.md` |
+| modify | `tests/pipeline.test.ts`, `REBUILD_NOTES.md` (`scripts/generate-catalogue.ts` unchanged: the dimensions are built in `src/catalogue/dataset.ts` since M1) |
 | create | `README.md` (dataset design section) |
 
 ### Tests to add (`tests/pipeline.test.ts`)
@@ -319,7 +319,9 @@ $canon | Where-Object benchmarkCluster | Group-Object benchmarkCluster, clusterR
 > 4. **`npm run generate -- --provider=offline`:** `data/offline/manifest.json` shows 4 clusters × (5 + 2), with denominators 108 and 113.
 > 5. **`npm run eval -- --provider=offline`:** the benchmark-cluster table appears, with raw → enriched values and a macro row. (Checked once spec 06's runner exists.)
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4 `[ ]` AC5 *(checked in M6)*
+Status: `[x]` AC1 `[x]` AC2 `[x]` AC3 `[x]` AC4 `[ ]` AC5 *(checked in M6)*
+
+Done 2026-11-16: typecheck clean; 236 tests pass (6 files). Offline `catalogueHash` still `5caf2bbb0f343546`. Manifest: 4 clusters × (5 + 2), denominators 108 and 113. The 28 cluster records are 20 rich, 8 partial. No code change was needed: the M1/M2 code already implemented spec 03; this milestone added the tests and the README section. See `REBUILD_NOTES.md`.
 
 ---
 
