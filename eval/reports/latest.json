@@ -123,7 +123,7 @@
       {
         "layer": "ranking",
         "gate": "ndcgAt5",
-        "value": 0.632,
+        "value": 0.725,
         "rule": "≥ 0.6",
         "result": "PASS",
         "why": "Against silver labels, below 0.6 the rail is closer to a shuffled list than to what a curator would pick; not worth the page space."
@@ -131,17 +131,17 @@
       {
         "layer": "ranking",
         "gate": "ndcgLiftOverRawText",
-        "value": 0.008,
+        "value": -0.003,
         "rule": "≥ 0",
-        "result": "PASS",
+        "result": "FAIL",
         "why": "Enrichment costs model calls and adds a failure surface; it ships only if it ranks at least as well as embedding the raw feed text."
       },
       {
         "layer": "ranking",
         "gate": "badRecommendationRate",
-        "value": 0.531,
+        "value": 0.137,
         "rule": "≤ 0.15",
-        "result": "FAIL",
+        "result": "PASS",
         "why": "An unrelated game in a 'Because you played X' rail erodes trust in the rail; more than about 1 in 7 shown items unrelated is too many."
       }
     ],
@@ -181,14 +181,14 @@
         "layer": "4 Abstention",
         "trap": "Cold-start release (should answer)",
         "record": "g-013 \"Pharaoh's Secrets\"",
-        "happened": "liberty/NJ: ok, 5 items",
+        "happened": "liberty/NJ: declined NO_CONFIDENT_MATCHES; 2 related eligible games by ground truth",
         "ok": true
       },
       {
         "layer": "2 Eligibility",
         "trap": "Seasonal title",
         "record": "g-014 \"Festive Revelry\"",
-        "happened": "served 0 in July (December: 197, not judged)",
+        "happened": "served 0 in July (December: 28, not judged)",
         "ok": true
       },
       {
@@ -265,8 +265,8 @@
         "layer": "4 Abstention",
         "trap": "Cold-start release (should answer)",
         "record": "g-050 \"Roulette Royale\"",
-        "happened": "aurora/GB: ok, 5 items",
-        "ok": true
+        "happened": "aurora/GB: declined NO_CONFIDENT_MATCHES; 4 related eligible games by ground truth",
+        "ok": false
       },
       {
         "layer": "1 Information",
@@ -321,7 +321,7 @@
         "layer": "2 Eligibility",
         "trap": "Seasonal title",
         "record": "g-073 \"Jolly Winterfest Spins\"",
-        "happened": "served 0 in July (December: 215, not judged)",
+        "happened": "served 0 in July (December: 28, not judged)",
         "ok": true
       },
       {
@@ -342,7 +342,7 @@
         "layer": "2 Eligibility",
         "trap": "Seasonal title",
         "record": "g-078 \"Deep Reef Adventure\"",
-        "happened": "served 0 in July (December: 128, not judged)",
+        "happened": "served 0 in July (December: 40, not judged)",
         "ok": true
       },
       {
@@ -363,14 +363,14 @@
         "layer": "2 Eligibility",
         "trap": "Market twin (not licensed in NJ)",
         "record": "g-101 \"Fortune's Bounty II\"",
-        "happened": "absent on g-036's rail, liberty/NJ (7 shown); similarity rank #1; rules: not_licensed_in_market",
+        "happened": "absent on g-036's rail, liberty/NJ (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: not_licensed_in_market",
         "ok": true
       },
       {
         "layer": "2 Eligibility",
         "trap": "Market twin (not licensed in NJ)",
         "record": "g-102 \"Stellar Quest II\"",
-        "happened": "absent on g-084's rail, liberty/NJ (6 shown); similarity rank #1; rules: not_licensed_in_market",
+        "happened": "absent on g-084's rail, liberty/NJ (declined NO_CONFIDENT_MATCHES); similarity rank #1; rules: not_licensed_in_market",
         "ok": true
       },
       {
@@ -430,9 +430,11 @@
         "ok": true
       }
     ],
-    "handled": 40,
+    "handled": 39,
     "total": 40,
-    "misses": []
+    "misses": [
+      "Cold-start release (should answer): g-050 \"Roulette Royale\""
+    ]
   },
   "clusters": {
     "variants": [
@@ -449,13 +451,13 @@
             "recallAt5": 1,
             "mrr": 0.9,
             "nearMissIntrusion": 0.8,
-            "servedRecallAt5": 0.6
+            "servedRecallAt5": 0.2
           },
           "enriched": {
             "recallAt5": 1,
             "mrr": 0.9,
             "nearMissIntrusion": 1,
-            "servedRecallAt5": 0.6
+            "servedRecallAt5": 0.2
           }
         }
       },
@@ -522,13 +524,13 @@
         "recallAt5": 0.95,
         "mrr": 0.975,
         "nearMissIntrusion": 0.25,
-        "servedRecallAt5": 0.75
+        "servedRecallAt5": 0.65
       },
       "enriched": {
         "recallAt5": 0.9,
         "mrr": 0.91,
         "nearMissIntrusion": 0.4,
-        "servedRecallAt5": 0.75
+        "servedRecallAt5": 0.65
       }
     }
   },
@@ -601,8 +603,8 @@
     "outcomes": {
       "BRAND_DISABLED": 226,
       "INSUFFICIENT_SOURCE_DATA": 222,
-      "NO_CONFIDENT_MATCHES": 98,
-      "ok": 1312,
+      "NO_CONFIDENT_MATCHES": 790,
+      "ok": 620,
       "SEED_NOT_AVAILABLE": 402
     },
     "counts": {
@@ -612,542 +614,444 @@
     },
     "firstViolations": [],
     "removedPerRule": {
-      "diversity:provider_cap": 1597,
-      "eligibility:feature_restricted_in_market": 509,
-      "eligibility:not_licensed_in_market": 7511,
-      "eligibility:not_live": 4920,
-      "eligibility:not_on_brand": 10445,
-      "eligibility:out_of_season": 2732,
-      "eligibility:test_game": 723,
+      "eligibility:feature_restricted_in_market": 604,
+      "eligibility:not_licensed_in_market": 8660,
+      "eligibility:not_live": 6000,
+      "eligibility:not_on_brand": 11850,
+      "eligibility:out_of_season": 3180,
+      "eligibility:test_game": 888,
       "policy:min_bet_escalation": 164,
-      "policy:stake_escalation": 2787,
+      "policy:stake_escalation": 2884,
       "policy:stake_unknown": 80,
-      "policy:volatility_escalation": 2974,
-      "policy:volatility_unknown": 6310,
-      "quality:duplicate_or_rtp_variant": 598,
-      "quality:duplicate_title": 270,
-      "quality:thin_record": 59
+      "policy:volatility_escalation": 3128,
+      "policy:volatility_unknown": 6948,
+      "quality:duplicate_or_rtp_variant": 180,
+      "quality:duplicate_title": 112,
+      "quality:no_shared_theme": 16326,
+      "quality:thin_record": 158
     }
   },
   "ranking": {
     "queries": 184,
     "abstainingQueries": 15,
-    "answerableQueries": 70,
+    "answerableQueries": 58,
     "threshold": 0.45,
     "variants": [
       {
         "variant": "enriched",
-        "ndcgAt5": 0.632,
-        "precisionAt5": 0.469,
-        "badRecommendationRate": 0.531,
+        "ndcgAt5": 0.725,
+        "precisionAt5": 0.863,
+        "badRecommendationRate": 0.137,
         "coverage": 1,
-        "allQueryCoverage": 0.858,
+        "allQueryCoverage": 0.396,
         "expectedDeclineRate": 1,
-        "answered": 145,
-        "itemsShown": 718,
+        "answered": 67,
+        "itemsShown": 263,
         "declineReasons": {
           "INSUFFICIENT_SOURCE_DATA": 28,
-          "NO_CONFIDENT_MATCHES": 11
+          "NO_CONFIDENT_MATCHES": 89
         }
       },
       {
         "variant": "raw_text",
-        "ndcgAt5": 0.624,
-        "precisionAt5": 0.49,
-        "badRecommendationRate": 0.51,
+        "ndcgAt5": 0.728,
+        "precisionAt5": 0.844,
+        "badRecommendationRate": 0.156,
         "coverage": 1,
-        "allQueryCoverage": 0.834,
+        "allQueryCoverage": 0.396,
         "expectedDeclineRate": 1,
-        "answered": 141,
-        "itemsShown": 688,
+        "answered": 67,
+        "itemsShown": 269,
         "declineReasons": {
           "INSUFFICIENT_SOURCE_DATA": 28,
-          "NO_CONFIDENT_MATCHES": 15
+          "NO_CONFIDENT_MATCHES": 89
         }
       },
       {
         "variant": "rules_enriched",
-        "ndcgAt5": 0.63,
-        "precisionAt5": 0.474,
-        "badRecommendationRate": 0.526,
-        "coverage": 1,
-        "allQueryCoverage": 0.858,
+        "ndcgAt5": 0.73,
+        "precisionAt5": 0.867,
+        "badRecommendationRate": 0.133,
+        "coverage": 0.983,
+        "allQueryCoverage": 0.385,
         "expectedDeclineRate": 1,
-        "answered": 145,
-        "itemsShown": 717,
+        "answered": 65,
+        "itemsShown": 255,
         "declineReasons": {
           "INSUFFICIENT_SOURCE_DATA": 28,
-          "NO_CONFIDENT_MATCHES": 11
+          "NO_CONFIDENT_MATCHES": 91
         }
       },
       {
         "variant": "random",
-        "ndcgAt5": 0.123,
-        "precisionAt5": 0.106,
-        "badRecommendationRate": 0.894,
+        "ndcgAt5": 0.689,
+        "precisionAt5": 0.83,
+        "badRecommendationRate": 0.17,
         "coverage": 1,
-        "allQueryCoverage": 0.899,
+        "allQueryCoverage": 0.396,
         "expectedDeclineRate": 1,
-        "answered": 152,
-        "itemsShown": 754,
+        "answered": 67,
+        "itemsShown": 270,
         "declineReasons": {
           "INSUFFICIENT_SOURCE_DATA": 28,
-          "NO_CONFIDENT_MATCHES": 4
+          "NO_CONFIDENT_MATCHES": 89
         }
       },
       {
         "variant": "oracle (ceiling)",
-        "ndcgAt5": 0.928,
+        "ndcgAt5": 0.858,
         "precisionAt5": 1,
         "badRecommendationRate": 0,
         "coverage": 1,
-        "allQueryCoverage": 0.414,
+        "allQueryCoverage": 0.343,
         "expectedDeclineRate": 1,
-        "answered": 70,
-        "itemsShown": 313,
+        "answered": 58,
+        "itemsShown": 226,
         "declineReasons": {
           "INSUFFICIENT_SOURCE_DATA": 28,
-          "NO_CONFIDENT_MATCHES": 86
+          "NO_CONFIDENT_MATCHES": 98
         }
       }
     ],
     "sweep": [
       {
         "threshold": 0.2,
-        "ndcgAt5": 0.627,
-        "badRecommendationRate": 0.539,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.25,
-        "ndcgAt5": 0.627,
-        "badRecommendationRate": 0.539,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.3,
-        "ndcgAt5": 0.627,
-        "badRecommendationRate": 0.539,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.35,
-        "ndcgAt5": 0.627,
-        "badRecommendationRate": 0.539,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.4,
-        "ndcgAt5": 0.627,
-        "badRecommendationRate": 0.536,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.45,
-        "ndcgAt5": 0.632,
-        "badRecommendationRate": 0.531,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.5,
-        "ndcgAt5": 0.633,
-        "badRecommendationRate": 0.523,
+        "ndcgAt5": 0.725,
+        "badRecommendationRate": 0.137,
         "coverage": 1
       },
       {
         "threshold": 0.55,
-        "ndcgAt5": 0.631,
-        "badRecommendationRate": 0.505,
-        "coverage": 1
+        "ndcgAt5": 0.734,
+        "badRecommendationRate": 0.135,
+        "coverage": 0.983
       },
       {
         "threshold": 0.6,
-        "ndcgAt5": 0.688,
-        "badRecommendationRate": 0.416,
-        "coverage": 0.986
+        "ndcgAt5": 0.763,
+        "badRecommendationRate": 0.096,
+        "coverage": 0.879
       },
       {
         "threshold": 0.65,
-        "ndcgAt5": 0.788,
-        "badRecommendationRate": 0.266,
-        "coverage": 0.9
+        "ndcgAt5": 0.807,
+        "badRecommendationRate": 0.05,
+        "coverage": 0.724
       },
       {
         "threshold": 0.7,
-        "ndcgAt5": 0.811,
-        "badRecommendationRate": 0.028,
-        "coverage": 0.7
+        "ndcgAt5": 0.803,
+        "badRecommendationRate": 0.015,
+        "coverage": 0.638
       },
       {
         "threshold": 0.75,
-        "ndcgAt5": 0.772,
-        "badRecommendationRate": 0.015,
-        "coverage": 0.6
+        "ndcgAt5": 0.781,
+        "badRecommendationRate": 0.02,
+        "coverage": 0.517
       },
       {
         "threshold": 0.8,
-        "ndcgAt5": 0.748,
+        "ndcgAt5": 0.753,
         "badRecommendationRate": 0,
-        "coverage": 0.343
+        "coverage": 0.345
       }
     ],
     "suggestion": {
-      "threshold": 0.65,
-      "text": "Suggested operating point for openai:text-embedding-3-small: minScore 0.65 (bad-rec 0.266, coverage 0.9, nDCG@5 0.788); current 0.45."
+      "threshold": 0.6,
+      "text": "Suggested operating point for openai:text-embedding-3-small: minScore 0.6 (bad-rec 0.096, coverage 0.879, nDCG@5 0.763); current 0.45."
     },
     "failureCases": {
       "lowestNdcg": [
         {
-          "seed": "g-003",
-          "title": "Nightmare's Embrace",
-          "context": "harbour/GB",
+          "seed": "g-019",
+          "title": "Fruit Blast Scratch",
+          "context": "aurora/GB",
           "ndcg": 0,
-          "seedTruth": "slot; horror; sticky_wilds, cascading_reels; high",
+          "seedTruth": "instant_win; fruit; scratch_card; medium",
           "items": [
             {
-              "gameId": "g-096",
-              "title": "Enchanted Realms",
-              "score": 0.6216,
+              "gameId": "g-021",
+              "title": "Fruit Frenzy Spins",
+              "score": 0.6535,
               "grade": 0,
-              "truth": "slot; fantasy; multipliers, free_spins; low"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-068",
-              "title": "Cascading Sands",
-              "score": 0.5952,
+              "gameId": "g-024",
+              "title": "Fruit Fiesta",
+              "score": 0.6182,
               "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-016",
-              "title": "Thunder Halls: Valkyrie's Call",
-              "score": 0.5783,
+              "gameId": "g-033",
+              "title": "Classic Fruit Fiesta",
+              "score": 0.6051,
               "grade": 0,
-              "truth": "slot; nordic; expanding_wilds, free_spins; high"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-051",
-              "title": "Mythic Realms",
-              "score": 0.5733,
+              "gameId": "g-048",
+              "title": "Classic Fruit Fortune",
+              "score": 0.5925,
               "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
-            },
-            {
-              "gameId": "g-083",
-              "title": "Cascading Pharaohs",
-              "score": 0.5493,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             }
           ]
         },
         {
-          "seed": "g-004",
-          "title": "Champions Arena",
-          "context": "harbour/GB",
+          "seed": "g-061",
+          "title": "Fishing Frenzy Pick Bonus",
+          "context": "aurora/GB",
           "ndcg": 0,
-          "seedTruth": "slot; sports; multipliers, free_spins; medium",
+          "seedTruth": "bingo; fishing; pick_bonus; low",
           "items": [
             {
-              "gameId": "g-099",
-              "title": "Gemstone Quest",
-              "score": 0.6019,
+              "gameId": "g-022",
+              "title": "Reel Catch Adventure",
+              "score": 0.6729,
               "grade": 0,
-              "truth": "slot; gems; multipliers, free_spins; medium"
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             },
             {
-              "gameId": "g-031",
-              "title": "Gods of Olympus",
-              "score": 0.579,
+              "gameId": "g-037",
+              "title": "Ocean's Bounty Cash Collect",
+              "score": 0.6723,
               "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             },
             {
-              "gameId": "g-084",
-              "title": "Stellar Quest",
-              "score": 0.5604,
+              "gameId": "g-090",
+              "title": "Catch of the Day Scratch",
+              "score": 0.6192,
               "grade": 0,
-              "truth": "slot; space; free_spins; medium"
+              "truth": "instant_win; fishing; scratch_card; low"
+            }
+          ]
+        },
+        {
+          "seed": "g-090",
+          "title": "Catch of the Day Scratch",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "instant_win; fishing; scratch_card; low",
+          "items": [
+            {
+              "gameId": "g-061",
+              "title": "Fishing Frenzy Pick Bonus",
+              "score": 0.6192,
+              "grade": 0,
+              "truth": "bingo; fishing; pick_bonus; low"
             },
             {
-              "gameId": "g-030",
-              "title": "Bandit Ridge Showdown",
-              "score": 0.5516,
+              "gameId": "g-037",
+              "title": "Ocean's Bounty Cash Collect",
+              "score": 0.5785,
               "grade": 0,
-              "truth": "slot; western; free_spins, multipliers; medium"
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             },
             {
               "gameId": "g-022",
               "title": "Reel Catch Adventure",
-              "score": 0.5447,
+              "score": 0.5674,
               "grade": 0,
               "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             }
           ]
         },
         {
-          "seed": "g-014",
-          "title": "Festive Revelry",
-          "context": "aurora/GB",
-          "ndcg": 0,
-          "seedTruth": "slot; festive; multipliers, cascading_reels; medium",
+          "seed": "g-008",
+          "title": "Secrets of the Sphinx",
+          "context": "harbour/GB",
+          "ndcg": 0.184,
+          "seedTruth": "slot; egyptian; cascading_reels, multipliers; high",
           "items": [
             {
-              "gameId": "g-024",
-              "title": "Fruit Fiesta",
-              "score": 0.6357,
-              "grade": 0,
-              "truth": "slot; fruit, classic; fixed_paylines; low"
+              "gameId": "g-002",
+              "title": "Pharaoh's Secret Treasures",
+              "score": 0.7957,
+              "grade": 1,
+              "truth": "slot; egyptian; expanding_wilds, free_spins; medium"
             },
             {
-              "gameId": "g-036",
-              "title": "Fortune's Bounty",
-              "score": 0.6332,
-              "grade": 0,
-              "truth": "slot; wealth; multipliers, free_spins; medium"
+              "gameId": "g-062",
+              "title": "Pharaoh's Gold",
+              "score": 0.6663,
+              "grade": 1,
+              "truth": "slot; egyptian, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-101",
-              "title": "Fortune's Bounty II",
-              "score": 0.626,
+              "gameId": "g-053",
+              "title": "Egyptian Scratch Wonders",
+              "score": 0.6096,
               "grade": 0,
-              "truth": "slot; wealth; multipliers, free_spins; medium"
-            },
-            {
-              "gameId": "g-068",
-              "title": "Cascading Sands",
-              "score": 0.6225,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
-            },
-            {
-              "gameId": "g-052",
-              "title": "Treasure of the Seven Seas",
-              "score": 0.616,
-              "grade": 0,
-              "truth": "slot; pirates; cascading_reels, pick_bonus; high"
-            }
-          ]
-        },
-        {
-          "seed": "g-016-cms2",
-          "title": "THUNDER HALLS: VALKYRIE'S CALL",
-          "context": "aurora/GB",
-          "ndcg": 0,
-          "seedTruth": "slot; nordic; expanding_wilds, free_spins; high",
-          "items": [
-            {
-              "gameId": "g-051",
-              "title": "Mythic Realms",
-              "score": 0.6435,
-              "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
-            },
-            {
-              "gameId": "g-096",
-              "title": "Enchanted Realms",
-              "score": 0.6012,
-              "grade": 0,
-              "truth": "slot; fantasy; multipliers, free_spins; low"
-            },
-            {
-              "gameId": "g-099",
-              "title": "Gemstone Quest",
-              "score": 0.5794,
-              "grade": 0,
-              "truth": "slot; gems; multipliers, free_spins; medium"
-            },
-            {
-              "gameId": "g-070",
-              "title": "Pharaoh's Cascade",
-              "score": 0.5699,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
-            },
-            {
-              "gameId": "g-083",
-              "title": "Cascading Pharaohs",
-              "score": 0.5649,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+              "truth": "instant_win; egyptian; scratch_card; low"
             }
           ]
         }
       ],
       "topSlotUnrelated": [
         {
-          "seed": "g-003",
-          "title": "Nightmare's Embrace",
-          "context": "harbour/GB",
-          "ndcg": 0,
-          "seedTruth": "slot; horror; sticky_wilds, cascading_reels; high",
-          "items": [
-            {
-              "gameId": "g-096",
-              "title": "Enchanted Realms",
-              "score": 0.6216,
-              "grade": 0,
-              "truth": "slot; fantasy; multipliers, free_spins; low"
-            },
-            {
-              "gameId": "g-068",
-              "title": "Cascading Sands",
-              "score": 0.5952,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
-            },
-            {
-              "gameId": "g-016",
-              "title": "Thunder Halls: Valkyrie's Call",
-              "score": 0.5783,
-              "grade": 0,
-              "truth": "slot; nordic; expanding_wilds, free_spins; high"
-            },
-            {
-              "gameId": "g-051",
-              "title": "Mythic Realms",
-              "score": 0.5733,
-              "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
-            },
-            {
-              "gameId": "g-083",
-              "title": "Cascading Pharaohs",
-              "score": 0.5493,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
-            }
-          ]
-        },
-        {
-          "seed": "g-004",
-          "title": "Champions Arena",
-          "context": "harbour/GB",
-          "ndcg": 0,
-          "seedTruth": "slot; sports; multipliers, free_spins; medium",
-          "items": [
-            {
-              "gameId": "g-099",
-              "title": "Gemstone Quest",
-              "score": 0.6019,
-              "grade": 0,
-              "truth": "slot; gems; multipliers, free_spins; medium"
-            },
-            {
-              "gameId": "g-031",
-              "title": "Gods of Olympus",
-              "score": 0.579,
-              "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
-            },
-            {
-              "gameId": "g-084",
-              "title": "Stellar Quest",
-              "score": 0.5604,
-              "grade": 0,
-              "truth": "slot; space; free_spins; medium"
-            },
-            {
-              "gameId": "g-030",
-              "title": "Bandit Ridge Showdown",
-              "score": 0.5516,
-              "grade": 0,
-              "truth": "slot; western; free_spins, multipliers; medium"
-            },
-            {
-              "gameId": "g-022",
-              "title": "Reel Catch Adventure",
-              "score": 0.5447,
-              "grade": 0,
-              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
-            }
-          ]
-        },
-        {
-          "seed": "g-014",
-          "title": "Festive Revelry",
+          "seed": "g-019",
+          "title": "Fruit Blast Scratch",
           "context": "aurora/GB",
           "ndcg": 0,
-          "seedTruth": "slot; festive; multipliers, cascading_reels; medium",
+          "seedTruth": "instant_win; fruit; scratch_card; medium",
           "items": [
             {
-              "gameId": "g-024",
-              "title": "Fruit Fiesta",
-              "score": 0.6357,
+              "gameId": "g-021",
+              "title": "Fruit Frenzy Spins",
+              "score": 0.6535,
               "grade": 0,
               "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-036",
-              "title": "Fortune's Bounty",
-              "score": 0.6332,
+              "gameId": "g-024",
+              "title": "Fruit Fiesta",
+              "score": 0.6182,
               "grade": 0,
-              "truth": "slot; wealth; multipliers, free_spins; medium"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-101",
-              "title": "Fortune's Bounty II",
-              "score": 0.626,
+              "gameId": "g-033",
+              "title": "Classic Fruit Fiesta",
+              "score": 0.6051,
               "grade": 0,
-              "truth": "slot; wealth; multipliers, free_spins; medium"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-068",
-              "title": "Cascading Sands",
-              "score": 0.6225,
+              "gameId": "g-048",
+              "title": "Classic Fruit Fortune",
+              "score": 0.5925,
               "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
-            },
-            {
-              "gameId": "g-052",
-              "title": "Treasure of the Seven Seas",
-              "score": 0.616,
-              "grade": 0,
-              "truth": "slot; pirates; cascading_reels, pick_bonus; high"
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             }
           ]
         },
         {
-          "seed": "g-016",
-          "title": "Thunder Halls: Valkyrie's Call",
+          "seed": "g-061",
+          "title": "Fishing Frenzy Pick Bonus",
           "context": "aurora/GB",
           "ndcg": 0,
-          "seedTruth": "slot; nordic; expanding_wilds, free_spins; high",
+          "seedTruth": "bingo; fishing; pick_bonus; low",
           "items": [
             {
-              "gameId": "g-051",
-              "title": "Mythic Realms",
-              "score": 0.647,
+              "gameId": "g-022",
+              "title": "Reel Catch Adventure",
+              "score": 0.6729,
               "grade": 0,
-              "truth": "slot; mythology; free_spins, multipliers; medium"
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             },
             {
-              "gameId": "g-096",
-              "title": "Enchanted Realms",
-              "score": 0.6101,
+              "gameId": "g-037",
+              "title": "Ocean's Bounty Cash Collect",
+              "score": 0.6723,
               "grade": 0,
-              "truth": "slot; fantasy; multipliers, free_spins; low"
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             },
             {
-              "gameId": "g-099",
-              "title": "Gemstone Quest",
-              "score": 0.5804,
+              "gameId": "g-090",
+              "title": "Catch of the Day Scratch",
+              "score": 0.6192,
               "grade": 0,
-              "truth": "slot; gems; multipliers, free_spins; medium"
+              "truth": "instant_win; fishing; scratch_card; low"
+            }
+          ]
+        },
+        {
+          "seed": "g-062",
+          "title": "Pharaoh's Gold",
+          "context": "aurora/GB",
+          "ndcg": 0.384,
+          "seedTruth": "slot; egyptian, classic; fixed_paylines; low",
+          "items": [
+            {
+              "gameId": "g-053",
+              "title": "Egyptian Scratch Wonders",
+              "score": 0.5552,
+              "grade": 0,
+              "truth": "instant_win; egyptian; scratch_card; low"
             },
             {
-              "gameId": "g-070",
-              "title": "Pharaoh's Cascade",
-              "score": 0.577,
-              "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+              "gameId": "g-021",
+              "title": "Fruit Frenzy Spins",
+              "score": 0.5504,
+              "grade": 2,
+              "truth": "slot; fruit, classic; fixed_paylines; low"
             },
             {
-              "gameId": "g-083",
-              "title": "Cascading Pharaohs",
-              "score": 0.5697,
+              "gameId": "g-024",
+              "title": "Fruit Fiesta",
+              "score": 0.5421,
+              "grade": 2,
+              "truth": "slot; fruit, classic; fixed_paylines; low"
+            }
+          ]
+        },
+        {
+          "seed": "g-090",
+          "title": "Catch of the Day Scratch",
+          "context": "aurora/GB",
+          "ndcg": 0,
+          "seedTruth": "instant_win; fishing; scratch_card; low",
+          "items": [
+            {
+              "gameId": "g-061",
+              "title": "Fishing Frenzy Pick Bonus",
+              "score": 0.6192,
               "grade": 0,
-              "truth": "slot; egyptian; cascading_reels, multipliers; high"
+              "truth": "bingo; fishing; pick_bonus; low"
+            },
+            {
+              "gameId": "g-037",
+              "title": "Ocean's Bounty Cash Collect",
+              "score": 0.5785,
+              "grade": 0,
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
+            },
+            {
+              "gameId": "g-022",
+              "title": "Reel Catch Adventure",
+              "score": 0.5674,
+              "grade": 0,
+              "truth": "slot; fishing, underwater; cash_collect, free_spins; medium"
             }
           ]
         }

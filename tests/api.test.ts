@@ -29,12 +29,13 @@ const game = (id: string, over: Partial<ServiceGame> = {}): ServiceGame => ({
   maxStake: 50,
   minStake: 0.2,
   mechanics: ["free_spins"],
+  themes: ["fruit"],
   ...over,
 });
 
 /** A seed with five neighbours; f5 is a December-only title. */
 const INDEX: RecommendationIndex = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   indexVersion: "abcdef123456",
   builtAt: "2026-11-16T00:00:00.000Z",
   catalogueHash: "5caf2bbb0f343546",
@@ -239,7 +240,7 @@ describe("loadIndex (spec 05 §5)", () => {
   it("AC2: rejects missing, corrupt, wrong-schema-version and unknown-embedder artefacts without throwing", () => {
     expectError(loadIndex(join(dir, "missing.json"), config), "not found");
     expectError(loadIndex(write("corrupt.json", '{"schemaVersion": 2, "games": {'), config), "not valid JSON");
-    expectError(loadIndex(write("v1.json", jsonFileText({ ...INDEX, schemaVersion: 1 })), config), "failed validation");
+    expectError(loadIndex(write("v2.json", jsonFileText({ ...INDEX, schemaVersion: 2 })), config), "failed validation");
     expectError(loadIndex(write("embedder.json", jsonFileText({ ...INDEX, embedding: { id: "openai:text-embedding-3-large", dim: 3072 } })), config), "no score threshold");
   });
 

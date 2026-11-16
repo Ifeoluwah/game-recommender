@@ -193,3 +193,51 @@ Read-only analysis of eval/reports/latest.json and the committed index; change n
 5. Simulate raising the neighbour count K above 40 for the four failure seeds: would a theme-mate appear?
 Then list the options with their trade-offs, including accepting a failing gate. Don't implement any of them.
 </pasted_content id="0f25">
+
+## 2026-11-16 03:30:27
+
+<pasted_content id="0f25">
+Implement the theme-overlap rule, spec first (spec 02 §6.2, and spec 05 if the index needs themes on ServiceGame).
+
+Rule quality:no_shared_theme: a candidate must share at least one theme with the seed, or be in the same series, or from the same studio. Reason, independent of the metric: "Because you played X" implies relatedness a player can see; a rail of same-mechanic, unrelated-theme games looks broken even when every item is eligible. It belongs in the quality layer, after policy, with a diagnostics key and a row in the per-rule table. Keep the threshold at 0.45.
+
+Record in docs/EVALUATION.md and REBUILD_NOTES.md:
+- the diagnosis: 78% of unrelated items came from queries the oracle declines, so the failure was a missing decline, not bad ranking; the four failure seeds had no eligible theme-mate at all;
+- the caveat: the silver labels grade on theme overlap, so this rule aligns the system with the metric by construction, and the bad-rec figure is no longer independent evidence; a curator golden set is needed to confirm it;
+- why 0.69 without the rule was rejected: it lands exactly on the coverage gate and embeddings move between rebuilds;
+- that declines rise from 39 to about 89 of 184 queries, and why declining is the safe default.
+
+Add tests: shared theme allowed, same series allowed, same studio allowed, none of the three removed with the diagnostics key, and an unknown-theme seed. Run typecheck, tests, then npm run eval on the OpenAI build and report the gate table and sweep. Don't run generate or build:index. 
+</pasted_content id="0f25">
+
+## 2026-11-16 03:31:32
+
+<pasted_content id="7efb">
+Implement the theme-overlap rule, spec first (spec 02 §6.2, and spec 05 if the index needs themes on ServiceGame).
+
+Rule quality:no_shared_theme: a candidate must share at least one theme with the seed, or be in the same series, or from the same studio. Reason, independent of the metric: "Because you played X" implies relatedness a player can see; a rail of same-mechanic, unrelated-theme games looks broken even when every item is eligible. It belongs in the quality layer, after policy, with a diagnostics key and a row in the per-rule table. Keep the threshold at 0.45.
+
+Record in docs/EVALUATION.md and REBUILD_NOTES.md:
+- the diagnosis: 78% of unrelated items came from queries the oracle declines, so the failure was a missing decline, not bad ranking; the four failure seeds had no eligible theme-mate at all;
+- the caveat: the silver labels grade on theme overlap, so this rule aligns the system with the metric by construction, and the bad-rec figure is no longer independent evidence; a curator golden set is needed to confirm it;
+- why 0.69 without the rule was rejected: it lands exactly on the coverage gate and embeddings move between rebuilds;
+- that declines rise from 39 to about 89 of 184 queries, and why declining is the safe default.
+
+Add tests: shared theme allowed, same series allowed, same studio allowed, none of the three removed with the diagnostics key, and an unknown-theme seed. Run typecheck, tests, then npm run eval on the OpenAI build and report the gate table and sweep. Don't run generate or build:index. 
+</pasted_content id="7efb">
+
+## 2026-11-16 03:32:39
+
+<pasted_content id="89c2">
+Implement the theme-overlap rule, spec first (spec 02 §6.2, and spec 05 if the index needs themes on ServiceGame).
+
+Rule quality:no_shared_theme: a candidate must share at least one theme with the seed, or be in the same series, or from the same studio. Reason, independent of the metric: "Because you played X" implies relatedness a player can see; a rail of same-mechanic, unrelated-theme games looks broken even when every item is eligible. It belongs in the quality layer, after policy, with a diagnostics key and a row in the per-rule table. Keep the threshold at 0.45.
+
+Record in docs/EVALUATION.md and REBUILD_NOTES.md:
+- the diagnosis: 78% of unrelated items came from queries the oracle declines, so the failure was a missing decline, not bad ranking; the four failure seeds had no eligible theme-mate at all;
+- the caveat: the silver labels grade on theme overlap, so this rule aligns the system with the metric by construction, and the bad-rec figure is no longer independent evidence; a curator golden set is needed to confirm it;
+- why 0.69 without the rule was rejected: it lands exactly on the coverage gate and embeddings move between rebuilds;
+- that declines rise from 39 to about 89 of 184 queries, and why declining is the safe default.
+
+Add tests: shared theme allowed, same series allowed, same studio allowed, none of the three removed with the diagnostics key, and an unknown-theme seed. Run typecheck, tests, then npm run eval on the OpenAI build and report the gate table and sweep. Don't run generate or build:index. 
+</pasted_content id="89c2">

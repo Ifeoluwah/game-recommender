@@ -101,7 +101,7 @@ function buildWorld(inputs: EvalInputs): World {
         ...g,
         provider: c.provider, gameType: c.gameType, seriesId: c.seriesId, brands: c.brands, markets: c.markets,
         status: c.status === "active" ? "active" : "withdrawn", isTestGame: c.isTestGame, seasonMonths: c.seasonMonths,
-        volatility: c.volatility, maxStake: c.maxStake, minStake: c.minStake, mechanics: c.mechanics,
+        volatility: c.volatility, maxStake: c.maxStake, minStake: c.minStake, mechanics: c.mechanics, themes: c.themes,
       };
       truthGames.set(id, t);
     }
@@ -425,7 +425,18 @@ function plantedTraps(w: World, served: Map<string, { july: number; december: nu
           const ctx = contextFor(g, ["GB", "NJ", "ES", "SE", "NL"], config);
           if (!ctx) { out = { happened: "no enabled brand carries it in GB, NJ, ES, SE or NL", ok: false }; break; }
           const res = recommend(index, config, { gameId: id, ...ctx, month: JULY, limit: K });
-          out = { happened: `${ctx.brand}/${ctx.market}: ${res.status === "ok" ? `ok, ${res.items.length} items` : `declined ${res.reason}`}`, ok: res.status === "ok" };
+          // A NO_CONFIDENT_MATCHES decline is a false abstention only if a rail of related games
+          // existed. Judged by ground truth: distinct canonical games with grade >= 1 that are
+          // eligible and within policy in this context (spec 02 §7, revised with no_shared_theme).
+          const tctx: Context = { ...ctx, month: JULY }, seedCanon = w.canonicalIdOf(id), seedTruth = w.truthGame(id);
+          const related = new Set(w.ids
+            .filter((o) => w.canonicalIdOf(o) !== seedCanon && !index.games[o]!.insufficient && relevance(w.truthFor(id), w.truthFor(o)) >= 1)
+            .filter((o) => eligibilityProblems(w.truthGame(o), tctx, config).length === 0 && policyProblems(seedTruth, w.truthGame(o), config).length === 0)
+            .map((o) => w.canonicalIdOf(o))).size;
+          const needed = Math.min(config.recommendation.minResults, K);
+          const justified = res.status === "declined" && res.reason === "NO_CONFIDENT_MATCHES" && related < needed;
+          const answer = res.status === "ok" ? `ok, ${res.items.length} items` : `declined ${res.reason}`;
+          out = { happened: `${ctx.brand}/${ctx.market}: ${answer}; ${related} related eligible game${related === 1 ? "" : "s"} by ground truth`, ok: res.status === "ok" || justified };
           break;
         }
         case "rtp_variant": case "duplicate_export": {

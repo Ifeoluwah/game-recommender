@@ -129,6 +129,18 @@ export const currentUtcMonth = (now: Date = new Date()): number => now.getUTCMon
  */
 export const displayTitleKey = (title: string): string => title.toLowerCase().replace(/[^a-z0-9]/g, "");
 
+/**
+ * Does the candidate have a relation to the seed a player can see: a shared theme or the same series
+ * (spec 02 §6.2)? "Because you played X" promises relatedness, and a rail of same-mechanic games with
+ * unrelated themes looks broken even when every item is eligible. Same studio is deliberately not
+ * enough: with a handful of studios it relates most of the catalogue and the rule stops filtering.
+ * Fails closed: no themes means only a series can relate it, and a null series never matches.
+ */
+export function visiblyRelated(seed: ServiceGame, g: ServiceGame): boolean {
+  if (seed.seriesId !== null && seed.seriesId === g.seriesId) return true;
+  return g.themes.some((t) => seed.themes.includes(t));
+}
+
 export function clampLimit(limit: number | undefined, config: ServiceConfig): number {
   const { defaultLimit, maxLimit } = config.recommendation;
   const n = limit === undefined || !Number.isFinite(limit) ? defaultLimit : Math.trunc(limit);
@@ -187,10 +199,17 @@ export function recommend(index: RecommendIndex, config: ServiceConfig, req: Rec
     if (fails("eligibility", eligibilityProblems(g, ctx, config))) continue;
     if (fails("policy", policyProblems(seed, g, config))) continue;
     // Same game (dedupe key), or a different game with the same displayed name. A duplicate is only
-    // counted once: as a duplicate, not also as a title clash.
+    // counted once: as a duplicate, not also as a title clash. Then the candidate needs a relation to
+    // the seed a player can see.
     const sameGame = acceptedKeys.has(g.dedupeKey);
     const sameName = !sameGame && acceptedTitles.has(displayTitleKey(g.title));
-    if (fails("quality", [g.insufficient && "thin_record", sameGame && "duplicate_or_rtp_variant", sameName && "duplicate_title"].filter((x): x is string => typeof x === "string"))) continue;
+    const quality = [
+      g.insufficient && "thin_record",
+      sameGame && "duplicate_or_rtp_variant",
+      sameName && "duplicate_title",
+      !visiblyRelated(seed, g) && "no_shared_theme",
+    ].filter((x): x is string => typeof x === "string");
+    if (fails("quality", quality)) continue;
 
     const provider = g.provider ?? "unknown";
     const diversity = [

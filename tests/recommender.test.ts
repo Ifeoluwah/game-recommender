@@ -24,6 +24,7 @@ const game = (id: string, over: Partial<ServiceGame> = {}): ServiceGame => ({
   maxStake: 10,
   minStake: 0.2,
   mechanics: ["free_spins"],
+  themes: ["fruit"],
   ...over,
 });
 
@@ -151,6 +152,80 @@ describe("check order and diagnostics", () => {
     const r = withTrapFirst(game("thin", { insufficient: true }));
     expect(shown(r)).not.toContain("thin");
     expect(r.diagnostics["quality:thin_record"]).toBe(1);
+  });
+});
+
+describe("quality: a relation to the seed a player can see (no_shared_theme)", () => {
+  // Every factory game has its own studio and no series, so only the theme can relate it unless a test says otherwise.
+  const SEED_EGYPT = game("seed", { themes: ["egyptian", "adventure"] });
+  const unrelated = (id: string, over: Partial<ServiceGame> = {}) => game(id, { themes: ["space"], ...over });
+  const run = (candidate: ServiceGame, seed: ServiceGame = SEED_EGYPT) =>
+    ask(indexWith([candidate, ...["f1", "f2", "f3"].map((id) => game(id, { themes: ["egyptian"] }))], seed));
+
+  it("allows a candidate sharing one theme with the seed", () => {
+    const r = run(game("mate", { themes: ["space", "adventure"] }));
+    expect(shown(r)[0]).toBe("mate");
+    expect(r.diagnostics["quality:no_shared_theme"]).toBeUndefined();
+  });
+
+  it("allows a candidate in the same series with no shared theme", () => {
+    const seed = game("seed", { themes: ["egyptian"], seriesId: "pharaoh-saga" });
+    const r = run(unrelated("sequel", { seriesId: "pharaoh-saga" }), seed);
+    expect(shown(r)[0]).toBe("sequel");
+    expect(r.diagnostics["quality:no_shared_theme"]).toBeUndefined();
+  });
+
+  it("removes a candidate from the same studio with no shared theme or series", () => {
+    // Same studio was considered and dropped: with six studios it relates most of the catalogue (spec 02 §6.2).
+    const r = run(unrelated("sibling", { provider: SEED_EGYPT.provider }));
+    expect(shown(r)).not.toContain("sibling");
+    expect(r.diagnostics["quality:no_shared_theme"]).toBe(1);
+  });
+
+  it("removes a candidate with no shared theme or series, even at similarity rank #1, and counts it", () => {
+    const r = run(unrelated("stranger"));
+    expect(r.status).toBe("ok");
+    expect(shown(r)).toEqual(["f1", "f2", "f3"]);
+    expect(r.diagnostics).toEqual({ "quality:no_shared_theme": 1 });
+  });
+
+  it("never matches an unknown series to another unknown", () => {
+    const seed = game("seed", { themes: ["egyptian"], seriesId: null });
+    const r = run(unrelated("stranger", { seriesId: null }), seed);
+    expect(shown(r)).not.toContain("stranger");
+    expect(r.diagnostics["quality:no_shared_theme"]).toBe(1);
+  });
+
+  it("fails closed for a seed with unknown themes: only its series can relate a candidate", () => {
+    const seed = game("seed", { themes: [], seriesId: "pharaoh-saga" });
+    const r = ask(indexWith([
+      game("themed", { themes: ["egyptian"] }),
+      game("sequel", { themes: ["egyptian"], seriesId: "pharaoh-saga" }),
+      game("sibling", { themes: ["space"], provider: seed.provider }),
+      game("sequel2", { themes: [], seriesId: "pharaoh-saga" }),
+    ], seed));
+    expect(r.diagnostics["quality:no_shared_theme"]).toBe(2);
+    // Only the two series-mates survive: below minResults, so the rail is declined rather than padded.
+    expect(r).toMatchObject({ status: "declined", reason: "NO_CONFIDENT_MATCHES", items: [] });
+  });
+
+  it("fails closed for a candidate with unknown themes", () => {
+    const r = run(game("blank", { themes: [] }));
+    expect(shown(r)).not.toContain("blank");
+    expect(r.diagnostics["quality:no_shared_theme"]).toBe(1);
+  });
+
+  it("declines when every candidate is eligible but none is related", () => {
+    const r = ask(indexWith([unrelated("a"), unrelated("b"), unrelated("c"), unrelated("d")], SEED_EGYPT));
+    expect(r).toMatchObject({ status: "declined", reason: "NO_CONFIDENT_MATCHES" });
+    expect(r.diagnostics["quality:no_shared_theme"]).toBe(4);
+  });
+
+  it("doesn't count an eligibility or policy failure under no_shared_theme", () => {
+    const r = ask(indexWith([unrelated("x", { isTestGame: true }), unrelated("y", { volatility: "extreme" }), ...fillers()], game("seed", { volatility: "low" })));
+    expect(r.diagnostics["eligibility:test_game"]).toBe(1);
+    expect(r.diagnostics["policy:volatility_escalation"]).toBe(1);
+    expect(r.diagnostics["quality:no_shared_theme"]).toBeUndefined();
   });
 });
 

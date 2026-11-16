@@ -1028,7 +1028,7 @@ describe("the offline index build (spec 05 §10 AC1)", () => {
     });
     // No vectors, descriptions or enrichment internals in the service artefact.
     expect(Object.keys(index.games["g-001"]!).sort()).toEqual(
-      ["brands", "dedupeKey", "gameType", "id", "insufficient", "isTestGame", "markets", "maxStake", "mechanics", "minStake", "provider", "seasonMonths", "seriesId", "status", "title", "volatility"],
+      ["brands", "dedupeKey", "gameType", "id", "insufficient", "isTestGame", "markets", "maxStake", "mechanics", "minStake", "provider", "seasonMonths", "seriesId", "status", "themes", "title", "volatility"],
     );
   });
 });

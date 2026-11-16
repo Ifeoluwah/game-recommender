@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GAME_TYPES, MARKETS, MECHANICS, VOLATILITIES } from "./vocabulary.js";
+import { GAME_TYPES, MARKETS, MECHANICS, THEMES, VOLATILITIES } from "./vocabulary.js";
 
 /**
  * The service artefact (spec 05 §4.3). Kept free of AI imports so the service can validate an index
@@ -25,10 +25,13 @@ export const ServiceGameSchema = z.object({
   maxStake: z.number().nullable(),
   minStake: z.number().nullable(),
   mechanics: z.array(z.enum(MECHANICS)),
+  /** Guarded enriched themes. Read only by the quality rule `no_shared_theme` (spec 02 §6.2). */
+  themes: z.array(z.enum(THEMES)),
 });
 export type ServiceGame = z.infer<typeof ServiceGameSchema>;
 
-export const INDEX_SCHEMA_VERSION = 2;
+/** 3 added `themes`. A schema 2 index lacks them and is refused on load. */
+export const INDEX_SCHEMA_VERSION = 3;
 
 export const IndexSchema = z
   .object({

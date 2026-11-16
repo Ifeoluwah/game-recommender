@@ -93,6 +93,7 @@ export function toServiceGame(g: EnrichedGame): ServiceGame {
     maxStake: g.maxStake,
     minStake: g.minStake,
     mechanics: g.mechanics,
+    themes: g.themes,
   };
 }
 

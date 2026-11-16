@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "indexVersion": "ef13f1ecf784",
   "builtAt": "2026-11-16T02:51:37.789Z",
   "catalogueHash": "5c6ce9c495e70325",
@@ -36,6 +36,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "fruit"
       ]
     },
     "g-002": {
@@ -64,6 +67,9 @@
       "mechanics": [
         "expanding_wilds",
         "free_spins"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-002-rtp94": {
@@ -92,6 +98,9 @@
       "mechanics": [
         "expanding_wilds",
         "free_spins"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-003": {
@@ -119,6 +128,9 @@
       "mechanics": [
         "sticky_wilds",
         "cascading_reels"
+      ],
+      "themes": [
+        "horror"
       ]
     },
     "g-004": {
@@ -148,6 +160,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "sports"
       ]
     },
     "g-005": {
@@ -176,6 +191,9 @@
       "minStake": 1,
       "mechanics": [
         "scratch_card"
+      ],
+      "themes": [
+        "gems"
       ]
     },
     "g-006": {
@@ -203,7 +221,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-007": {
       "id": "g-007",
@@ -234,6 +253,9 @@
         "wheel_bonus",
         "multipliers",
         "live_dealer"
+      ],
+      "themes": [
+        "game_show"
       ]
     },
     "g-008": {
@@ -264,6 +286,9 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-009": {
@@ -289,7 +314,10 @@
       "volatility": null,
       "maxStake": 50,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "egyptian"
+      ]
     },
     "g-010": {
       "id": "g-010",
@@ -322,6 +350,9 @@
       "minStake": 0.1,
       "mechanics": [
         "bonus_buy"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-011": {
@@ -349,7 +380,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-012": {
       "id": "g-012",
@@ -377,7 +409,8 @@
       "volatility": null,
       "maxStake": 10,
       "minStake": 1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-013": {
       "id": "g-013",
@@ -399,7 +432,10 @@
       "volatility": "medium",
       "maxStake": 100,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "egyptian"
+      ]
     },
     "g-014": {
       "id": "g-014",
@@ -433,6 +469,9 @@
       "mechanics": [
         "multipliers",
         "cascading_reels"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-015": {
@@ -463,7 +502,10 @@
       "volatility": null,
       "maxStake": 2,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "festive"
+      ]
     },
     "g-016": {
       "id": "g-016",
@@ -493,6 +535,9 @@
       "mechanics": [
         "expanding_wilds",
         "free_spins"
+      ],
+      "themes": [
+        "nordic"
       ]
     },
     "g-016-cms2": {
@@ -523,6 +568,9 @@
       "mechanics": [
         "expanding_wilds",
         "free_spins"
+      ],
+      "themes": [
+        "nordic"
       ]
     },
     "g-017": {
@@ -553,6 +601,9 @@
       "mechanics": [
         "cash_collect",
         "free_spins"
+      ],
+      "themes": [
+        "underwater"
       ]
     },
     "g-018": {
@@ -584,6 +635,9 @@
       "minStake": 0.1,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "classic"
       ]
     },
     "g-019": {
@@ -613,6 +667,9 @@
       "mechanics": [
         "scratch_card",
         "multipliers"
+      ],
+      "themes": [
+        "fruit"
       ]
     },
     "g-020": {
@@ -635,7 +692,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-021": {
       "id": "g-021",
@@ -664,6 +722,10 @@
       "minStake": 0.2,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "fruit",
+        "classic"
       ]
     },
     "g-022": {
@@ -696,6 +758,10 @@
       "mechanics": [
         "cash_collect",
         "free_spins"
+      ],
+      "themes": [
+        "fishing",
+        "underwater"
       ]
     },
     "g-023": {
@@ -724,6 +790,9 @@
       "minStake": 0.5,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "classic"
       ]
     },
     "g-023-cms2": {
@@ -752,6 +821,9 @@
       "minStake": 0.5,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "classic"
       ]
     },
     "g-024": {
@@ -783,6 +855,10 @@
       "minStake": 0.2,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "fruit",
+        "classic"
       ]
     },
     "g-025": {
@@ -812,6 +888,10 @@
       "minStake": 0.2,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "game_show",
+        "roulette"
       ]
     },
     "g-026": {
@@ -838,7 +918,8 @@
       "volatility": null,
       "maxStake": 30,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-027": {
       "id": "g-027",
@@ -866,6 +947,9 @@
       "minStake": 0.5,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "pirates"
       ]
     },
     "g-028": {
@@ -896,6 +980,9 @@
       "minStake": 1,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "roulette"
       ]
     },
     "g-029": {
@@ -926,6 +1013,9 @@
       "mechanics": [
         "megaways",
         "cascading_reels"
+      ],
+      "themes": [
+        "fruit"
       ]
     },
     "g-030": {
@@ -958,6 +1048,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "western"
       ]
     },
     "g-031": {
@@ -986,6 +1079,9 @@
       "minStake": 0.2,
       "mechanics": [
         "free_spins"
+      ],
+      "themes": [
+        "mythology"
       ]
     },
     "g-032": {
@@ -1015,7 +1111,10 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 0.5,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "egyptian"
+      ]
     },
     "g-033": {
       "id": "g-033",
@@ -1042,7 +1141,10 @@
       "volatility": "low",
       "maxStake": 50,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "fruit"
+      ]
     },
     "g-034": {
       "id": "g-034",
@@ -1069,7 +1171,10 @@
       "volatility": null,
       "maxStake": 50,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "fruit"
+      ]
     },
     "g-035": {
       "id": "g-035",
@@ -1095,6 +1200,9 @@
         "free_spins",
         "expanding_wilds",
         "multipliers"
+      ],
+      "themes": [
+        "mythology"
       ]
     },
     "g-036": {
@@ -1125,6 +1233,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "wealth"
       ]
     },
     "g-037": {
@@ -1155,6 +1266,10 @@
       "mechanics": [
         "cash_collect",
         "free_spins"
+      ],
+      "themes": [
+        "fishing",
+        "underwater"
       ]
     },
     "g-038": {
@@ -1181,6 +1296,9 @@
         "free_spins",
         "multipliers",
         "sticky_wilds"
+      ],
+      "themes": [
+        "candy"
       ]
     },
     "g-039": {
@@ -1211,6 +1329,10 @@
       "mechanics": [
         "live_dealer",
         "side_bets"
+      ],
+      "themes": [
+        "game_show",
+        "cards"
       ]
     },
     "g-040": {
@@ -1239,6 +1361,9 @@
       "minStake": 1,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "cards"
       ]
     },
     "g-041": {
@@ -1261,7 +1386,8 @@
       "volatility": "medium",
       "maxStake": 50,
       "minStake": 0.5,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-042": {
       "id": "g-042",
@@ -1288,7 +1414,8 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-043": {
       "id": "g-043",
@@ -1320,6 +1447,10 @@
       "mechanics": [
         "cash_collect",
         "free_spins"
+      ],
+      "themes": [
+        "fishing",
+        "underwater"
       ]
     },
     "g-044": {
@@ -1347,7 +1478,8 @@
       "volatility": null,
       "maxStake": 20,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-045": {
       "id": "g-045",
@@ -1373,7 +1505,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-046": {
       "id": "g-046",
@@ -1399,7 +1532,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-047": {
       "id": "g-047",
@@ -1427,6 +1561,9 @@
       "mechanics": [
         "free_spins",
         "expanding_wilds"
+      ],
+      "themes": [
+        "mythology"
       ]
     },
     "g-048": {
@@ -1454,7 +1591,10 @@
       "volatility": "low",
       "maxStake": 50,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "fruit"
+      ]
     },
     "g-049": {
       "id": "g-049",
@@ -1477,6 +1617,9 @@
       "mechanics": [
         "free_spins",
         "sticky_wilds"
+      ],
+      "themes": [
+        "fantasy"
       ]
     },
     "g-050": {
@@ -1504,7 +1647,10 @@
       "volatility": "medium",
       "maxStake": 100,
       "minStake": 1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "roulette"
+      ]
     },
     "g-051": {
       "id": "g-051",
@@ -1534,6 +1680,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "mythology"
       ]
     },
     "g-052": {
@@ -1564,6 +1713,9 @@
       "mechanics": [
         "cascading_reels",
         "pick_bonus"
+      ],
+      "themes": [
+        "pirates"
       ]
     },
     "g-053": {
@@ -1593,6 +1745,9 @@
       "minStake": 0.2,
       "mechanics": [
         "scratch_card"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-054": {
@@ -1623,6 +1778,9 @@
       "minStake": 1,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "cards"
       ]
     },
     "g-055": {
@@ -1650,6 +1808,9 @@
       "minStake": 0.5,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "cards"
       ]
     },
     "g-055-cms2": {
@@ -1677,6 +1838,9 @@
       "minStake": 0.5,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "cards"
       ]
     },
     "g-056": {
@@ -1706,7 +1870,8 @@
       "minStake": 0.2,
       "mechanics": [
         "multipliers"
-      ]
+      ],
+      "themes": []
     },
     "g-057": {
       "id": "g-057",
@@ -1739,6 +1904,9 @@
       "minStake": 0.2,
       "mechanics": [
         "scratch_card"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-058": {
@@ -1768,7 +1936,8 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 0.5,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-059": {
       "id": "g-059",
@@ -1797,6 +1966,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "irish"
       ]
     },
     "g-059-rtp93": {
@@ -1826,6 +1998,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "irish"
       ]
     },
     "g-060": {
@@ -1851,7 +2026,10 @@
       "volatility": "high",
       "maxStake": 100,
       "minStake": 0.3,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "fruit"
+      ]
     },
     "g-061": {
       "id": "g-061",
@@ -1880,6 +2058,9 @@
       "minStake": 0.2,
       "mechanics": [
         "pick_bonus"
+      ],
+      "themes": [
+        "fishing"
       ]
     },
     "g-062": {
@@ -1909,6 +2090,10 @@
       "minStake": 0.2,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "egyptian",
+        "classic"
       ]
     },
     "g-063": {
@@ -1936,7 +2121,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-064": {
       "id": "g-064",
@@ -1966,6 +2152,9 @@
       "minStake": 0.5,
       "mechanics": [
         "scratch_card"
+      ],
+      "themes": [
+        "fruit"
       ]
     },
     "g-065": {
@@ -1999,6 +2188,9 @@
         "wheel_bonus",
         "multipliers",
         "live_dealer"
+      ],
+      "themes": [
+        "game_show"
       ]
     },
     "g-066": {
@@ -2024,7 +2216,10 @@
       "volatility": "medium",
       "maxStake": 100,
       "minStake": 1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "roulette"
+      ]
     },
     "g-067": {
       "id": "g-067",
@@ -2054,6 +2249,10 @@
       "mechanics": [
         "cash_collect",
         "free_spins"
+      ],
+      "themes": [
+        "fishing",
+        "underwater"
       ]
     },
     "g-068": {
@@ -2084,6 +2283,10 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian",
+        "adventure"
       ]
     },
     "g-069": {
@@ -2109,7 +2312,8 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-070": {
       "id": "g-070",
@@ -2139,6 +2343,9 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-071": {
@@ -2168,7 +2375,8 @@
       "volatility": null,
       "maxStake": 50,
       "minStake": 0.2,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-072": {
       "id": "g-072",
@@ -2198,6 +2406,9 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-073": {
@@ -2231,6 +2442,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-074": {
@@ -2256,7 +2470,10 @@
       "volatility": null,
       "maxStake": 50,
       "minStake": 0.3,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "adventure"
+      ]
     },
     "g-075": {
       "id": "g-075",
@@ -2285,7 +2502,10 @@
       "volatility": null,
       "maxStake": 30,
       "minStake": 0.25,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "mythology"
+      ]
     },
     "g-076": {
       "id": "g-076",
@@ -2313,7 +2533,8 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 0.5,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-077": {
       "id": "g-077",
@@ -2339,7 +2560,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-078": {
       "id": "g-078",
@@ -2371,6 +2593,10 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "underwater",
+        "festive"
       ]
     },
     "g-079": {
@@ -2398,6 +2624,9 @@
       "minStake": 0.5,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "music"
       ]
     },
     "g-080": {
@@ -2428,7 +2657,8 @@
       "mechanics": [
         "wheel_bonus",
         "multipliers"
-      ]
+      ],
+      "themes": []
     },
     "g-081": {
       "id": "g-081",
@@ -2460,6 +2690,9 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "space"
       ]
     },
     "g-082": {
@@ -2490,6 +2723,9 @@
       "minStake": 1,
       "mechanics": [
         "live_dealer"
+      ],
+      "themes": [
+        "cards"
       ]
     },
     "g-083": {
@@ -2520,6 +2756,9 @@
       "mechanics": [
         "cascading_reels",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-084": {
@@ -2549,6 +2788,9 @@
       "minStake": 0.1,
       "mechanics": [
         "free_spins"
+      ],
+      "themes": [
+        "space"
       ]
     },
     "g-085": {
@@ -2578,7 +2820,8 @@
       "volatility": null,
       "maxStake": 2,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-086": {
       "id": "g-086",
@@ -2608,6 +2851,9 @@
         "free_spins",
         "multipliers",
         "expanding_wilds"
+      ],
+      "themes": [
+        "irish"
       ]
     },
     "g-087": {
@@ -2635,7 +2881,10 @@
       "volatility": null,
       "maxStake": 10,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": [
+        "fruit"
+      ]
     },
     "g-088": {
       "id": "g-088",
@@ -2663,7 +2912,8 @@
       "volatility": "medium",
       "maxStake": 100,
       "minStake": 1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-089": {
       "id": "g-089",
@@ -2696,6 +2946,9 @@
         "wheel_bonus",
         "multipliers",
         "live_dealer"
+      ],
+      "themes": [
+        "game_show"
       ]
     },
     "g-090": {
@@ -2725,6 +2978,9 @@
       "minStake": 0.2,
       "mechanics": [
         "scratch_card"
+      ],
+      "themes": [
+        "fishing"
       ]
     },
     "g-091": {
@@ -2750,6 +3006,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "egyptian"
       ]
     },
     "g-092": {
@@ -2776,7 +3035,8 @@
       "volatility": null,
       "maxStake": 100,
       "minStake": 0.1,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-093": {
       "id": "g-093",
@@ -2805,6 +3065,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "asian"
       ]
     },
     "g-094": {
@@ -2832,7 +3095,8 @@
       "volatility": null,
       "maxStake": null,
       "minStake": null,
-      "mechanics": []
+      "mechanics": [],
+      "themes": []
     },
     "g-095": {
       "id": "g-095",
@@ -2862,6 +3126,9 @@
       "mechanics": [
         "megaways",
         "bonus_buy"
+      ],
+      "themes": [
+        "fruit"
       ]
     },
     "g-096": {
@@ -2892,6 +3159,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "fantasy"
       ]
     },
     "g-097": {
@@ -2917,6 +3187,9 @@
       "mechanics": [
         "hold_and_win",
         "cash_collect"
+      ],
+      "themes": [
+        "underwater"
       ]
     },
     "g-098": {
@@ -2945,6 +3218,9 @@
       "minStake": 0.1,
       "mechanics": [
         "fixed_paylines"
+      ],
+      "themes": [
+        "classic"
       ]
     },
     "g-099": {
@@ -2976,6 +3252,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "gems"
       ]
     },
     "g-100": {
@@ -3005,6 +3284,9 @@
       "minStake": 0.2,
       "mechanics": [
         "free_spins"
+      ],
+      "themes": [
+        "wealth"
       ]
     },
     "g-101": {
@@ -3034,6 +3316,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "wealth"
       ]
     },
     "g-102": {
@@ -3062,6 +3347,9 @@
       "minStake": 0.1,
       "mechanics": [
         "free_spins"
+      ],
+      "themes": [
+        "space"
       ]
     },
     "g-103": {
@@ -3093,6 +3381,9 @@
         "multipliers",
         "free_spins",
         "bonus_buy"
+      ],
+      "themes": [
+        "fantasy"
       ]
     },
     "g-104": {
@@ -3122,6 +3413,9 @@
       "mechanics": [
         "fixed_paylines",
         "bonus_buy"
+      ],
+      "themes": [
+        "classic"
       ]
     },
     "g-105": {
@@ -3155,6 +3449,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-106": {
@@ -3189,6 +3486,9 @@
       "mechanics": [
         "multipliers",
         "cascading_reels"
+      ],
+      "themes": [
+        "festive"
       ]
     },
     "g-107": {
@@ -3220,6 +3520,9 @@
       "mechanics": [
         "multipliers",
         "free_spins"
+      ],
+      "themes": [
+        "gems"
       ]
     },
     "g-108": {
@@ -3253,6 +3556,9 @@
       "mechanics": [
         "free_spins",
         "multipliers"
+      ],
+      "themes": [
+        "festive"
       ]
     }
   },

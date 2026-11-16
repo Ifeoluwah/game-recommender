@@ -86,7 +86,7 @@ Omit any part that's empty. Each part ends with a full stop except the summary; 
 
 ```ts
 {
-  schemaVersion: 2,
+  schemaVersion: 3,             // 3 added `themes` to ServiceGame (spec 02 §6.2, quality:no_shared_theme)
   indexVersion: string,         // first 12 hex chars of sha256(stable-stringify({ catalogueHash, enrichment, embedding id, neighbours }))
   builtAt: ISO string,
   catalogueHash: string,        // first 16 hex chars of sha256(raw feed file text)
@@ -97,14 +97,17 @@ Omit any part that's empty. Each part ends with a full stop except the summary; 
 }
 ServiceGame = { id, title, provider, gameType, seriesId, dedupeKey, brands, markets,
                 status ("active" | "withdrawn"), isTestGame, seasonMonths, insufficient,
-                volatility, maxStake, minStake, mechanics }
+                volatility, maxStake, minStake, mechanics, themes }
 ```
 
 No vectors go into the service artefact; the service doesn't need them.
 
 **Where each `ServiceGame` field comes from:**
 - **From the normalised source record** (via the guard, which never changes them): `status`, `isTestGame`, `brands`, `markets`, `seasonMonths`, stakes, `provider`, `seriesId` and `dedupeKey`. `status` is already collapsed to `active`/`withdrawn` by `normalise.ts`, with the raw value kept as an `issues` entry. `seriesId` is the slug of the `franchise` field when the feed has one, and otherwise null.
-- **From the guarded enriched record:** `gameType`, `volatility` and `mechanics`. A source value always wins over an inferred one (spec 04 §6). This is a deliberate decision with a known trade-off; see section 11.
+- **From the guarded enriched record:** `gameType`, `volatility`, `mechanics` and `themes`. A source value always wins over an inferred one (spec 04 §6). This is a deliberate decision with a known trade-off; see section 11.
+- `themes` is read only by the quality rule `quality:no_shared_theme` (spec 02 §6.2). Like every matching field it is never sent to clients. The rule only ever removes candidates, so a theme the enricher missed can cause a decline but never an ineligible item.
+
+**Schema 3 and the committed OpenAI index.** The first OpenAI index was written as schema 2, without `themes`. It was migrated in place rather than rebuilt, because a rebuild re-embeds, and OpenAI embeddings move slightly between calls, which would shift the evaluation for reasons unrelated to the rule. Each game's `themes` was set from the same build's `enriched-catalogue.json`, every migrated game was checked equal to `toServiceGame()` of its enriched record, and `schemaVersion` was set to 3. Neighbours, scores and `indexVersion` (which hashes neither `games` nor `schemaVersion`) are unchanged. The next `build:index` writes schema 3 directly. A schema 2 index fails validation on load.
 
 ### 4.4 Build script
 
