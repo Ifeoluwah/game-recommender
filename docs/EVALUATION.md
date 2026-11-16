@@ -188,7 +188,7 @@ These are **product and safer-gambling policy choices**, owned with compliance. 
 
 Two rules were changed to **fail closed** after evidence, both before this repo was built:
 - **Unknown volatility**, found by the evaluation. With "unknown means allow", records missing their volatility let low → high escalations through. Now an unknown seed counts as low, and a candidate with unknown volatility is blocked unless the cap already admits anything.
-- **Unknown stakes**, found by a spec-only rebuild test, which asked what to do with them. The case never occurred in the prototype's data, because stakes travel with every record that has any detail. Now a candidate missing a stake is blocked, and a seed missing one is the most cautious player.
+- **Unknown stakes**, found while stress-testing the specs in the exploratory phase, which raised the question of what to do with them. The case never occurred in the prototype's data, because stakes travel with every record that has any detail. Now a candidate missing a stake is blocked, and a seed missing one is the most cautious player.
 
 ## Release gates
 
@@ -330,7 +330,14 @@ Two filled themes have no overlap with the truth: g-035 "Thunder Halls: Odin's F
 
 ### Commentary
 
-> **[CANDIDATE TO WRITE]** Your own reading of these cases: which matter most for players and for compliance, what you'd change first, and what you'd ask a curator to label. This section is deliberately left for you; nothing above is interpretation beyond what the report shows.
+**What matters most.** For compliance, §4 matters most: 0 ineligible or policy-breaking items in 2,260 exhaustive calls. If that number moved, nothing else here would matter. For players, the worst case is §2, because a rail is shown and it looks wrong: a scratch-card player is offered four fruit slots under "Because you played X". A wrong decline like g-050 (§1) costs a rail, but the lobby still has its fallback. I'd rather ship declines than unrelated rails. That's why the relatedness rule stays even though it causes §1 and the NJ gap.
+
+**What I'd change first:**
+1. **Make relatedness type-aware for tables and live games.** For non-slots, the same game type should count as related, as the labels already assume. That targets g-050 directly and should recover part of the gap between 0.843 and 1.0.
+2. **Penalise a game-type mismatch in ranking** (§2). A theme match alone shouldn't put a scratch card or bingo game at the top of a slot's rail.
+3. **Fix liberty/NJ with catalogue breadth, not a looser rule.** It's a content and commercial decision as much as an engineering one.
+
+**What I'd ask a curator to label:** the §2 seeds and their served items, g-050 and the other table and live seeds, and a sample of rule-removed candidates (`quality:no_shared_theme`). Those are where the silver labels and the rule agree by construction, so only people can say whether the rule is right.
 
 ## Known limitations
 

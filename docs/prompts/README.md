@@ -3,8 +3,8 @@
 These are the specifications for this repo, kept so reviewers can see how the problem was broken down and how the agent was constrained.
 
 **How they came about.** The specs were written before this repo, and the repo is built from them: an agent is given `AGENTS.md` and the specs, in order, and nothing else.
-- **Developed against a prototype.** The specs weren't written in one sitting. They were worked out requirement by requirement, in conversation with a coding agent, against a throwaway prototype: each requirement was built and tested, and what held up was written into the spec. The **Decisions** section in each spec records what was adopted, changed or rejected there, and why.
-- **Checked before use.** Two fresh agents were then given only the specs and asked to build the project from them, without seeing the prototype. The gaps they found were closed in the specs, and the second rebuild reproduced the prototype's keyless dataset byte for byte. The prototype itself was then discarded; this repo is the spec-first build.
+- **Stress-tested first.** The specs were stress-tested in an exploratory phase before this build, and what held up was written into them. The **Decisions** section in each spec records what was adopted, changed or rejected, and why.
+- **Then built from the specs.** This repo is the production build, made from the specs, spec by spec.
 
 **Together, specs 01–08 describe the whole submission.** Specs 01–03 recreate the dataset (108 canonical games, 113 feed records, every edge case, trap and benchmark cluster). Specs 04–06 add enrichment, the index and service, and the evaluation. Spec 07 hardens the build and the service for production. Spec 08 covers the documents that explain the system (the ADR, evaluation write-up and README) and the Part B skill. Implement them in order, because each builds on the previous ones. Following the prose alone gives the same structure and behaviour; copying the appendix's exact values also gives the same keyless dataset byte for byte (spec 01, section 10).
 
