@@ -303,3 +303,17 @@ Add a "Trade-offs and limitations" section to the README, directly after the sta
 
 No claim in this section may be unsupported by the report. Keep it under a screen.
 </pasted_content id="47bf">
+
+## 2026-11-16 07:37:07
+
+<pasted_content id="47bf">
+Read @AGENTS.md and implement @docs/prompts/08-production-architecture-and-docs.md, following milestone 8 in @docs/plan.md and @REBUILD_NOTES.md. Every number in the docs must come from eval/reports/latest.* and say which build it's from. Keep the README's existing status and trade-offs sections.
+
+Include: the ADR with its diagram, every decline reason, the seed-availability rows, and the revisit criteria including a brand whose rails all decline; EVALUATION.md completed per the spec, with g-050 as the lead failure case (a cold-start game that should answer and declines because of the relatedness rule) and the full trap disclosure list; the Part B skill and LEVERAGE.md; and tests/docs.test.ts.
+
+Leave clearly marked placeholders for what only I can write: README time allocation, AI tools used, one output I changed or rejected; AI_USAGE.md division of work, time spent, what wasn't kept; and EVALUATION.md's own failure-analysis commentary.
+
+Also create docs/notes/candidate-notes.md, for me rather than as a deliverable, listing with commit hashes every case in this build where an AI output was changed or rejected, and the strongest failure cases from the report.
+
+Run typecheck, tests and npm run eval. Tick milestone 8 off. .
+</pasted_content id="47bf">

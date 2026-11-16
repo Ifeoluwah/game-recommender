@@ -687,7 +687,7 @@ See `REBUILD_NOTES.md`.
 
 ### Checklist
 
-- [ ] `docs/ADR-001-recommender-architecture.md`, from `.claude/skills/productionise-ai-prototype/templates/ADR.md`: title and status as in §3, then the nine sections in §3.1 order:
+- [x] `docs/ADR-001-recommender-architecture.md`, from `.claude/skills/productionise-ai-prototype/templates/ADR.md`: title and status as in §3, then the nine sections in §3.1 order:
   - the Mermaid `flowchart LR` with the evidence-check edges and the dotted restricted-bypass edge;
   - the AWS table;
   - the alternatives, each with "why not (for now)";
@@ -695,21 +695,21 @@ See `REBUILD_NOTES.md`.
   - the failure table led by "page without the rail": every `DeclineReason` in backticks, the 400 for a market the brand doesn't serve, and spec 07 §3.6's seed-availability rows;
   - the scaling triggers;
   - the revisit evidence.
-- [ ] `docs/EVALUATION.md`: complete it to §4. The gates table comes from `eval/release-gates.json` and names every gate key. The policy section has the real numbers and the two fail-closed findings. Failure analysis stays *pending the OpenAI run*.
-- [ ] `README.md`: the nine sections in §5 order. Keep "Dataset design".
+- [x] `docs/EVALUATION.md`: complete it to §4. The gates table comes from `eval/release-gates.json` and names every gate key. The policy section has the real numbers and the two fail-closed findings. ~~Failure analysis stays *pending the OpenAI run*.~~ The OpenAI build is committed, so the failure analysis is written from its report, with g-050 as the lead case; the candidate's commentary is a marked placeholder.
+- [x] `README.md`: the nine sections in §5 order. Keep "Dataset design".
   - §5.4 covers the offline commands and folders, and that `demo`/`eval` default to the OpenAI build.
   - §5.5 notes that only `text-embedding-3-small` has a threshold.
   - §5.8's left-out table includes the spec appendix exporter, with its reason.
   - Fold in START_HERE as the record of how the repo was built.
-- [ ] `docs/AI_USAGE.md`:
+- [x] `docs/AI_USAGE.md`:
   - the tools;
   - every agentic artifact, with the appendix described as hand-maintained;
   - an accurate "How it was built";
   - "Division of work" as a **marked placeholder for the candidate**.
-- [ ] `.claude/skills/productionise-ai-prototype/SKILL.md` and `templates/ADR.md`: check them against §7 and §8.5 and change them only to fix a mismatch. Step 8's "separate, git-ignored folders" now matches the repo.
-- [ ] `docs/LEVERAGE.md`: the four sections in §7.
-- [ ] `tests/docs.test.ts`: checks 1–5 in §8. Links may point to folders; missing `eval/reports/` links are skipped and logged as pending.
-- [ ] Cross-check the numbers in the ADR Decision section, the README layer table and EVALUATION's policy section against `config/service.json`.
+- [x] `.claude/skills/productionise-ai-prototype/SKILL.md` and `templates/ADR.md`: check them against §7 and §8.5 and change them only to fix a mismatch. Step 8's "separate, git-ignored folders" now matches the repo. *(No mismatch; unchanged.)*
+- [x] `docs/LEVERAGE.md`: the four sections in §7.
+- [x] `tests/docs.test.ts`: checks 1–5 in §8. Links may point to folders; missing `eval/reports/` links are skipped and logged as pending.
+- [x] Cross-check the numbers in the ADR Decision section, the README layer table and EVALUATION's policy section against `config/service.json`.
 
 ### Files
 
@@ -739,7 +739,15 @@ Select-String -Path docs/EVALUATION.md -Pattern 'pending' -Context 0,2          
 > 3. The Mermaid diagram renders (GitHub, or `mmdc`), with the evidence-check edges as in 3.1.
 > 4. The failure-analysis section is either present with real cases from the OpenAI report, or explicitly marked as pending that run.
 
-Status: `[ ]` AC1 `[ ]` AC2 `[ ]` AC3 `[ ]` AC4
+Status: `[x]` AC1 `[x]` AC2 `[ ]` AC3 *(not rendered here: no `mmdc` run, and the diagram hasn't been viewed on GitHub. `tests/docs.test.ts` checks the block, `flowchart LR` and the evidence-check edges)* `[x]` AC4
+
+Done 2026-11-16:
+- **Tests:** typecheck clean; 471 tests pass (15 files). `tests/docs.test.ts` adds 13; no `eval/reports/` link is pending, because the OpenAI report is committed.
+- **Numbers:** every result in the ADR, README and EVALUATION is from `eval/reports/latest.*` on the OpenAI build (index `ef13f1ecf784`), with the build named. Offline figures are marked offline, and the "before the rule" column names commit `fc2452e`. Rule values are from `config/service.json`.
+- **Failure analysis:** written from the OpenAI report, with g-050 as the lead case. The cold-start trap row now shows the decline's attribution ("without `quality:no_shared_theme`: ok, 5 items"), so the cause is in the report.
+- **Placeholders for the candidate:** the README's time allocation, AI tools and one changed output; AI_USAGE's division of work, time spent and what wasn't kept; EVALUATION's commentary. `tests/docs.test.ts` checks they're still marked.
+
+See `REBUILD_NOTES.md`.
 
 ---
 

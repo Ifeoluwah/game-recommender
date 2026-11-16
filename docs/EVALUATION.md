@@ -1,6 +1,6 @@
 # Evaluation
 
-*First version (spec 06). Spec 08 §4 completes it. The failure-analysis section is pending the OpenAI run.*
+*Written with spec 06, completed with spec 08 §4. Unless a line says otherwise, every number here is from the committed OpenAI build (index `ef13f1ecf784`), [`eval/reports/latest.md`](../eval/reports/latest.md) and `latest.json`. Offline numbers are marked as such and come from `eval/reports/offline/latest.md` (git-ignored).*
 
 > **Status** (committed OpenAI build, index `ef13f1ecf784`, `eval/reports/latest.md`): **14 of 15 gates pass; `ndcgLiftOverRawText` fails (−0.003).**
 >
@@ -133,7 +133,7 @@ The shipped variant is re-run with the embedder's `minScore` at 13 points, `roun
 
 ## Planted traps
 
-Every planted record gets one row per trap on it (spec 02 §7): 39 rows on the reference data. Each trap is a near-copy of a real game, so it ranks at or near the top by similarity alone; only the right guardrail can stop it. For twins, the row shows the trap's similarity rank in its anchor's neighbour list (offline: #1 for all four), and which rules removed it.
+Every planted record gets one row per trap on it (spec 02 §7): 39 rows on the offline reference data and 40 on the OpenAI build, which has 5 seasonal records rather than 4. Each trap is a near-copy of a real game, so it ranks at or near the top by similarity alone; only the right guardrail can stop it. For twins, the row shows the trap's similarity rank in its anchor's neighbour list (offline: #1 for all four), and which rules removed it.
 
 | Layer | Traps | ok when |
 | --- | --- | --- |
@@ -146,10 +146,16 @@ Every planted record gets one row per trap on it (spec 02 §7): 39 rows on the r
 
 ### Trap results, disclosed
 
-- **OpenAI build: 39/40.** The miss is the cold-start row for g-050 "Roulette Royale", which declines on aurora/GB although ground truth has 4 related eligible tables ("The theme-overlap rule" below).
+Every caveat on the trap count, in one place.
+
+- **OpenAI build: 39/40.** The miss is the cold-start row for g-050 "Roulette Royale". It declines on aurora/GB although ground truth has 4 related eligible tables, and the row shows that without `quality:no_shared_theme` it would answer. It's the lead case in "Failure analysis".
 - **OpenAI build: two of the 39 passes prove nothing.** The misleading-title rows g-019 and g-057 name their true type in the title (see Known limitations).
+- **OpenAI build: one pass depends on the revised cold-start rule.** g-013 "Pharaoh's Secrets" declines on liberty/NJ. Since the rule, the row counts a `NO_CONFIDENT_MATCHES` decline as ok when ground truth has fewer than 3 related eligible games; g-013 has 2 (spec 02 §7, "The theme-overlap rule" below). Under the original row it would be a miss.
+- **OpenAI build: the four twin rows pass on a declined rail.** The market twins g-101 and g-102 and the bonus-buy/escalation twins g-103 and g-104 each sit at similarity rank #1 for their anchor. Each is absent, as required, but every one of those anchor rails declines (`NO_CONFIDENT_MATCHES`). So the row proves the twin isn't shown. That the named rule would have stopped it on an answered rail is shown only by the row's "rules:" list (for example `not_licensed_in_market`), which the service's own rule functions compute.
+- **OpenAI build: seasonal rows are judged in July only.** December served counts are shown but not judged: g-014 28, g-073 28 and g-078 40 serves in December, when they're in season.
 - **Offline build: 38/39.** The miss is the cold-start row for g-003 "Crypt Legends", the only horror game offline. It declines on harbour/GB although the labels relate 5 eligible slots to it through mechanics. `quality:no_shared_theme` causes it, and `tests/evaluation.test.ts` pins it, so any new miss fails the test. The other cold-start row offline (g-020 on liberty/NJ, 2 related) is a correct decline.
 - **The offline build is a software check only.** Its rules enricher and hashing embedder aren't the shipped system. Its trap rows test the guardrails and the code paths, not model quality, and none of its ranking numbers says anything about the OpenAI build.
+- **Spec 07 AC7 expects 39/39 offline; the build gives 38/39.** That figure predates `quality:no_shared_theme`. Spec 07 changed no result, so the 38/39 is the rule's, not a regression.
 
 ## Benchmark clusters
 
@@ -234,7 +240,7 @@ The in-memory build in `tests/evaluation.test.ts` (catalogue hash `5caf2bbb0f343
 
 ### OpenAI build (index `ef13f1ecf784`, `gpt-4o-mini` + `enrich-game.v2`, `text-embedding-3-small`, threshold 0.45)
 
-From `eval/reports/latest.md`. **14 of 15 gates pass; `ndcgLiftOverRawText` fails.**
+From `eval/reports/latest.md`. **14 of 15 gates pass; `ndcgLiftOverRawText` fails.** The "before the rule" column is the same build's report as committed in `fc2452e`, before `quality:no_shared_theme`.
 
 | | Before the rule | With `quality:no_shared_theme` |
 | --- | --- | --- |
@@ -279,13 +285,52 @@ The rule turns a bad-rec failure into a lift failure. And it's measured by label
 
 ## Failure analysis
 
-*Pending the OpenAI run.* This section will quote real cases from `eval/reports/latest.md`: where the system is wrong, where it returns something it shouldn't, and where it rightly declines. Offline cases aren't used here, because the offline enricher and embedder aren't the shipped system.
+Real cases from the committed OpenAI build's report (`eval/reports/latest.md`, index `ef13f1ecf784`). Offline cases aren't used here, because the offline enricher and embedder aren't the shipped system.
 
-What to look for, from the inspection of the OpenAI catalogue (`docs/notes/openai-catalogue-inspection.md`):
-- **Copy that contradicts its own metadata** (g-003 "cluster pays" in the copy only; g-042 cascading reels and a jackpot; g-098 and its escalation twin g-104 with "Jackpot" in the title; g-064 and g-082 with no mechanics). An enricher that reads the copy correctly is scored *wrong* on these, because the canonical record is the truth. Expect them among the wrong fills.
-- **"Live dealer" copy on tables that lost the mechanic**, which enrichment will re-infer, scored as wrong fills.
-- **Card games and game shows on a "single-zero wheel" layout**, which pull them towards roulette in the embedding text.
-- **Threshold.** Before the theme rule, demo case 3 (a fruit slot on liberty/NJ) showed a weak tail of loosely related games clearing 0.45. The sweep, not a hand edit, should decide whether 0.45 is the right operating point. Since the rule, case 3 declines: liberty/NJ has no rails (Status, at the top).
+### 1. Wrongly declines: g-050 "Roulette Royale" (the lead case)
+
+**What happened.** g-050 is a cold-start release that should answer. On aurora/GB it declines with `NO_CONFIDENT_MATCHES`, although ground truth has **4 related, eligible tables** for it in that context. The planted-trap row records it as the OpenAI build's one miss (39/40). The same row shows the cause: `quality:no_shared_theme` removed 13 candidates, and with the rule switched off the same request answers with 5 items.
+
+**Why.** The relatedness rule needs a shared theme or series. The silver labels relate two tables of the same type whatever their theme (grade 1: "same game type and … the type isn't slot"). So the rule removes exactly the games the labels call related.
+
+**Who it affects.** This isn't one record. Tables and live games are where theme matters least to a player, and where the rule costs most. It's also why coverage against the oracle without the rule is 0.843 rather than the gated 1.0.
+
+**Not counted by the gated coverage.** The gated oracle runs through `recommend()` and declines g-050 too, so gated coverage (1.0) can't see this case. The trap row and the rule-free coverage figure are what show it.
+
+### 2. Wrong: served theme-mates of another game type
+
+The four lowest-nDCG seeds all get theme-mates whose gameplay differs. The theme rule admits them, and the embedding ranks them highest.
+
+| Seed (truth) | Context | nDCG@5 | What it was served |
+| --- | --- | --- | --- |
+| g-019 "Fruit Blast Scratch" (instant win, fruit, scratch card) | aurora/GB | 0 | 4 classic fruit slots (g-021, g-024, g-033, g-048), all grade 0 |
+| g-061 "Fishing Frenzy Pick Bonus" (bingo, fishing) | aurora/GB | 0 | 2 fishing cash-collect slots and a fishing scratch card, all grade 0 |
+| g-090 "Catch of the Day Scratch" (instant win, fishing) | aurora/GB | 0 | the fishing bingo game and 2 fishing slots, all grade 0 |
+| g-008 "Secrets of the Sphinx" (slot, Egyptian, cascading) | harbour/GB | 0.184 | 2 Egyptian slots (grade 1) and an Egyptian scratch card at #3 (grade 0) |
+
+g-061 and g-090 are the `fishing_cash_collect` cluster's two near-misses, and they serve each other plus the cluster's members. The theme matches but the game doesn't. The same pattern puts g-053 "Egyptian Scratch Wonders" at #1 for g-062 "Pharaoh's Gold" (score 0.5552). Enrichment makes it worse in the cluster table: near-miss intrusion rises from 0 to 0.4 for `egyptian_cascade`, and from 0.8 to 1 for `live_game_show` (raw text → enriched).
+
+### 3. Wrong fills in enrichment
+
+Two filled themes have no overlap with the truth: g-035 "Thunder Halls: Odin's Fury" got `mythology` (truth `nordic`), and g-074 "Outlaw's Bounty" got `adventure` (truth `western`). Both are defensible readings of the title, and the gated theme precision is 0.85 on 20 filled tags. They're listed because the theme rule now turns a wrong or missing theme straight into a decline.
+
+### 4. Never returned something it shouldn't
+
+- **No ineligible, duplicate or policy-breaking item in 2,260 exhaustive calls** (every game × brand × market, July and December, judged against ground truth): 0 eligibility, 0 duplicate and 0 policy violations.
+- **The rules did real work:**
+  - `eligibility:not_on_brand` removed 11,850 candidates, `eligibility:not_licensed_in_market` 8,660, `eligibility:not_live` 6,000 and `eligibility:feature_restricted_in_market` 604;
+  - `policy:volatility_escalation` removed 3,128 and `policy:volatility_unknown` 6,948.
+- **Every twin sits at similarity rank #1 for its anchor and is never shown:** the market twins g-101 and g-102 (`not_licensed_in_market`), and g-103 and g-104 (bonus buy in GB; volatility, stake and min-bet escalation elsewhere).
+
+### 5. Rightly declines
+
+- **All 15 title-only and opaque seeds decline** (expected-decline rate 1), and 0 of the opaque records had anything inferred.
+- **g-013 "Pharaoh's Secrets" on liberty/NJ** declines, with only 2 related eligible games by ground truth.
+- **liberty/NJ as a whole answers 0 of 25 queries.** Even the oracle answers none there: 22 eligible games across 13 themes, 10 of them with fewer than 3 games. That's the right answer for this catalogue, and the wrong outcome for the brand (Status, at the top).
+
+### Commentary
+
+> **[CANDIDATE TO WRITE]** Your own reading of these cases: which matter most for players and for compliance, what you'd change first, and what you'd ask a curator to label. This section is deliberately left for you; nothing above is interpretation beyond what the report shows.
 
 ## Known limitations
 

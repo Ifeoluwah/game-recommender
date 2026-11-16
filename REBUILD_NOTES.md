@@ -402,4 +402,33 @@ Kept on purpose, with reasons. They belong in the README's "what I left out" and
   - **Coverage against an oracle without the theme rule**, so the 0.843 is in the report and no longer only in these notes. It's measured by running the oracle on the same games with every theme on every record (`withThemeRuleOff`), so no file in `src/` changed.
   - It reproduces 0.843 over 70 queries, the figure from the scratch-copy measurement. Offline it's 0.714 over 84.
 - **The ADR doesn't exist yet** (milestone 8). The new revisit criterion is in spec 08 §3.9, and spec 08 §5 now keeps the README's status block and "Trade-offs and limitations" section.
-- **g-050 is reported as declining**, because the OpenAI report says so (`aurora/GB: declined NO_CONFIDENT_MATCHES`, MISS). A probe of every brand and market that carries it gives `NO_CONFIDENT_MATCHES` (or `BRAND_DISABLED` on meridian). The README calls it this build's one trap miss and doesn't call it a false abstention. Gated coverage doesn't count it, because the gated oracle declines it too.
+- **g-050 is reported as declining** (see also milestone 8), because the OpenAI report says so (`aurora/GB: declined NO_CONFIDENT_MATCHES`, MISS). A probe of every brand and market that carries it gives `NO_CONFIDENT_MATCHES` (or `BRAND_DISABLED` on meridian). The README calls it this build's one trap miss and doesn't call it a false abstention. Gated coverage doesn't count it, because the gated oracle declines it too.
+
+### Milestone 8 (spec 08)
+
+- **The failure analysis is written, not pending.** The OpenAI build is committed, so spec 08 §4's deferral no longer applies. Its lead case is g-050, as asked. Only the candidate's own commentary is a placeholder.
+- **The cold-start trap row now carries its attribution** (`eval/evaluate.ts`).
+  - On a `NO_CONFIDENT_MATCHES` decline it reruns the request with the theme rule off (`withThemeRuleOff`) and appends the result, plus how many candidates `quality:no_shared_theme` removed.
+  - So "g-050 declines because of the relatedness rule" is in the report: removed 13; without the rule, ok with 5 items. Offline, g-003 shows the same pattern.
+  - The row's ok/miss logic is unchanged, so no gate or trap count moved. The offline pin in `tests/evaluation.test.ts` now matches the longer text, including the attribution.
+- **Numbers in the docs.**
+  - Results are from `eval/reports/latest.*` on the OpenAI build, with the build named. Rule values are from `config/service.json` and say so.
+  - The "before the rule" column in `EVALUATION.md` is the same build's report as committed in `fc2452e`.
+  - Offline figures are marked offline and kept to the trap disclosures and the offline results section.
+- **The full trap disclosure list** (`EVALUATION.md`, "Trap results, disclosed") adds three points:
+  - g-013's pass depends on the revised cold-start row;
+  - the four twin rows pass on anchor rails that declined anyway;
+  - seasonal rows are judged in July only.
+- **The ADR's failure table** has one row per `DeclineReason`, the 400s, spec 07 §3.6's two seed-availability rows, and a row for a brand with no rails. The revisit table includes the all-declined brand.
+- **Part B:** `SKILL.md` and `templates/ADR.md` already match spec 08 §7 and §8.5, so they're unchanged. `LEVERAGE.md` proposes two additions to step 4 (per-slice reporting; an oracle that doesn't obey the rule it judges) rather than editing the skill.
+- **`tests/docs.test.ts`** has spec 08 §8 checks 1–5, plus:
+  - the seed-availability rows and the revisit criterion (3a);
+  - a self-test of the link extractor (4a);
+  - a check that the candidate placeholders are still marked.
+
+  Links in fenced code blocks are ignored.
+- **The README** keeps the status and trade-offs sections, and follows §5's order around them. START_HERE is kept and linked as part of the build record rather than folded in, as START_HERE itself allows.
+- **The candidate's notes** (`docs/notes/candidate-notes.md`) aren't linked from any deliverable.
+  - Commit attributions come from the reflog matched to the prompt log by time. Where a file proves the commit, `git log` was used.
+- **`docs/prompts/README.md`:** a blank line split its spec table, leaving the 07 and 08 rows outside it; removed.
+- **AC3 (Mermaid renders) isn't ticked.** No renderer was run and the diagram wasn't viewed on GitHub. The test checks its structure only.

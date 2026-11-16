@@ -436,7 +436,13 @@ function plantedTraps(w: World, served: Map<string, { july: number; december: nu
           const needed = Math.min(config.recommendation.minResults, K);
           const justified = res.status === "declined" && res.reason === "NO_CONFIDENT_MATCHES" && related < needed;
           const answer = res.status === "ok" ? `ok, ${res.items.length} items` : `declined ${res.reason}`;
-          out = { happened: `${ctx.brand}/${ctx.market}: ${answer}; ${related} related eligible game${related === 1 ? "" : "s"} by ground truth`, ok: res.status === "ok" || justified };
+          // Attribution for a NO_CONFIDENT_MATCHES decline: would the seed answer without the theme rule?
+          let attribution = "";
+          if (res.status === "declined" && res.reason === "NO_CONFIDENT_MATCHES") {
+            const free = recommend({ ...index, games: withThemeRuleOff(index.games) }, config, { gameId: id, ...ctx, month: JULY, limit: K });
+            attribution = `; without quality:no_shared_theme: ${free.status === "ok" ? `ok, ${free.items.length} items` : `declined ${free.reason}`} (no_shared_theme removed ${res.diagnostics["quality:no_shared_theme"] ?? 0})`;
+          }
+          out = { happened: `${ctx.brand}/${ctx.market}: ${answer}; ${related} related eligible game${related === 1 ? "" : "s"} by ground truth${attribution}`, ok: res.status === "ok" || justified };
           break;
         }
         case "rtp_variant": case "duplicate_export": {

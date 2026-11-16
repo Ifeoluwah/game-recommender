@@ -181,7 +181,7 @@
         "layer": "4 Abstention",
         "trap": "Cold-start release (should answer)",
         "record": "g-013 \"Pharaoh's Secrets\"",
-        "happened": "liberty/NJ: declined NO_CONFIDENT_MATCHES; 2 related eligible games by ground truth",
+        "happened": "liberty/NJ: declined NO_CONFIDENT_MATCHES; 2 related eligible games by ground truth; without quality:no_shared_theme: ok, 5 items (no_shared_theme removed 4)",
         "ok": true
       },
       {
@@ -265,7 +265,7 @@
         "layer": "4 Abstention",
         "trap": "Cold-start release (should answer)",
         "record": "g-050 \"Roulette Royale\"",
-        "happened": "aurora/GB: declined NO_CONFIDENT_MATCHES; 4 related eligible games by ground truth",
+        "happened": "aurora/GB: declined NO_CONFIDENT_MATCHES; 4 related eligible games by ground truth; without quality:no_shared_theme: ok, 5 items (no_shared_theme removed 13)",
         "ok": false
       },
       {

@@ -1,6 +1,6 @@
 # Related-games recommender
 
-A "Because you played X, you might like…" rail for a regulated, real-money casino product. All AI work runs at build time; the service only loads a precomputed artefact and applies rules. The full README (architecture, how to run it, the API) is written with [spec 08](docs/prompts/08-production-architecture-and-docs.md); until then, see [`START_HERE.md`](START_HERE.md) and [`AGENTS.md`](AGENTS.md).
+A "Because you played X, you might like…" rail for a regulated, real-money casino product. **All AI work runs at build time.** An LLM fills gaps in matching features behind a guard, an embedder computes each game's neighbours, and an evaluation gates what gets published. **The request path has no model in it.** A stateless service loads the precomputed artefact and walks each seed's neighbours through deterministic, fail-closed rules: eligibility, safer-gambling policy and relatedness. When too little survives, it declines and the page hides the rail. Similarity proposes; rules dispose.
 
 > **Status** (committed OpenAI build, index `ef13f1ecf784`, [`eval/reports/latest.md`](eval/reports/latest.md)): **not releasable.** 14 of 15 release gates pass; `ndcgLiftOverRawText` fails (−0.003).
 >
@@ -26,6 +26,86 @@ Every figure here is from `eval/reports/latest.json`, the committed OpenAI build
   - **g-050 "Roulette Royale"** declines on aurora/GB, although ground truth has 4 related eligible tables. It's this build's one trap miss (39/40). The rule needs a shared theme, but the labels relate same-type tables whatever their theme.
   - **g-003 "Crypt Legends"** (*offline*, `eval/reports/offline/latest.json`): a cold-start decline, the offline build's one miss (38/39 traps). The offline build is a software check, not the shipped system.
   - **Two misleading-title rows prove nothing.** g-019 and g-057 pass vacuously: both titles name their true type ("Scratch"), so they don't test whether enrichment trusts the copy over a misleading title.
+
+## The four layers
+
+Every candidate passes every layer, in order, on every request. No similarity score can outweigh a layer. Rule values are from [`config/service.json`](config/service.json); results are from the committed OpenAI build (index `ef13f1ecf784`, [`eval/reports/latest.md`](eval/reports/latest.md)).
+
+| Layer | Question | Rules | Result on the OpenAI build |
+| --- | --- | --- | --- |
+| 1. Information integrity | Can we trust what enrichment says? | The guard keeps a closed vocabulary, lets source values win, and lints summaries; protected fields come only from normalisation; title-only and opaque records are flagged insufficient | 0 protected-field violations, 0 regulated fields invented, 0 injection leaks; game-type accuracy 1 (gate ≥ 0.9), theme precision 0.85 (gate ≥ 0.7) |
+| 2. Hard eligibility | May this game be shown to this player? | It must be live, not a test build, on the brand, licensed in the market and in season, with no restricted feature (`bonus_buy` in GB). Every check fails closed | 0 violations in 2,260 calls checked against ground truth |
+| 3. Recommendation policy | Should we nudge this player to it? | At most 1 volatility step up, max bet ≤ 5× and min bet ≤ 10× the seed's; unknown volatility or stakes fail closed | 0 violations in 2,260 calls |
+| 4. Abstention | Do we know enough to recommend anything? | A shared theme or series; at most 3 per studio and 2 per series; score threshold 0.45; fewer than 3 survivors → decline | Expected-decline rate 1 (gate ≥ 0.8); coverage 1 (gate ≥ 0.8), 0.843 against the rule-free oracle |
+| Ranking | Are the games shown related? | (measured, not enforced) | nDCG@5 0.725 (gate ≥ 0.6); bad-rec 0.137 (gate ≤ 0.15); lift over raw text −0.003 (gate ≥ 0, **fails**) |
+
+## Read this
+
+| Document | What it's for |
+| --- | --- |
+| [`docs/ADR-001-recommender-architecture.md`](docs/ADR-001-recommender-architecture.md) | The architecture decision: what runs where, AWS choices, alternatives, what a player sees when anything fails, scaling triggers, revisit criteria |
+| [`docs/EVALUATION.md`](docs/EVALUATION.md) | How AI quality is judged: metrics, gates, planted traps, failure analysis, known limitations |
+| [`eval/reports/latest.md`](eval/reports/latest.md) | The latest report on the committed OpenAI build (with `latest.json`) |
+| [`docs/LEVERAGE.md`](docs/LEVERAGE.md) | Part B: the reusable skill and how it applies to the next prototype |
+| [`docs/AI_USAGE.md`](docs/AI_USAGE.md) | The AI tools used, and every agentic artifact in the repo |
+| [`docs/prompts/`](docs/prompts/) | The specs the repo was built from, in order, with their decisions |
+| [`AGENTS.md`](AGENTS.md) | The working rules for any agent or person changing this repo |
+| [`START_HERE.md`](START_HERE.md), [`docs/plan.md`](docs/plan.md), [`REBUILD_NOTES.md`](REBUILD_NOTES.md) | The record of how the repo was built: the build loop, the milestone checklist, and every choice where a spec was silent |
+
+## Run it (no API key needed)
+
+```bash
+npm ci                                       # Node 20+
+npm run typecheck && npm test
+npm run demo                                 # every path through the service, on the committed OpenAI build
+npm run eval                                 # the evaluation report for the committed OpenAI build
+
+npm run generate -- --provider=offline       # keyless stand-in dataset → data/offline/
+npm run build:index -- --provider=offline    # rules enricher + hashing embedder → artifacts/offline/
+npm run demo -- --provider=offline
+npm run eval -- --provider=offline           # → eval/reports/offline/
+npm start                                    # serves artifacts/index.json on 127.0.0.1:3000
+```
+
+Offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`. They're a software check, not the shipped system. `demo` and `eval` read the committed OpenAI build unless given `--provider=offline`, and they never fall back from one build to the other. To serve an offline index, set `INDEX_PATH=artifacts/offline/index.json`. On a `.env` with a key, always pass `--provider=offline` to `generate` and `build:index`.
+
+### The API
+
+| Route | What |
+| --- | --- |
+| `GET /v1/games/:gameId/related?brand=&market=&limit=` | The rail. `brand` and `market` are required (`market` is one of GB, ES, SE, NL, NJ). `limit` is optional: default 6, clamped to 12. The header `x-player-restricted: true` marks a restricted player |
+| `GET /health` | Liveness: always 200 |
+| `GET /ready` | 200 once a valid index is loaded, otherwise 503 |
+| `GET /metrics` | Prometheus text: request counter (outcome, reason, brand), latency histogram, `recs_index_info` |
+
+**The response shape** is the same for answers and declines: `{ gameId, seedTitle, brand, market, indexVersion, status: "ok" | "declined", reason?, items: [{ gameId, title, score }] }`. It carries `x-index-version`, `vary: x-player-restricted`, and `public, max-age=300`, or `private, no-store` for a restricted player.
+
+**Status codes and declines.** A decline is a 200 with an empty `items` list; the page hides the rail.
+- **Decline reasons:** `BRAND_DISABLED`, `PLAYER_RESTRICTED`, `SEED_NOT_AVAILABLE`, `INSUFFICIENT_SOURCE_DATA`, `NO_CONFIDENT_MATCHES`, plus `MARKET_NOT_SERVED_BY_BRAND` inside `recommend()`.
+- **404** for `UNKNOWN_GAME`, with the same body shape.
+- **400** `{ status: "error", error }` for `invalid_request`, `unknown_brand` and `brand_not_offered_in_market`.
+- **503** `{ status: "unavailable", items: [] }` with no index loaded.
+
+Example (`npm run demo`, case 3, OpenAI build):
+
+```http
+GET /v1/games/g-001/related?brand=liberty&market=NJ
+
+200  cache-control: public, max-age=300
+{"gameId":"g-001","seedTitle":"Orchard Classics: Berry Burst Spins","brand":"liberty","market":"NJ",
+ "indexVersion":"ef13f1ecf784","status":"declined","reason":"NO_CONFIDENT_MATCHES","items":[]}
+```
+
+## Rebuild with a model
+
+```bash
+cp .env.example .env                          # add OPENAI_API_KEY
+npm run generate -- --provider=openai         # → data/generated/
+npm run build:index -- --provider=openai      # → artifacts/ (the enrichment cache in .cache/ is committed)
+npm run eval:gate                             # exit 1 if any release gate fails
+```
+
+Commit `data/generated/`, `artifacts/` and `eval/reports/` so CI gates the build. **Only `text-embedding-3-small` has a score threshold** (`config/service.json`). The service refuses an index built with any other embedding model until that model gets its own threshold from the sweep (spec 05 §6.3). Tune the threshold from the report's sweep; never tune a gate.
 
 ## Dataset design
 
@@ -57,3 +137,80 @@ A record is several things at once: a partial-quality NJ slot in a series can al
 Cluster members are on every European brand and market, with the same stakes and five different studios, so recall depends on similarity alone, not on licensing, the stake policy or the studio cap.
 
 Per-cluster reporting matters because one overall score can look fine while one kind of game is badly served, and near-misses show whether matching understands more than the theme word.
+
+## How the pieces fit
+
+```
+BUILD TIME (scripts/, src/pipeline/, src/ai/)                     REQUEST TIME (src/service/)
+
+catalogue.raw.json ──► normalise.ts ──► evidence check                GET /v1/games/:id/related
+  (messy feed)        (only reader of     │                                   │
+                       raw records;       ├─ complete ──────────┐             ▼
+                       protected fields)  └─ partial/title-only │      brand / market / restriction
+                                              ▼                 │             │
+                                    enrich.ts (LLM or rules)    │      seed checks (unknown, not
+                                              ▼                 │      available, insufficient)
+                                    guard.ts (vocabulary,       │             │
+                                    source wins, lint,          │             ▼
+                                    provenance)                 │      walk neighbours by score:
+                                              ▼                 ▼        layer 2 eligibility
+                                    build-index.ts: embed + top-40          layer 3 policy
+                                              │                           quality + relatedness
+                                              ▼                           diversity caps
+                                    eval/ (npm run eval:gate) ─ fail ─► keep current index
+                                              │ pass                         │
+                                              ▼                              ▼
+                                    artifacts/index.json ───────────► ≥ 3 items: ok, else decline
+                                    (versioned, Zod-validated on load)  (page hides the rail)
+```
+
+## Production concerns: what I built and what I left out
+
+**Built:**
+- **The four layers**, every rule failing closed, with a test per decline reason.
+- **The guard between the model and everything downstream**, tested against planted injection, fluff and title-only records.
+- **The evaluation as a release gate:** 15 gates as data, `eval:gate` exits 1, deterministic and free to run. It also reports per-brand coverage, so a brand with no rails is named.
+- **Versioning:** content-addressed enrichment cache, versioned prompts, `indexVersion` derived from the inputs, schema-checked artefacts, atomic writes and checkpointed caches.
+- **A keyless offline path** for tests and CI.
+- **Operations:** structured logs with no player data, Prometheus metrics, `/health` and `/ready`, CDN-friendly cache headers with a restricted-player bypass, and a CI workflow.
+
+**Left out:**
+
+| Left out | Why |
+| --- | --- |
+| Auth and rate limiting | Belong at the edge (CloudFront/WAF, API gateway), not in the service |
+| Hot reload of the index | A new index ships as new tasks behind `/ready`; a rolling deploy is simpler and safer than swapping in place |
+| A vector DB | The query is always a known game, so neighbours are precomputed; at this size the artefact fits in memory (ADR §5) |
+| A live eligibility overlay | The main known gap, named in ADR §6. Eligibility is snapshotted with the index; the overlay is the next step |
+| Age and identity checks | The lobby's job before any game page; the service trusts only the restricted-player flag it's given |
+| A "trending" fallback rail | It would pad a declined rail with unrelated games, against "decline over pad" (AGENTS.md rule 7) |
+| Personalisation and A/B testing | Need player data and an experiment platform. The A/B test, with safer-gambling guardrails, is the next evaluation step (EVALUATION.md) |
+| A review UI for enrichment | Nothing generated is shown to players, so there's nothing to approve before publish; the report's wrong-fills sample serves reviewers for now |
+| Infrastructure as code | The brief asks for the infrastructure to be described (ADR §4), not built |
+| A generated spec appendix with a drift check | The excerpts are fragments of files, so generating them needs markers in production code or brittle parsing. The appendix is maintained by hand, and the identity hash already checks the dataset (spec 07 Decisions) |
+
+## Repository map
+
+| Path | What |
+| --- | --- |
+| `src/domain/` | Vocabulary, types, the index schema |
+| `src/catalogue/` | Synthetic dataset generation: slate, creative, traps, degradation, repairs, the real-name deny-list |
+| `src/pipeline/` | `normalise.ts`, `enrich.ts`, `guard.ts`, `build-index.ts` |
+| `src/ai/` | Model providers: OpenAI chat and embeddings, the hashing embedder |
+| `src/service/` | `recommender.ts` (the rules), `server.ts`, `index-store.ts`, `metrics.ts`, `service-config.ts` |
+| `scripts/` | CLI entry points: `generate-catalogue.ts`, `build-index.ts`, `demo.ts` (and `demo-cases.ts`) |
+| `eval/` | The evaluation: relevance labels, metrics, gates, report; `release-gates.json`; `reports/` |
+| `tests/` | Software tests (behaviour, boundaries, docs consistency) |
+| `prompts/` | Versioned runtime prompts |
+| `config/service.json` | Brands, markets, restricted features, policy numbers, thresholds |
+| `docs/` | ADR, evaluation, AI usage, leverage; `prompts/` (specs); `notes/` (inspection and analysis notes) |
+| `data/generated/`, `artifacts/`, `eval/reports/` | The committed OpenAI build |
+| `data/offline/`, `artifacts/offline/`, `eval/reports/offline/` | Offline builds (git-ignored) |
+
+## Notes from the candidate
+
+> **[CANDIDATE TO WRITE] Time allocation.** How the time was split across planning, specs, building, evaluation and docs.
+
+> **[CANDIDATE TO WRITE] AI tools used.** Which tools and models, for what. `docs/AI_USAGE.md` lists the agentic artifacts.
+
+> **[CANDIDATE TO WRITE] One output I changed or rejected.** One concrete case where an AI output wasn't kept as given, and why.

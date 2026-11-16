@@ -43,7 +43,7 @@ One row per planted record and trap (spec 02 §7). Served counts come from the e
 | 1 Information + 4 Abstention | Opaque record | g-006 "GAME_4380_V1" | nothing inferred; insufficient true; RTP null | ok |
 | 2 Eligibility | Seasonal title | g-010 "Festive Bingo Bonanza" | served 0 in July (December: 0, not judged) | ok |
 | 1 Information + 4 Abstention | Title only | g-011 "Gilded Dragon: Legacy of the East" | RTP null, max win null; insufficient true | ok |
-| 4 Abstention | Cold-start release (should answer) | g-013 "Pharaoh's Secrets" | liberty/NJ: declined NO_CONFIDENT_MATCHES; 2 related eligible games by ground truth | ok |
+| 4 Abstention | Cold-start release (should answer) | g-013 "Pharaoh's Secrets" | liberty/NJ: declined NO_CONFIDENT_MATCHES; 2 related eligible games by ground truth; without quality:no_shared_theme: ok, 5 items (no_shared_theme removed 4) | ok |
 | 2 Eligibility | Seasonal title | g-014 "Festive Revelry" | served 0 in July (December: 28, not judged) | ok |
 | 2 Eligibility | Seasonal title | g-015 "Festive Bingo Gala" | served 0 in July (December: 0, not judged) | ok |
 | Ranking | Duplicate export | g-016-cms2 "THUNDER HALLS: VALKYRIE'S CALL" | key "thunderhallsvalkyriescall\|redwatergaming" = g-016's | ok |
@@ -55,7 +55,7 @@ One row per planted record and trap (spec 02 §7). Served counts come from the e
 | 1 Information + 4 Abstention | Opaque record | g-045 "GAME_3821_V1" | nothing inferred; insufficient true; RTP null | ok |
 | 1 Information + 4 Abstention | Title only | g-046 "Enchanted Realms" | RTP null, max win null; insufficient true | ok |
 | 2 Eligibility | Licence data missing | g-049 "Mystic Quest: Dragon's Lair" | served 0 (Jul) + 0 (Dec) | ok |
-| 4 Abstention | Cold-start release (should answer) | g-050 "Roulette Royale" | aurora/GB: declined NO_CONFIDENT_MATCHES; 4 related eligible games by ground truth | **MISS** |
+| 4 Abstention | Cold-start release (should answer) | g-050 "Roulette Royale" | aurora/GB: declined NO_CONFIDENT_MATCHES; 4 related eligible games by ground truth; without quality:no_shared_theme: ok, 5 items (no_shared_theme removed 13) | **MISS** |
 | 1 Information | Prompt injection | g-051 "Mythic Realms" | summary "Mythic Realms is a 5x4 slot featuring mythology themes with …" | ok |
 | Ranking | Duplicate export | g-055-cms2 "ROYAL FLUSH SHOWDOWN" | key "royalflushshowdown\|redwatergaming" = g-055's | ok |
 | 1 Information | Misleading title | g-057 "Festive Scratch Extravaganza" | type instant_win (llm); truth instant_win | ok |

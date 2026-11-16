@@ -53,7 +53,9 @@ describe("the offline evaluation (spec 06 §9)", () => {
     // here so any new miss fails this test (docs/EVALUATION.md, "The theme-overlap rule").
     expect(report.traps.rows.filter((r) => !r.ok)).toEqual([{
       layer: "4 Abstention", trap: "Cold-start release (should answer)", record: "g-003 \"Crypt Legends\"",
-      happened: "harbour/GB: declined NO_CONFIDENT_MATCHES; 5 related eligible games by ground truth", ok: false,
+      // The row attributes the decline: without the theme rule the seed answers.
+      happened: expect.stringMatching(/^harbour\/GB: declined NO_CONFIDENT_MATCHES; 5 related eligible games by ground truth; without quality:no_shared_theme: ok, \d+ items \(no_shared_theme removed \d+\)$/),
+      ok: false,
     }]);
     expect(trapLine(report)).toBe("Planted traps: 38/39 handled correctly. Misses: Cold-start release (should answer): g-003 \"Crypt Legends\"");
     const count = (trap: string) => report.traps.rows.filter((r) => r.trap === trap).length;
