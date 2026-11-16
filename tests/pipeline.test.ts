@@ -10,7 +10,10 @@ import type { RawRecord } from "../src/domain/types.js";
 import { JACKPOT_NETWORKS, MECHANICS, PROVIDERS, TAG_SYNONYMS, THEMES, type Mechanic, type Theme } from "../src/domain/vocabulary.js";
 import { normaliseRecord } from "../src/pipeline/normalise.js";
 import { jsonFileText } from "../src/util/misc.js";
-import { FakeJsonLlm, noSleep, slotsInRequest } from "./helpers/fake-llm.js";
+import { layoutFit } from "../src/catalogue/repairs.js";
+import type { LayoutFit } from "../src/catalogue/repairs.js";
+import type { GameType } from "../src/domain/vocabulary.js";
+import { FakeJsonLlm, layoutFor, noSleep, slotsInRequest } from "./helpers/fake-llm.js";
 import { offlineDataset } from "./helpers/offline-dataset.js";
 
 const TRAP_SPECIALS: Special[] = ["market_twin", "escalation_twin", "lifecycle_suspended", "lifecycle_cert_expired", "lifecycle_demo_only", "test_game"];
@@ -253,7 +256,7 @@ describe("LLM generation enforces the slate contract (fake LLM)", () => {
 
   /** A model that gets everything wrong it can while still passing the schema. */
   const misbehavingGames = (user: string) =>
-    slotsInRequest(user).map(({ slot }) => ({
+    slotsInRequest(user).map(({ slot, gameType }) => ({
         slot,
         title: `Invented Game ${slot}`,
         provider: PROVIDERS[slot % PROVIDERS.length]!,
@@ -265,7 +268,7 @@ describe("LLM generation enforces the slate contract (fake LLM)", () => {
         rtp: 99.9,
         minStake: 0.01,
         maxStake: 1000,
-        reelLayout: "5x3, 20 lines",
+        reelLayout: layoutFor(gameType),
         maxWinMultiplier: 1_000_000,
         jackpotNetwork: slot === 1 ? "Daily Vault" : JACKPOT_NETWORKS[0],
         releaseYear: 2031,
@@ -275,7 +278,7 @@ describe("LLM generation enforces the slate contract (fake LLM)", () => {
 
   it("clamps numbers, fixes themes and jackpots, aligns series and forces clusters", async () => {
     const llm = misbehaving();
-    const games = await generateWithLlm(slate, llm, { system: "test prompt" });
+    const { games } = await generateWithLlm(slate, llm, { system: "test prompt" });
     expect(llm.calls).toHaveLength(10);
     expect(llm.calls.every((c) => c.temperature === GENERATION_TEMPERATURE && c.temperature === 0.7)).toBe(true);
     expect(games.map((g) => g.slot)).toEqual(slate.map((s) => s.slot));
@@ -348,7 +351,7 @@ describe("LLM generation enforces the slate contract (fake LLM)", () => {
       if (i === 0) throw new Error("429 rate limited");
       return good.completeJson(args);
     });
-    const games = await generateWithLlm(slate, llm, { system: "p", retry: noSleep });
+    const { games } = await generateWithLlm(slate, llm, { system: "p", retry: noSleep });
     expect(games).toHaveLength(100);
     expect(llm.calls).toHaveLength(11);
   });
@@ -363,6 +366,243 @@ describe("title and studio uniqueness", () => {
 
   it("allows the same title from different studios", () => {
     expect(() => assertUniqueTitleStudio([game(1, "Gold Rush", "Lumen Studios"), game(2, "Gold Rush", "Kestrel Play")])).not.toThrow();
+  });
+});
+
+describe("repairs after LLM generation (spec 01 §6.2)", () => {
+  const slate = buildSlate();
+  const typeOf = (slot: number) => slate.find((s) => s.slot === slot)!.gameType;
+  /** Plain slots (not forced, not in a series) keep the studio and mechanics the model returns. */
+  const plainSlots = (type: string) => slate.filter((s) => !s.forced && !s.seriesName && s.gameType === type).map((s) => s.slot);
+  const a = plainSlots("slot").find((s) => s <= 10)!;
+  const b = plainSlots("slot").find((s) => s > 10)!;
+  const other = [1, 2, 3].find((s) => s !== a && s !== b)!;
+  const DUP = "Bandit Ridge: Outlaw's Bounty";
+  const STUDIO = "Northlight Interactive";
+
+  type Entry = ReturnType<typeof slotsInRequest>[number];
+  interface Ctx { repair: boolean; attempt: number; user: string }
+
+  /**
+   * A fake model whose games are well formed, uniquely titled and correctly laid out, unless `answer`
+   * overrides fields. Repair calls (single-slot, with the used-titles line) count attempts per slot.
+   */
+  const model = (answer: (e: Entry, ctx: Ctx) => Record<string, unknown> = () => ({})) => {
+    const attempts = new Map<number, number>();
+    return new FakeJsonLlm((args) => {
+      const repair = args.user.includes("Titles already used (do not reuse):");
+      return {
+        games: slotsInRequest(args.user).map((e) => {
+          const attempt = repair ? (attempts.get(e.slot) ?? 0) + 1 : 0;
+          if (repair) attempts.set(e.slot, attempt);
+          return {
+            slot: e.slot, title: `Unique Game ${e.slot}`, provider: STUDIO, themes: [], mechanics: ["free_spins"], volatility: "medium",
+            rtp: 96, minStake: 0.2, maxStake: 10, reelLayout: layoutFor(e.gameType), maxWinMultiplier: 1000, jackpotNetwork: null,
+            releaseYear: 2020, description: "A game.",
+            ...answer(e, { repair, attempt, user: args.user }),
+          };
+        }),
+      };
+    });
+  };
+  /** Batches give the `clash` slots the title DUP; repair attempt n answers repairTitles[n - 1] (the last one repeats). */
+  const clashing = (clash: number[], repairTitles: string[], providerFor: (slot: number) => string = () => STUDIO) =>
+    model((e, { repair, attempt }) => ({
+      provider: providerFor(e.slot),
+      title: repair ? repairTitles[Math.min(attempt, repairTitles.length) - 1]! : clash.includes(e.slot) ? DUP : `Unique Game ${e.slot}`,
+    }));
+
+  describe("title and studio collisions", () => {
+    it("regenerates only the later slot, telling the model which titles are taken, until it's unique", async () => {
+      const llm = clashing([a, b], [DUP, "Outlaw's Second Bounty"]); // the first repair repeats the duplicate; the retry is unique
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+
+      expect(games.find((g) => g.slot === a)!.title).toBe(DUP);
+      expect(games.find((g) => g.slot === b)!.title).toBe("Outlaw's Second Bounty");
+      expect(repairs).toEqual([{ kind: "title_studio", slot: b, field: "title", before: DUP, after: "Outlaw's Second Bounty", attempts: 2, collidedWithSlot: a, provider: STUDIO }]);
+      expect(() => assertUniqueTitleStudio(games)).not.toThrow();
+
+      expect(llm.calls).toHaveLength(10 + 2);
+      for (const call of llm.calls.slice(10)) {
+        expect(slotsInRequest(call.user).map((e) => e.slot)).toEqual([b]); // a single-slot call
+        expect(call.user).toContain("Titles already used (do not reuse): ");
+        expect(call.user).toContain(JSON.stringify(DUP)); // slot a still holds it
+        expect(call.user).toContain(JSON.stringify(`Unique Game ${other}`));
+        expect(call.user).not.toContain("does not fit");
+        expect([call.system, call.temperature]).toEqual(["p", 0.7]);
+      }
+    });
+
+    it("catches a collision that only appears once series members share a studio", async () => {
+      const members = slate.filter((s) => s.seriesName === "Bandit Ridge").map((s) => s.slot).sort((x, y) => x - y);
+      expect(members).toHaveLength(2);
+      const llm = clashing(members, ["Bandit Ridge: Second Ride"], (slot) => PROVIDERS[slot % PROVIDERS.length]!);
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      const seriesStudio = PROVIDERS[members[0]! % PROVIDERS.length];
+      expect(repairs).toEqual([{ kind: "title_studio", slot: members[1], field: "title", before: DUP, after: "Bandit Ridge: Second Ride", attempts: 1, collidedWithSlot: members[0], provider: seriesStudio }]);
+      expect(games.find((g) => g.slot === members[1])!.provider).toBe(seriesStudio);
+    });
+
+    it("fails, naming the slots, after 3 attempts that keep repeating the title", async () => {
+      const llm = clashing([a, b], [DUP]);
+      await expect(generateWithLlm(slate, llm, { system: "p" })).rejects.toThrow(
+        `duplicate title and studio: "${DUP}" by ${STUDIO} (slots ${a} and ${b}) (not repaired after 3 attempts)`,
+      );
+      expect(llm.calls).toHaveLength(10 + 3);
+    });
+
+    it("counts a failed repair call as an attempt and keeps its error in the failure", async () => {
+      let repairCalls = 0;
+      const base = clashing([a, b], [DUP]);
+      const llm = new FakeJsonLlm((args) => {
+        if (args.user.includes("Titles already used")) {
+          repairCalls++;
+          throw new Error("503 upstream");
+        }
+        return base.completeJson(args);
+      });
+      await expect(generateWithLlm(slate, llm, { system: "p" })).rejects.toThrow(/not repaired after 3 attempts; last error: 503 upstream/);
+      expect(repairCalls).toBe(3);
+    });
+  });
+
+  describe("repeated titles among benchmark-cluster games (item 1)", () => {
+    const fishing = slate.filter((s) => s.cluster === "fishing_cash_collect" && s.clusterRole === "member").map((s) => s.slot).sort((x, y) => x - y);
+
+    it("regenerates the later cluster game even though the studios differ", async () => {
+      const llm = model((e, { repair }) => (!repair && fishing.slice(0, 2).includes(e.slot) ? { title: "Deep Sea Catch" } : repair ? { title: "Deep Sea Haul" } : {}));
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      const [first, second] = [games.find((g) => g.slot === fishing[0])!, games.find((g) => g.slot === fishing[1])!];
+      expect(first.provider).not.toBe(second.provider); // round-robin studios: not a title+studio collision
+      expect(repairs).toEqual([{ kind: "cluster_title", slot: fishing[1], field: "title", before: "Deep Sea Catch", after: "Deep Sea Haul", attempts: 1, collidedWithSlot: fishing[0], provider: second.provider }]);
+      const clusterTitles = games.filter((g) => slate.find((s) => s.slot === g.slot)!.cluster).map((g) => g.title);
+      expect(new Set(clusterTitles).size).toBe(clusterTitles.length);
+      expect(llm.calls).toHaveLength(11);
+    });
+
+    it("leaves a cluster game alone when only a non-cluster game shares its title", async () => {
+      const outsider = plainSlots("slot")[0]!;
+      const llm = model((e) => ([fishing[0], outsider].includes(e.slot) ? { title: "Deep Sea Catch" } : {}));
+      const { repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(repairs).toEqual([]);
+      expect(llm.calls).toHaveLength(10);
+    });
+  });
+
+  describe("live_dealer on non-live games (item 2)", () => {
+    it("removes it from every non-live game, keeps it on live games, and records each removal", async () => {
+      const llm = model(() => ({ mechanics: ["free_spins", "live_dealer"] }));
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      const unforced = slate.filter((s) => !s.forced);
+      const nonLive = unforced.filter((s) => s.gameType !== "live").map((s) => s.slot);
+      expect(repairs.map((r) => r.slot)).toEqual(nonLive);
+      for (const r of repairs) expect(r).toEqual({ kind: "live_dealer_removed", slot: r.slot, field: "mechanics", before: ["free_spins", "live_dealer"], after: ["free_spins"], attempts: 0 });
+      for (const g of games) {
+        if (typeOf(g.slot) !== "live") expect(g.mechanics).not.toContain("live_dealer");
+      }
+      for (const s of unforced.filter((x) => x.gameType === "live")) expect(games.find((g) => g.slot === s.slot)!.mechanics).toContain("live_dealer");
+      expect(llm.calls).toHaveLength(10); // deterministic: no model call
+    });
+  });
+
+  describe("layouts that don't fit the game type (item 3)", () => {
+    const table = plainSlots("table")[0]!;
+    const live = plainSlots("live")[0]!;
+    const bingo = plainSlots("bingo")[0]!;
+    const [s1, s2, s3] = plainSlots("slot");
+
+    it.each<[string, string, LayoutFit]>([
+      ["slot", "5x3, 20 lines", "fits"],
+      ["slot", "6x7 Megaways, 117,649 ways", "fits"],
+      ["slot", "7x7 cluster grid", "fits"],
+      ["slot", "6x6, cluster pays", "fits"],
+      ["slot", "6x5, cascading", "contradicts"], // no lines or ways
+      ["slot", "single-zero wheel", "contradicts"],
+      ["slot", "", "contradicts"],
+      ["table", "single-zero wheel", "fits"],
+      ["table", "8-deck shoe", "fits"],
+      ["table", "5x3, 20 lines", "contradicts"],
+      ["table", "live dealer", "placeholder"],
+      ["live", "money wheel", "fits"],
+      ["live", "live wheel", "fits"],
+      ["live", "live_dealer", "placeholder"],
+      ["live", "live studio setting", "placeholder"],
+      ["live", "6x7 Megaways, 117,649 ways", "contradicts"],
+      ["instant_win", "3x3 scratch grid", "fits"],
+      ["instant_win", "5 reels, 3 rows", "contradicts"],
+      ["bingo", "90-ball", "fits"],
+      ["bingo", "", "placeholder"],
+    ])("%s with %j → %s", (type, layout, fit) => {
+      expect(layoutFit(type as GameType, layout)).toBe(fit);
+    });
+
+    it("regenerates a non-slot whose layout contradicts its type, saying why", async () => {
+      const llm = model((e, { repair }) => (e.slot === table && !repair ? { reelLayout: "5x3, 20 lines" } : {}));
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(repairs).toEqual([{ kind: "layout_regenerated", slot: table, field: "reelLayout", before: "5x3, 20 lines", after: "single-zero wheel", attempts: 1 }]);
+      expect(games.find((g) => g.slot === table)!.reelLayout).toBe("single-zero wheel");
+      expect(llm.calls).toHaveLength(11);
+      const repairCall = llm.calls[10]!;
+      expect(slotsInRequest(repairCall.user).map((e) => e.slot)).toEqual([table]);
+      expect(repairCall.user).toContain('The previous reelLayout "5x3, 20 lines" does not fit type=table. Use a reelLayout that fits it.');
+      expect(repairCall.user).toContain("Titles already used (do not reuse): ");
+    });
+
+    it("regenerates a slot with a non-reel, incomplete or missing layout", async () => {
+      const bad: Record<number, string> = { [s1!]: "single-zero wheel", [s2!]: "6x5, cascading", [s3!]: "" };
+      const llm = model((e, { repair }) => (!repair && bad[e.slot] !== undefined ? { reelLayout: bad[e.slot] } : {}));
+      const { repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(repairs).toEqual(
+        [s1!, s2!, s3!].map((slot) => ({ kind: "layout_regenerated", slot, field: "reelLayout", before: bad[slot], after: "5x3, 20 lines", attempts: 1 })),
+      );
+      expect(llm.calls).toHaveLength(13);
+    });
+
+    it("clears a missing or placeholder layout on a non-slot to null, without a model call", async () => {
+      const llm = model((e) => (e.slot === live ? { reelLayout: "live dealer" } : e.slot === bingo ? { reelLayout: " " } : {}));
+      const { games, repairs } = await generateWithLlm(slate, llm, { system: "p" });
+      expect(repairs).toEqual([
+        { kind: "layout_cleared", slot: Math.min(live, bingo), field: "reelLayout", before: Math.min(live, bingo) === live ? "live dealer" : " ", after: null, attempts: 0 },
+        { kind: "layout_cleared", slot: Math.max(live, bingo), field: "reelLayout", before: Math.max(live, bingo) === live ? "live dealer" : " ", after: null, attempts: 0 },
+      ]);
+      expect(games.find((g) => g.slot === live)!.reelLayout).toBeNull();
+      expect(llm.calls).toHaveLength(10);
+    });
+
+    it("fails, naming the slot, when the layout still contradicts after 3 attempts", async () => {
+      const llm = model((e) => (e.slot === table ? { reelLayout: "5x3, 20 lines" } : {}));
+      await expect(generateWithLlm(slate, llm, { system: "p" })).rejects.toThrow(
+        `reelLayout "5x3, 20 lines" doesn't fit type=table (slot ${table}) (not repaired after 3 attempts)`,
+      );
+      expect(llm.calls).toHaveLength(13);
+    });
+  });
+
+  describe("in the dataset", () => {
+    it("records every repair in the manifest", async () => {
+      const d = await generateDataset({ llm: clashing([a, b], ["A Fresh Title"]), system: "p", now: () => new Date("2026-01-01T00:00:00Z") });
+      expect(d.manifest).toMatchObject({ provider: "openai", model: "fake:test-model", repairs: [{ kind: "title_studio", slot: b, collidedWithSlot: a, after: "A Fresh Title", attempts: 1 }] });
+      expect(d.canonical.find((g) => g.id === idForSlot(b))!.title).toBe("A Fresh Title");
+    });
+
+    it("leaves a cleared layout out of the feed, so it normalises to null", async () => {
+      const live = plainSlots("live")[0]!;
+      const d = await generateDataset({ llm: model((e) => (e.slot === live ? { reelLayout: "live studio setting" } : {})), system: "p" });
+      expect(d.canonical.find((g) => g.id === idForSlot(live))!.reelLayout).toBeNull();
+      for (const r of d.reference.filter((x) => x.canonicalId === idForSlot(live))) {
+        const rawRec = rawById(d.raw, r.rawId);
+        expect(rawRec).not.toHaveProperty("reel_layout");
+        if (rawRec.specs) for (const k of ["reels", "layout", "grid"]) expect(rawRec.specs).not.toHaveProperty(k);
+        expect(normaliseRecord(rawRec).reelLayout).toBeNull();
+      }
+      expect(d.manifest.repairs).toEqual([expect.objectContaining({ kind: "layout_cleared", slot: live, before: "live studio setting", after: null })]);
+    });
+
+    it("records an empty repair list when nothing needed fixing, and none on the offline path", async () => {
+      const d = await generateDataset({ llm: model(), system: "p" });
+      expect(d.manifest.repairs).toEqual([]);
+      expect((await offlineDataset()).manifest).not.toHaveProperty("repairs");
+    });
   });
 });
 
@@ -437,7 +677,7 @@ describe("benchmark clusters (spec 03)", () => {
   it("corrects every forced entry when the LLM returns wrong themes, mechanics and volatility", async () => {
     const slate = buildSlate();
     const llm = new FakeJsonLlm((args) => ({
-      games: slotsInRequest(args.user).map(({ slot }) => ({
+      games: slotsInRequest(args.user).map(({ slot, gameType }) => ({
         slot,
         title: `Wrong Game ${slot}`,
         provider: "Lumen Studios", // the same studio for everything
@@ -447,14 +687,14 @@ describe("benchmark clusters (spec 03)", () => {
         rtp: 96,
         minStake: 1,
         maxStake: 90,
-        reelLayout: "6x7 Megaways, 117,649 ways",
+        reelLayout: layoutFor(gameType),
         maxWinMultiplier: 20000,
         jackpotNetwork: "Starfall Network",
         releaseYear: 2020,
         description: "A horror megaways slot.",
       })),
     }));
-    const games = await generateWithLlm(slate, llm, { system: "p" });
+    const { games } = await generateWithLlm(slate, llm, { system: "p" });
     for (const s of slate.filter((x) => x.forced)) {
       const g = games.find((x) => x.slot === s.slot)!;
       expect(g.themes).toEqual([...new Set([s.primaryTheme, ...s.forced!.extraThemes])]);

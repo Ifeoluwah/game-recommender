@@ -54,3 +54,50 @@ Finish by reporting: the test results, the catalogueHash of data/offline/catalog
 Read @AGENTS.md and implement @docs/prompts/03-benchmark-clusters-and-evaluation-dimensions.md, following milestone 3 in @docs/plan.md and the resolutions in @REBUILD_NOTES.md. Where the appendix gives exact code or values, use them exactly. Write the tests the spec requires, run npm run typecheck and npm test, then run npm run generate -- --provider=offline. Build and run everything offline; don't run the OpenAI path. Tick milestone 3 off in docs/plan.md and record any new choices in REBUILD_NOTES.md.
 
 Don't commit; I make the commits. Finish by reporting: the test results, the offline catalogueHash (must still be 5caf2bbb0f343546), the manifest's evaluation_dimensions summary, and anything you had to interpret.
+
+## 2026-11-16 01:39:26
+
+<pasted_content id="2fae">
+npm run generate -- --provider=openai failed: slots 30 and 45 share title "Bandit Ridge: Outlaw's Bounty" by Northlight Interactive. Batches of 10 can't see each other's titles, so cross-batch collisions will recur with a real model.
+
+Fix: after all batches, find title+studio collisions. For each, regenerate only the later slot with a single-slot call whose user message adds "Titles already used (do not reuse): ..." listing every title so far, then run it through the same repair steps. Up to 3 attempts per slot, then fail with the current message naming the slots. Don't edit the prompt file in prompts/. Record the repaired slots in the manifest so the repair is visible.
+
+Add a test with a fake JsonLlm that returns a duplicate title first and a unique one on retry. The offline catalogueHash must stay 5caf2bbb0f343546. Record the spec gap in REBUILD_NOTES.md. Don't run the OpenAI path; I'll rerun it. Don't commit; I make the commits.
+</pasted_content id="2fae">
+
+## 2026-11-16 01:46:50
+
+<pasted_content id="2fae">
+Inspect the OpenAI build in data/generated/ (read-only; don't change any data file and don't call any model). Check it against specs 01–03 and report pass/fail for each:
+1. Counts: 108 canonical games, 113 feed records, and the slate type mix.
+2. The manifest names the model and prompt version, and lists titleRepairs.
+3. Slate contract on every game: primary theme first, forced mechanics and volatility exact, ranges clamped, series share a studio, no jackpot network without progressive_jackpot.
+4. Benchmark clusters: 4 clusters, 5 members + 2 near-misses each, 5 distinct studios per cluster, no repeated titles within a cluster, members share the theme and exact mechanics.
+5. No duplicate title+studio; all themes and mechanics in the vocabulary; every layout fits its game type; no live_dealer on a non-live game.
+6. Traps and edge cases: the trap counts, and every spec 01 §7.3 edge case present at its expected count.
+7. Quality spot-check: 5 random descriptions plus every misleading-title game. Does the copy match the true game type and metadata? Flag any that state RTP, max win or money amounts.
+
+Then say whether it's fit to commit, and list anything that would affect enrichment or matching later. Save the findings to docs/notes/openai-catalogue-inspection.md. 
+</pasted_content id="2fae">
+
+## 2026-11-16 01:53:12
+
+<pasted_content id="2fae">
+Fix the inspection findings. Spec first, then code (AGENTS.md).
+
+Generation (LLM path only, so the offline catalogueHash must stay 5caf2bbb0f343546):
+1. Title uniqueness: also treat a repeated title among benchmark-cluster games as a collision, whatever the studio, and repair it with the existing loop. Reason: titles go into the embedding text, so duplicate titles inside a cluster corrupt cluster recall.
+2. live_dealer: remove it from any game whose type isn't live; record it in the manifest repairs.
+3. Layout fit: a layout that contradicts the game type (reel/lines/ways/Megaways on a non-slot, a non-reel layout on a slot) is regenerated via the repair loop; a missing or placeholder layout on a non-slot becomes null deterministically with a repair recorded; on a slot it's regenerated.
+
+Service (spec 02):
+4. Add the normalised title to the dedupe key, so a rail never shows two games with the same displayed name even when the studios differ. Product reason: players see titles. Add a test, and a Decisions row.
+
+Record as known limitations in REBUILD_NOTES.md, with reasons, for the README and EVALUATION.md later: win-promise copy left as realistic input for the guard; metadata that contradicts its own copy, which will appear as wrong fills; and the "Wheel"/"Jackpot" keyword mappings from the appendix.
+
+Add tests with a fake JsonLlm for 1–3. Don't run the OpenAI path; I'll rerun it.
+</pasted_content id="2fae">
+
+## 2026-11-16 02:05:23
+
+Keep the title dedupe rule as a service rule applying to both builds. Don't scope to openai. Record in Rebuild_note.md that START_HERE §3's offline ranking and cluster numbers are a prototype baseline that this build supersedes, because the display-title dedupe changes what's served; they'll be re-baselined from this build's own first offline eval at milestone 6, with the reason noted. The hash, trap count and eligibility/policy gates stay as the expected values.

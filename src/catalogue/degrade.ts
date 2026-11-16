@@ -158,11 +158,15 @@ function specsFor(rand: () => number, g: CanonicalGame): Partial<RawRecord> {
   const maxWin = pick(rand, [`${g.maxWinMultiplier}x`, `${g.maxWinMultiplier.toLocaleString("en-GB")}x`, `x${g.maxWinMultiplier}`, g.maxWinMultiplier]);
   const jackpot = g.jackpotNetwork ? pick(rand, [g.jackpotNetwork, g.jackpotNetwork.toUpperCase()]) : undefined;
   if (rand() < 0.6) {
-    const specs: Record<string, unknown> = { [pick(rand, ["reels", "layout", "grid"])]: g.reelLayout, [pick(rand, ["max_win", "maxWin"])]: maxWin };
+    // A layout cleared to null (LLM path, spec 01 §6.2) is left out, not sent as null. Its key is still
+    // drawn, so the draws and key order are exactly the reference's when every layout is present.
+    const layoutKey = pick(rand, ["reels", "layout", "grid"]);
+    const specs: Record<string, unknown> = g.reelLayout === null ? {} : { [layoutKey]: g.reelLayout };
+    specs[pick(rand, ["max_win", "maxWin"])] = maxWin;
     if (jackpot) specs[pick(rand, ["jackpot", "jackpot_network"])] = jackpot;
     return { specs };
   }
-  return { reel_layout: g.reelLayout, max_win_multiplier: maxWin, ...(jackpot ? { jackpot_network: jackpot } : {}) };
+  return { ...(g.reelLayout === null ? {} : { reel_layout: g.reelLayout }), max_win_multiplier: maxWin, ...(jackpot ? { jackpot_network: jackpot } : {}) };
 }
 
 /**

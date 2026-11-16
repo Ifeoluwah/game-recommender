@@ -56,7 +56,85 @@ Raised in `docs/plan.md`. "Changed" marks a resolution that differs from the pla
   - At milestone 1 a scratch preview (A8 inlined) had predicted it. Without the trailing newline the feed hashes to `1baf4dc82cd66d8e`; compact JSON gives `9eaf122e9a164317`; the M1 feed alone (100 / 105) gives `4de3ec42e6087043`.
   - Still to confirm: the same value in `artifacts/offline/index.json` at milestone 5.
 - **Theme-precision denominator (P-23):** whether including title-only records gives 0.667. *Pending milestone 6.*
-- **Ranking numbers (P-16):** whether nDCG@5 0.549, bad-rec 0.606 and coverage 0.979 reproduce with the specified `recommend()` loop. *Pending milestone 6.*
+- **Ranking numbers (P-16):** no longer a reproduction target; see "Baselines superseded" below. *At milestone 6, record this build's first offline values.*
+
+## Baselines superseded
+
+**START_HERE §3's offline ranking and cluster numbers are a prototype baseline, and this build supersedes them.**
+
+- **Superseded:**
+  - cluster Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.863 → 0.850;
+  - nDCG@5 0.549, lift over raw text −0.026, bad-recommendation rate 0.606, coverage 0.979;
+  - the theme precision of 0.667.
+- **Why:** they were measured on the prototype, whose recommender deduplicated only on title + studio. This build also skips a candidate with the same displayed name as the seed or an already-shown game (spec 02 §6.2, `quality:duplicate_title`), for both builds, so it serves different rails from the same catalogue.
+  - The offline catalogue has 5 groups of same-title games from different studios, two of them inside `live_game_show` ("Prize Wheel Live" ×3, "Big Show Live" ×3). Those are exactly the games the new rule now keeps apart.
+  - Served recall, nDCG, bad-recommendation rate and coverage all depend on what's served, so they move. Similarity-only cluster metrics (Recall@5, MRR, intrusion on the raw neighbour lists) don't go through `recommend()`, so they may still match, but they're re-baselined with the rest rather than mixed with prototype numbers.
+  - Theme precision doesn't depend on serving either, so it should still match. It's re-baselined anyway.
+- **What replaces them:** this build's own first offline evaluation at milestone 6 (`npm run eval -- --provider=offline`). Record its values here, then update START_HERE §3 to quote them as the expected offline values, with this reason.
+- **Still the expected values, unchanged:**
+  - **`catalogueHash`:** `5caf2bbb0f343546`. The dataset is untouched, and still byte-identical to the prototype's.
+  - **Planted traps:** 39 rows, all handled. The rows depend on the dataset; their pass conditions are eligibility, policy and normalisation outcomes the title rule doesn't weaken.
+  - **Eligibility and policy gates:** `eligibilityViolations`, `duplicateViolations` and `policyViolations` are all 0. A stricter dedupe can only remove items, never add a violating one.
+
+## Known limitations
+
+Kept on purpose, with reasons. They belong in the README's "what I left out" and in `docs/EVALUATION.md`'s known limitations when spec 08 writes them.
+
+- **Win-promise copy is left in the generated descriptions.** 8 of 108 descriptions in the first OpenAI build use language like "massive wins", "chance to win big" or "guarantees fun".
+  - It's realistic supplier copy, and the system is built to handle it: descriptions are never shown to players (only titles are; AGENTS.md rule 4), and the guard discards any enrichment summary that echoes banned language (spec 04 §6). So it exercises the guard rather than threatening players.
+  - Cleaning it at generation would remove a realistic input the guard should be tested against.
+  - Cost: those records may embed with an empty summary.
+- **Some games' metadata contradicts their own copy.** In the first OpenAI build: g-003's copy and layout say "cluster pays" but its mechanics don't; g-042 mentions cascading reels and a jackpot; g-098 and its escalation twin g-104 have "Jackpot" in the title; g-064 and g-082 have no mechanics.
+  - The canonical record is the truth for the evaluation, so an enricher that correctly reads the copy is scored *wrong* on these. They'll appear in spec 06's "wrong fills", and slightly skew the silver relevance labels for these games.
+  - Left as is because the canonical metadata is what the slate and enforcement produced, and "correcting" it from the copy would make the model's prose the source of truth for labels.
+  - Fixing it properly needs a copy-versus-metadata check at generation, which isn't specified.
+- **The "wheel" and "jackpot" keyword mappings** (appendix A2 `TAG_SYNONYMS`, used by the A9 rules enricher: `wheel → wheel_bonus`, `jackpot → progressive_jackpot`).
+  - The rules enricher reads the title, copy and layout, so every roulette game with a "single-zero wheel" layout or "wheel" in its copy gets `wheel_bonus`, and any title or copy saying "jackpot" gets `progressive_jackpot`.
+  - The `wheel_bonus` tags pull roulette tables towards the `live_game_show` members, whose defining mechanic is `wheel_bonus`: a near-miss intrusion risk in the `rules_enriched` and offline numbers.
+  - Kept because the mappings are part of the reference vocabulary and rules enricher that reproduce the offline dataset and numbers. The rules enricher is a deliberately simple baseline ("a known imprecision, left in rather than tuned", spec 04 §7).
+  - Narrowing them (e.g. "bonus wheel" only; "jackpot" only with a network) is a vocabulary change with its own evaluation.
+
+## Spec gaps found after planning
+
+- **Cross-batch title collisions (spec 01 §6.2), found by the first OpenAI generation run.**
+  - **What happened:** the run failed with `duplicate title and studio: "Bandit Ridge: Outlaw's Bounty" by Northlight Interactive (slots 30 and 45)`. The two slots are members of the same series, so they share a studio after alignment. Batches of 10 can't see each other's titles, so a rerun can collide again.
+  - **The gap:** the spec only said "fail on a repeat", which suits the deterministic offline generator but not a real model.
+  - **Fix, in `src/catalogue/creative.ts`:**
+    - After all batches, and after series alignment and cluster enforcement (which settle each studio), `generateWithLlm` finds title+studio collisions.
+    - It regenerates each later slot with a single-slot call: the slot's line plus `Titles already used (do not reuse): …` listing every current title (JSON-quoted, comma-separated). `prompts/generate-catalogue.v2.md` is unchanged.
+    - It re-runs the same repair steps (Zod, clamps, alignment, enforcement), up to 3 attempts per slot, where a failed call counts as one. Then it fails with the existing message naming the slots, plus `(not repaired after 3 attempts…)`.
+  - **Visible in the manifest:** first recorded as `manifest.titleRepairs`; now an entry of kind `title_studio` in `manifest.repairs` (see the next entry). LLM path only; `[]` when nothing needed fixing.
+  - **Offline:** unchanged; `catalogueHash` is still `5caf2bbb0f343546`.
+  - **Spec:** spec 01 §6.2 and its Decisions table updated to match.
+  - **Tests:** in `tests/pipeline.test.ts`, under "repairs after LLM generation".
+  - **Verified:** the OpenAI rerun succeeded with one title repair (slot 32), before the next entry's changes.
+
+- **Fixes from the OpenAI catalogue inspection** (`docs/notes/openai-catalogue-inspection.md`), specified first, then built.
+  1. **Repeated titles inside the benchmark clusters** are a collision whatever the studio, repaired by the same loop (kind `cluster_title`). The reason: titles go into the embedding text, and two cluster games with one title distort cluster recall. A cluster game sharing a title with a *non*-cluster game is left alone, because the rule is scoped to cluster games. Spec 01 §6.2 and Decisions; `src/catalogue/repairs.ts` (`findClusterTitleCollisions`).
+  2. **`live_dealer` on non-live games** is removed in code after the repair loop, without a model call, and recorded as `live_dealer_removed`. Spec 01 §6.2 and Decisions.
+  3. **Layout fit** (`layoutFit` in `repairs.ts`, rules in spec 01 §6.2):
+     - a contradiction goes back to the model, with the bad layout named in the request (`layout_regenerated`);
+     - a missing or placeholder layout on a non-slot becomes `null` (`layout_cleared`, no call).
+
+     Interpretations:
+     - A slot layout must have a grid **and** win lines, ways, Megaways or a cluster grid, so "6x5, cascading" counts as a contradiction. That follows the prompt's "include the win lines or ways for slots".
+     - A missing slot layout is regenerated too.
+     - The placeholder test is "matches nothing a layout for that type looks like" (a wheel, shoe, deck or table; a scratch grid; balls). So "live wheel" is kept, while "live dealer", "live_dealer" and "live studio setting" are cleared.
+     - Card games on a "single-zero wheel" are still accepted: the rule only knows types, not themes.
+
+     Knock-on changes:
+     - `CanonicalGame.reelLayout` and `CreativeGame.reelLayout` are now nullable (spec 01 §5.1; appendix A12).
+     - `specsFor` leaves a null layout out of the feed. The layout key is still drawn, so offline draws and key order are unchanged (appendix A7; spec 01 §7.2). Offline `catalogueHash` re-checked: still `5caf2bbb0f343546`.
+  - **The manifest record** is now one `repairs` list (`{ kind, slot, field, before, after, attempts }`, plus `collidedWithSlot` and `provider` for title kinds), replacing `titleRepairs`. Every regeneration request now lists the *other* slots' titles, so a layout repair can't create a title collision.
+  - **Loop and code layout:** problem detection and the deterministic fixes live in the new `src/catalogue/repairs.ts`; the regeneration loop (`repairSlot`) stays in `creative.ts`. A slot is accepted when it has no remaining problem on either side of a collision, so the loop always ends.
+  4. **Same displayed name in a rail** (spec 02 §6.2 and Decisions; spec 06 §5.2).
+     - `recommend()` also skips a candidate whose normalised title (lowercased, letters and digits only) matches the seed's or an accepted item's, counted as `quality:duplicate_title`.
+     - **Interpretation of "add the normalised title to the dedupe key":** the `dedupeKey` field itself is unchanged (title-without-RTP + studio, used for same-game detection and the evaluation's duplicate checks). The rail dedupes on it *and* on the display title. A same-game duplicate counts only as `duplicate_or_rtp_variant`.
+     - Tests in `tests/recommender.test.ts` ("never shows two games with the same displayed name…").
+
+  **Not verified yet:** the OpenAI regeneration with fixes 1–3.
+
+  **Decision (2026-11-16): the display-title dedupe is a service rule for both builds.** It isn't scoped to the OpenAI build: players see titles whichever build is served, so the offline build is held to the same rule. See "Baselines superseded" (above) for what this does to START_HERE §3.
 
 ## Build choices where the specs are silent
 

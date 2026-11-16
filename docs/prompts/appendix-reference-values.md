@@ -243,6 +243,7 @@ export function buildSlate(seed = 42, total = 100): SlateEntry[] {
 
 Where each function applies:
 - **LLM output:** Zod parse → `sanitiseCreative` (per entry) → `alignSeries` → `enforceSlate`, in that order, so cluster forcing has the last word.
+- **LLM output, then:** the post-generation repairs of spec 01 §6.2 (title collisions, cluster titles, layout fit, `live_dealer` on non-live games). Their code isn't quoted here; the spec defines them.
 - **Offline output:** only `enforceSlate`, inside `generateOffline` (A5). Offline games don't go through `sanitiseCreative` or `alignSeries`. The generator already shares a studio across each series. One consequence: the `extreme` near-miss of `classic_fruit` can draw a max win above 50,000 (up to 75,000), outside the LLM clamp (spec 01 §6.4).
 
 ```ts
@@ -567,11 +568,15 @@ function specsFor(rand: () => number, g: CanonicalGame): Partial<RawRecord> {
   const maxWin = pick(rand, [`${g.maxWinMultiplier}x`, `${g.maxWinMultiplier.toLocaleString("en-GB")}x`, `x${g.maxWinMultiplier}`, g.maxWinMultiplier]);
   const jackpot = g.jackpotNetwork ? pick(rand, [g.jackpotNetwork, g.jackpotNetwork.toUpperCase()]) : undefined;
   if (rand() < 0.6) {
-    const specs: Record<string, unknown> = { [pick(rand, ["reels", "layout", "grid"])]: g.reelLayout, [pick(rand, ["max_win", "maxWin"])]: maxWin };
+    // A layout cleared to null (LLM path, spec 01 §6.2) is left out, not sent as null. Its key is still
+    // drawn, so the draws and key order are exactly the reference's when every layout is present.
+    const layoutKey = pick(rand, ["reels", "layout", "grid"]);
+    const specs: Record<string, unknown> = g.reelLayout === null ? {} : { [layoutKey]: g.reelLayout };
+    specs[pick(rand, ["max_win", "maxWin"])] = maxWin;
     if (jackpot) specs[pick(rand, ["jackpot", "jackpot_network"])] = jackpot;
     return { specs };
   }
-  return { reel_layout: g.reelLayout, max_win_multiplier: maxWin, ...(jackpot ? { jackpot_network: jackpot } : {}) };
+  return { ...(g.reelLayout === null ? {} : { reel_layout: g.reelLayout }), max_win_multiplier: maxWin, ...(jackpot ? { jackpot_network: jackpot } : {}) };
 }
 
 /**
@@ -1086,8 +1091,8 @@ export const CanonicalGameSchema = z.object({
   rtp: z.number(),
   minStake: z.number(),
   maxStake: z.number(),
-  /** Reel/board layout, including win lines or ways for slots, e.g. "5x3, 20 lines". */
-  reelLayout: z.string(),
+  /** Reel/board layout, including win lines or ways for slots, e.g. "5x3, 20 lines". Null only for a non-slot whose LLM layout was a placeholder. */
+  reelLayout: z.string().nullable(),
   maxWinMultiplier: z.number(),
   jackpotNetwork: z.string().nullable(),
   releaseYear: z.number().int(),

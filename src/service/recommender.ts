@@ -123,6 +123,12 @@ export function policyProblems(seed: ServiceGame, g: ServiceGame, config: Servic
 
 export const currentUtcMonth = (now: Date = new Date()): number => now.getUTCMonth() + 1;
 
+/**
+ * The name a player sees, ignoring case, spacing and punctuation. Two different games with one name
+ * look like a duplicate on the page, so a rail never shows both (spec 02 §6.2).
+ */
+export const displayTitleKey = (title: string): string => title.toLowerCase().replace(/[^a-z0-9]/g, "");
+
 export function clampLimit(limit: number | undefined, config: ServiceConfig): number {
   const { defaultLimit, maxLimit } = config.recommendation;
   const n = limit === undefined || !Number.isFinite(limit) ? defaultLimit : Math.trunc(limit);
@@ -168,6 +174,7 @@ export function recommend(index: RecommendIndex, config: ServiceConfig, req: Rec
 
   const items: RecommendedItem[] = [];
   const acceptedKeys = new Set([seed.dedupeKey]);
+  const acceptedTitles = new Set([displayTitleKey(seed.title)]);
   const perProvider = new Map<string, number>();
   const perSeries = new Map<string, number>();
 
@@ -179,7 +186,11 @@ export function recommend(index: RecommendIndex, config: ServiceConfig, req: Rec
 
     if (fails("eligibility", eligibilityProblems(g, ctx, config))) continue;
     if (fails("policy", policyProblems(seed, g, config))) continue;
-    if (fails("quality", [g.insufficient && "thin_record", acceptedKeys.has(g.dedupeKey) && "duplicate_or_rtp_variant"].filter((x): x is string => typeof x === "string"))) continue;
+    // Same game (dedupe key), or a different game with the same displayed name. A duplicate is only
+    // counted once: as a duplicate, not also as a title clash.
+    const sameGame = acceptedKeys.has(g.dedupeKey);
+    const sameName = !sameGame && acceptedTitles.has(displayTitleKey(g.title));
+    if (fails("quality", [g.insufficient && "thin_record", sameGame && "duplicate_or_rtp_variant", sameName && "duplicate_title"].filter((x): x is string => typeof x === "string"))) continue;
 
     const provider = g.provider ?? "unknown";
     const diversity = [
@@ -190,6 +201,7 @@ export function recommend(index: RecommendIndex, config: ServiceConfig, req: Rec
 
     items.push({ gameId: g.id, title: g.title, score });
     acceptedKeys.add(g.dedupeKey);
+    acceptedTitles.add(displayTitleKey(g.title));
     perProvider.set(provider, (perProvider.get(provider) ?? 0) + 1);
     if (g.seriesId !== null) perSeries.set(g.seriesId, (perSeries.get(g.seriesId) ?? 0) + 1);
   }

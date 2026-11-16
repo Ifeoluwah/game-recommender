@@ -1,0 +1,4281 @@
+[
+  {
+    "id": "g-001",
+    "title": "Orchard Classics: Berry Burst",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "multipliers",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 95.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 2500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Dive into a vibrant orchard filled with juicy berries in Orchard Classics: Berry Burst. Enjoy delightful features such as multipliers and free spins as you spin your way to sweet rewards!",
+    "seriesId": "orchard-classics",
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-002",
+    "title": "Pharaoh's Quest",
+    "provider": "Northlight Interactive",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 1500,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Embark on a thrilling adventure through ancient Egypt in Pharaoh's Quest. Uncover hidden treasures and activate free spins with multipliers as you explore the mysteries of the pyramids!",
+    "seriesId": null,
+    "brands": [
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-003",
+    "title": "Nightmare Asylum",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "horror"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "sticky_wilds"
+    ],
+    "volatility": "high",
+    "rtp": 94.9,
+    "minStake": 0.3,
+    "maxStake": 75,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 3000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Step into the terrifying world of Nightmare Asylum, where every spin could lead to chilling cascades and terrifying wins. With sticky wilds lurking in the shadows, brace yourself for spine-tingling gameplay!",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-004",
+    "title": "Champion's Arena",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "sports"
+    ],
+    "mechanics": [
+      "multipliers",
+      "pick_bonus"
+    ],
+    "volatility": "medium",
+    "rtp": 95.8,
+    "minStake": 0.1,
+    "maxStake": 20,
+    "reelLayout": "6x4, 40 lines",
+    "maxWinMultiplier": 2000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Get ready to compete in Champion's Arena, where the thrill of sports meets exciting gameplay. Utilize multipliers and engage in pick bonuses to score big in this action-packed slot!",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-005",
+    "title": "Gem Rush",
+    "provider": "Orbital Reels",
+    "aggregator": "Prism Games Hub",
+    "gameType": "instant_win",
+    "themes": [
+      "gems"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "low",
+    "rtp": 97,
+    "minStake": 0.5,
+    "maxStake": 10,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Experience the thrill of discovery in Gem Rush, where every scratch could reveal sparkling prizes! Dig deep into the grid and uncover hidden gems in this instant win game!",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-006",
+    "title": "Cosmic Drift: Stellar Spin",
+    "provider": "Lumen Studios",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "space"
+    ],
+    "mechanics": [
+      "megaways",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 96.7,
+    "minStake": 0.2,
+    "maxStake": 100,
+    "reelLayout": "6x7 Megaways, 117,649 ways",
+    "maxWinMultiplier": 20000,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Blast off into the cosmos with Cosmic Drift: Stellar Spin! Utilize the Megaways mechanic to unlock a universe of possibilities, and collect free spins for out-of-this-world wins!",
+    "seriesId": "cosmic-drift",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-007",
+    "title": "Wheel of Fortune Live",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "live",
+    "themes": [
+      "game_show"
+    ],
+    "mechanics": [
+      "wheel_bonus",
+      "multipliers",
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Join the excitement of Wheel of Fortune Live, where you can spin the iconic wheel with live dealers! Experience the thrill of multipliers and bonuses as you chase after incredible prizes!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-008",
+    "title": "Temple of Treasures",
+    "provider": "Lumen Studios",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 94.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 5000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Unravel the secrets of ancient riches in Temple of Treasures. With cascading reels and powerful multipliers, each spin can lead to monumental wins as you explore the depths of this mystical temple!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-009",
+    "title": "Sands of Khepri: The Awakening",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "expanding_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 96.3,
+    "minStake": 0.2,
+    "maxStake": 100,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 4000,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Return to the Sands of Khepri in this thrilling sequel, where the ancient gods awaken! Spin for free spins and expanding wilds as you journey through the sandy dunes in search of fortune!",
+    "seriesId": "sands-of-khepri",
+    "brands": [
+      "aurora"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-010",
+    "title": "Festive Bingo Bonanza",
+    "provider": "Orbital Reels",
+    "aggregator": "Prism Games Hub",
+    "gameType": "bingo",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 96,
+    "minStake": 0.1,
+    "maxStake": 2,
+    "reelLayout": "90-ball",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Celebrate the season with Festive Bingo Bonanza! Join the fun in this classic 90-ball bingo game, where every call could lead to festive prizes and joyful surprises!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-011",
+    "title": "Gilded Dragon: Rise of the Serpent",
+    "provider": "Northlight Interactive",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "asian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 20,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 750,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Embark on a mystical journey with Gilded Dragon: Rise of the Serpent. This captivating slot features vibrant symbols and mesmerizing animations as you unlock the power of the dragon. Trigger free spins for a chance to multiply your winnings and achieve legendary status!",
+    "seriesId": "gilded-dragon",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-012",
+    "title": "Classic Bingo Bonanza",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "bingo",
+    "themes": [
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95.5,
+    "minStake": 0.5,
+    "maxStake": 10,
+    "reelLayout": "90-ball",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2021,
+    "description": "Enjoy the timeless excitement of Classic Bingo Bonanza! Gather your friends and mark your cards as numbers are called out in this traditional bingo experience. With a friendly atmosphere and engaging gameplay, it's the perfect way to relax and have fun!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-013",
+    "title": "Pharaoh's Treasure",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 95.9,
+    "minStake": 0.1,
+    "maxStake": 50,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 1000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Dive into the ancient world of Egypt with Pharaoh's Treasure. Uncover hidden riches and powerful symbols as you spin the reels. With free spins and multipliers in play, every turn could lead to monumental discoveries!",
+    "seriesId": null,
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-014",
+    "title": "Festive Glow",
+    "provider": "Orbital Reels",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.3,
+    "maxStake": 15,
+    "reelLayout": "6x3, 50 lines",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Celebrate the season with Festive Glow! This enchanting slot brings the spirit of festivities to life with vibrant decorations and cheerful music. Spin the reels for a chance to activate free spins and enjoy festive multipliers that brighten your day!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-015",
+    "title": "Bingo Yuletide",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "bingo",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 94.8,
+    "minStake": 0.2,
+    "maxStake": 12,
+    "reelLayout": "75-ball",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Join the holiday cheer with Bingo Yuletide! This joyful bingo game invites players to mark their cards in a festive atmosphere filled with holiday-themed surprises. Gather your friends and celebrate the season with every number called!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-016",
+    "title": "Thunder Halls: Saga of the Norse",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "nordic"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 97,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "5x5, 25 lines",
+    "maxWinMultiplier": 1500,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Step into the realm of gods with Thunder Halls: Saga of the Norse. This epic slot invites you to battle alongside mighty warriors and unlock powerful free spins. With multipliers and stunning visuals, it’s a true odyssey of fortune!",
+    "seriesId": "thunder-halls",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-017",
+    "title": "Fishing Frenzy: Ocean's Bounty",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fishing",
+      "underwater"
+    ],
+    "mechanics": [
+      "cash_collect",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 95.7,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 40 lines",
+    "maxWinMultiplier": 800,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Cast your line in Fishing Frenzy: Ocean's Bounty! This engaging slot combines the thrill of fishing with cash collect mechanics. Reel in rewards as you trigger free spins, and watch the underwater world come alive with every spin!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-018",
+    "title": "Classic Slots Royale",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 96.1,
+    "minStake": 0.1,
+    "maxStake": 5,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2021,
+    "description": "Experience the charm of yesteryear with Classic Slots Royale. This nostalgic slot features classic symbols and simple gameplay. Spin the reels for a chance to hit winning combinations and embrace the joy of traditional slots!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-019",
+    "title": "Mega Scratch: Fruity Adventure",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "instant_win",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "low",
+    "rtp": 94.6,
+    "minStake": 0.5,
+    "maxStake": 10,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Get ready for a fruity escapade with Mega Scratch: Fruity Adventure! This instant win game offers a delightful scratch card experience. Uncover hidden fruits and prizes as you reveal your way to fun!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-020",
+    "title": "Sands of the Ancients",
+    "provider": "Orbital Reels",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.3,
+    "minStake": 0.2,
+    "maxStake": 100,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 1200,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Unravel the mysteries of the desert with Sands of the Ancients. This captivating slot transports you to the heart of Egyptian history, where free spins and multipliers await to enhance your journey through the sands of time!",
+    "seriesId": null,
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-021",
+    "title": "Fruit Fiesta Spins",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 10 lines",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Step into a vibrant world of classic fruit symbols with Fruit Fiesta Spins. This charming slot features a traditional layout with cherries, lemons, and lucky sevens, all working together to create a delightful gaming experience. With low volatility, you can enjoy a steady flow of payouts as the reels spin.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-022",
+    "title": "Deep Sea Fishing Frenzy",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fishing",
+      "underwater"
+    ],
+    "mechanics": [
+      "cash_collect",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 96,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 250,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Dive into the depths with Deep Sea Fishing Frenzy, where cash and treasures await! This underwater adventure offers exciting cash collect features and thrilling free spins that keep the excitement flowing. Set against a stunning aquatic backdrop, every spin could lead to a haul of riches!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-023",
+    "title": "Classic Reels Adventure",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "medium",
+    "rtp": 94.5,
+    "minStake": 0.5,
+    "maxStake": 20,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Relive the nostalgia of traditional slots with Classic Reels Adventure. Featuring iconic symbols like bars and bells, this game captures the essence of classic gameplay. With a straightforward structure and medium volatility, it’s perfect for players seeking a timeless experience.",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-024",
+    "title": "Sweet Citrus Slots",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 15 lines",
+    "maxWinMultiplier": 75,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Indulge in the juicy flavors of Sweet Citrus Slots, where classic fruit symbols come to life! With a low volatility setup, players can enjoy the thrill of spinning reels filled with oranges, lemons, and grapes. Each spin offers a refreshing chance for delightful wins!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-025",
+    "title": "Showdown Roulette Live",
+    "provider": "Lumen Studios",
+    "aggregator": "Prism Games Hub",
+    "gameType": "live",
+    "themes": [
+      "game_show",
+      "roulette"
+    ],
+    "mechanics": [
+      "live_dealer"
+    ],
+    "volatility": "low",
+    "rtp": 97.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Experience the thrill of being in a live game show with Showdown Roulette Live! Hosted by charismatic dealers, this interactive roulette game brings excitement and engagement to every spin. Join fellow players and test your luck in a vibrant atmosphere filled with surprises!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-026",
+    "title": "Orchard Treats",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 40,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 150,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Welcome to Orchard Treats, where classic fruit symbols meet modern gameplay! Enjoy a blend of nostalgic charm and exciting features as you spin through rows of apples, pears, and cherries. With medium volatility, this delightful slot offers a perfect balance of fun and potential rewards.",
+    "seriesId": "orchard-classics",
+    "brands": [
+      "aurora",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-027",
+    "title": "Pirate's Quest for Gold",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "pirates"
+    ],
+    "mechanics": [
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.1,
+    "maxStake": 50,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Set sail on an adventure with Pirate's Quest for Gold! Encounter swashbuckling pirates and hidden treasures as you spin the reels. Featuring free spins and engaging gameplay, this slot promises a thrilling quest filled with high-seas excitement and the chance to uncover legendary riches.",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-028",
+    "title": "Royal Roulette Deluxe",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 96.8,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 150,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Join the excitement of Royal Roulette Deluxe, where classic gameplay meets a regal atmosphere. This elegant roulette game offers players a chance to experience the thrill of betting on a single-zero wheel. Perfect for both novice and seasoned players, it's a timeless classic with a touch of sophistication.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-029",
+    "title": "Fruity Megaways Madness",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "megaways",
+      "cascading_reels"
+    ],
+    "volatility": "high",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x7 Megaways, 117,649 ways",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Enter the world of Fruity Megaways Madness, a slot that combines the thrill of megaways with vibrant fruity symbols! With cascading reels, every win can lead to new opportunities and increasing multipliers. Experience high volatility excitement with countless ways to win!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-030",
+    "title": "Bandit Ridge Showdown",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "western"
+    ],
+    "mechanics": [
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.5,
+    "maxStake": 50,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Join the showdown in Bandit Ridge Showdown, where the Wild West comes alive! This action-packed slot features engaging free spins and a thrilling storyline involving outlaws and treasures. Spin the reels for a chance to claim your bounty in this medium volatility adventure!",
+    "seriesId": "bandit-ridge",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-031",
+    "title": "Mythic Realms",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "mythology"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 1500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Dive into the enchanting world of mythology with Mythic Realms. Featuring gods and goddesses from ancient tales, this slot offers free spins and multipliers that can elevate your gameplay. With stunning graphics and immersive sound effects, players will experience the magic of legendary stories.",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-032",
+    "title": "Sands of Khepri: Rise of the Sun",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "expanding_wilds"
+    ],
+    "volatility": "high",
+    "rtp": 95.8,
+    "minStake": 0.3,
+    "maxStake": 100,
+    "reelLayout": "6x4, 40 lines",
+    "maxWinMultiplier": 5000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Journey through the golden dunes of ancient Egypt in Sands of Khepri: Rise of the Sun. This exhilarating slot features cascading reels and expanding wilds, enhancing your chances to win as you uncover the treasures hidden beneath the sands. Join Khepri, the god of creation, as you spin for fortune!",
+    "seriesId": "sands-of-khepri",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-033",
+    "title": "Classic Fruit Fiesta",
+    "provider": "Northlight Interactive",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Experience a retro vibe with Classic Fruit Fiesta! This low-volatility slot delivers a nostalgic journey with its classic fruit symbols. With fixed paylines, players can enjoy simple yet engaging gameplay as they chase after juicy wins without the complexity of modern features.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-034",
+    "title": "Sweet Orchard Spins",
+    "provider": "Kestrel Play",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 94.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Indulge in the delightful Sweet Orchard Spins, where classic fruit symbols come to life in a vibrant orchard setting. With straightforward gameplay and fixed paylines, players can enjoy a relaxed experience while spinning for low-key wins with every juicy combination.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-035",
+    "title": "Thunder Halls: Valkyrie's Call",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "nordic"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.2,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 3000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Enter the mystical Thunder Halls: Valkyrie's Call and summon the power of the Norse gods. With exhilarating free spins and exciting multipliers, this high-volatility slot promises epic adventures. Join the Valkyries on their quest to bring glory and rewards!",
+    "seriesId": "thunder-halls",
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-036",
+    "title": "Fortune's Bounty",
+    "provider": "Northlight Interactive",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "wealth"
+    ],
+    "mechanics": [
+      "multipliers",
+      "sticky_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.25,
+    "maxStake": 50,
+    "reelLayout": "5x4, 50 lines",
+    "maxWinMultiplier": 2500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Unlock the treasures of wealth with Fortune's Bounty! This captivating slot features multipliers and sticky wilds that can help you amass a fortune. With its vibrant visuals and engaging gameplay, players are invited to embark on a quest for riches and prosperity.",
+    "seriesId": "g-036-family",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "GB",
+      "NJ",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-037",
+    "title": "Underwater Cash Catch",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fishing",
+      "underwater"
+    ],
+    "mechanics": [
+      "cash_collect",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 94.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 1000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Dive deep into the ocean with Underwater Cash Catch, where the bounty of the sea awaits. Engage in thrilling cash collect mechanics during free spins, as you aim to snag as many treasures as possible. With colorful aquatic visuals, this slot promises an entertaining fishing experience.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-038",
+    "title": "Candyland Delight",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "candy"
+    ],
+    "mechanics": [
+      "multipliers",
+      "free_spins"
+    ],
+    "volatility": "low",
+    "rtp": 96,
+    "minStake": 0.1,
+    "maxStake": 20,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Step into a sugary paradise with Candyland Delight! This vibrant slot is filled with sweet treats and delightful surprises. Enjoy low volatility gameplay with multipliers and free spins that can enhance your chances of winning while you indulge in a world of candy.",
+    "seriesId": null,
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-039",
+    "title": "Live Dealer Jackpot Showdown",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "live",
+    "themes": [
+      "game_show",
+      "cards"
+    ],
+    "mechanics": [
+      "live_dealer",
+      "side_bets"
+    ],
+    "volatility": "low",
+    "rtp": 97,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Join the excitement with Live Dealer Jackpot Showdown, where thrilling game show vibes meet classic card gameplay. Engage with live dealers in real-time as you play and place side bets for added excitement. Compete for jackpot prizes while enjoying the social atmosphere of this interactive experience.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-040",
+    "title": "Card Clash: Poker Showdown",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "cards"
+    ],
+    "mechanics": [
+      "side_bets"
+    ],
+    "volatility": "medium",
+    "rtp": 95.2,
+    "minStake": 0.5,
+    "maxStake": 50,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Step into the high-stakes arena with Card Clash: Poker Showdown. This live dealer poker experience combines the thrill of traditional poker with exciting side bets for even more action. Join the table, bluff your way to victory, and enjoy smooth gameplay in an immersive setting.",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-041",
+    "title": "High Stakes Hold'em",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "cards"
+    ],
+    "mechanics": [],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Join the ultimate poker showdown with High Stakes Hold'em, where skill meets chance in this thrilling live dealer experience. Test your strategy against opponents and aim for the pot in a game where every decision counts!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-042",
+    "title": "Rhythm of the Reels",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "music"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Feel the beat with Rhythm of the Reels, a vibrant slot game that brings the stage to life! Spin your way through musical symbols and unlock exciting free spins and multipliers that amplify your winnings as the rhythm keeps you dancing.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-043",
+    "title": "Reel Catch: Deep Sea Adventure",
+    "provider": "Kestrel Play",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fishing",
+      "underwater"
+    ],
+    "mechanics": [
+      "cash_collect",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 94.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x4, 4,096 ways",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Dive into the depths with Reel Catch: Deep Sea Adventure, where thrilling fishing escapades await! Activate the cash collect feature and reel in big wins during the free spins round while uncovering treasures hidden in the ocean's depths.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-044",
+    "title": "Lucky Clover's Fortune",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "irish"
+    ],
+    "mechanics": [
+      "free_spins",
+      "sticky_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.1,
+    "maxStake": 20,
+    "reelLayout": "5x3, 30 lines",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Join the journey along Lucky Clover Lane with Lucky Clover's Fortune! This enchanting slot features vibrant symbols of luck and offers free spins with sticky wilds that keep the fortune flowing as you chase the pot of gold!",
+    "seriesId": "lucky-clover-lane",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-045",
+    "title": "Bandit Ridge: Outlaw's Reward",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "western"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 95.2,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "6x4, 50 lines",
+    "maxWinMultiplier": 300,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Saddle up for Bandit Ridge: Outlaw's Reward, a high-octane slot where the wild west comes alive! Experience cascading reels and multipliers that elevate your wins as you outsmart the bandits in search of treasure!",
+    "seriesId": "bandit-ridge",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-046",
+    "title": "Mystic Forest Quest",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fantasy"
+    ],
+    "mechanics": [
+      "pick_bonus",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 150,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Step into Mystic Forest Quest, where fantasy meets adventure! Explore magical realms filled with enchanting creatures and unlock bonus picks that lead to multipliers, enhancing your journey through this whimsical world.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-047",
+    "title": "Legends of Olympus",
+    "provider": "Bramble Games",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "mythology"
+    ],
+    "mechanics": [
+      "expanding_wilds",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 97,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "6x5, 50 lines",
+    "maxWinMultiplier": 400,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Unleash the power of the gods in Legends of Olympus! This stunning slot immerses you in ancient mythology, featuring expanding wilds and free spins that can lead to epic wins as you challenge the deities of Olympus.",
+    "seriesId": null,
+    "brands": [
+      "aurora"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-048",
+    "title": "Classic Fruit Delight",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fruit",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 10 lines",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Step into a nostalgic world with Classic Fruit Delight, where vibrant symbols of cherries, lemons, and watermelons spin across the reels. With 10 fixed paylines, this low volatility slot offers a delightful and straightforward gaming experience. Relish the simplicity and charm of classic fruit machines, all while enjoying a modern twist that keeps the gameplay fresh.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-049",
+    "title": "Enchanted Realms",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fantasy"
+    ],
+    "mechanics": [
+      "multipliers",
+      "cascading_reels"
+    ],
+    "volatility": "medium",
+    "rtp": 96.1,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 250,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Embark on a journey through Enchanted Realms, where magic and wonder await! With cascading reels and multipliers, each spin brings a chance to unlock hidden treasures in this captivating world of fantasy.",
+    "seriesId": null,
+    "brands": [
+      "aurora"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-050",
+    "title": "Roulette Royale",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [],
+    "volatility": "medium",
+    "rtp": 97.2,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Experience the glamour of the casino with Roulette Royale, a live dealer game that brings the thrilling spin of the wheel to your screen. Bet on your favorite numbers and colors as you immerse yourself in the excitement of classic roulette!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-051",
+    "title": "Gods of Olympus",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "mythology"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Embark on a divine adventure in 'Gods of Olympus', where ancient deities bestow their powers upon you. Experience thrilling free spins with the chance to activate powerful multipliers, enhancing your chance for legendary wins. Join Zeus, Hera, and Poseidon as you unlock the secrets of the sky!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-052",
+    "title": "Treasure of the Seven Seas",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "pirates"
+    ],
+    "mechanics": [
+      "hold_and_win",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 95.5,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "6x4, 1,024 ways",
+    "maxWinMultiplier": 300,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Set sail for riches in 'Treasure of the Seven Seas', a high-seas adventure filled with daring pirates and hidden treasures. Utilize the hold and win mechanics to capture gold coins, triggering exciting free spins that could lead to massive rewards. Chart your course to fortune on the open waters!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-053",
+    "title": "Pharaoh's Scratch",
+    "provider": "Lumen Studios",
+    "aggregator": null,
+    "gameType": "instant_win",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "low",
+    "rtp": 94.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Uncover hidden treasures in 'Pharaoh's Scratch', a low-stakes instant win game set in ancient Egypt. Scratch your way through the hieroglyphs to reveal prizes and multiply your winnings. With simple mechanics and quick gameplay, this game offers a fun way to experience the allure of the desert!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-054",
+    "title": "Casino Royale Live",
+    "provider": "Orbital Reels",
+    "aggregator": "Nexus Distribution",
+    "gameType": "live",
+    "themes": [
+      "cards"
+    ],
+    "mechanics": [
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 97,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": null,
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Step into the glamorous world of 'Casino Royale Live', where you can enjoy a classic card experience with a professional dealer at your side. Engage in thrilling rounds of blackjack or poker, as you test your skills against other players in real-time. Feel the excitement of a real casino from the comfort of your home!",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-055",
+    "title": "Card Duel: Blackjack Royale",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "cards"
+    ],
+    "mechanics": [
+      "side_bets"
+    ],
+    "volatility": "medium",
+    "rtp": 96.2,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Step into the high-stakes world of Card Duel: Blackjack Royale, where the thrill of the casino meets the strategy of classic blackjack. Engage with live dealers in real-time, and take advantage of exciting side bets to enhance your gameplay. Experience the rush of trying to beat the dealer while enjoying a sophisticated casino atmosphere.",
+    "seriesId": null,
+    "brands": [
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-056",
+    "title": "Spin the Fortune Wheel",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "live",
+    "themes": [
+      "game_show"
+    ],
+    "mechanics": [
+      "wheel_bonus",
+      "multipliers",
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 95.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": null,
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Join the excitement in 'Spin the Fortune Wheel', a live game show where players can spin to win! Engage with a charismatic host as you place your bets and spin the massive wheel for a chance at multipliers and big prizes. The interactive experience keeps you on the edge of your seat!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-057",
+    "title": "Festive Spins Extravaganza",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "instant_win",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.5,
+    "maxStake": 10,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Dive into the festive cheer with Festive Spins Extravaganza! This vibrant instant win game offers a delightful 3x3 scratch grid, filled with holiday-themed symbols waiting to be uncovered. Scratch your way to uncover hidden prizes and enjoy the spirit of the season with every play!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-058",
+    "title": "Rock n' Roll Reels",
+    "provider": "Orbital Reels",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "music"
+    ],
+    "mechanics": [
+      "sticky_wilds",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 96.9,
+    "minStake": 0.5,
+    "maxStake": 100,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 250,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Get ready to rock in 'Rock n' Roll Reels', a high-energy slot game that celebrates the spirit of music. With sticky wilds and exciting free spins, this game captures the thrill of live concerts. Join the band and let the good times roll as you chase big wins!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-059",
+    "title": "Lucky Clover Lane",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "irish"
+    ],
+    "mechanics": [
+      "multipliers",
+      "pick_bonus"
+    ],
+    "volatility": "medium",
+    "rtp": 95.7,
+    "minStake": 0.1,
+    "maxStake": 50,
+    "reelLayout": "5x3, 15 lines",
+    "maxWinMultiplier": 150,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Discover your fortune in 'Lucky Clover Lane', a whimsical Irish-themed slot filled with luck and charm. With the chance to pick bonuses and multipliers, every spin could lead you closer to the pot of gold at the end of the rainbow. Enjoy the enchanting visuals and delightful sounds as you spin!",
+    "seriesId": "lucky-clover-lane",
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-060",
+    "title": "Orchard Fruits Deluxe",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.4,
+    "minStake": 0.2,
+    "maxStake": 20,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Delve into 'Orchard Fruits Deluxe', a fresh take on classic fruit slots. Experience the excitement of cascading reels as fruits tumble down, creating opportunities for multipliers on each spin. The vibrant graphics and cheerful soundtrack bring the orchard experience to life!",
+    "seriesId": "orchard-classics",
+    "brands": [
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-061",
+    "title": "Fishing Frenzy Picks",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "bingo",
+    "themes": [
+      "fishing"
+    ],
+    "mechanics": [
+      "pick_bonus"
+    ],
+    "volatility": "low",
+    "rtp": 95.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "90-ball",
+    "maxWinMultiplier": 100,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Dive into an ocean of fun with Fishing Frenzy Picks! This engaging bingo game features a unique pick bonus mechanic where players can uncover hidden treasures while enjoying the calm of the sea. With a low volatility, it's perfect for those looking for a leisurely experience.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-062",
+    "title": "Pharaoh's Fortune",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "egyptian",
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 250,
+    "jackpotNetwork": null,
+    "releaseYear": 2021,
+    "description": "Unlock the secrets of the ancient pyramids in Pharaoh's Fortune! This classic slot offers fixed paylines and a low volatility experience, perfect for players seeking steady gameplay. Discover wild symbols and enjoy the mystical atmosphere of Egypt as you spin for the treasures of the pharaohs.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-063",
+    "title": "Roulette Royale",
+    "provider": "Bramble Games",
+    "aggregator": "Nexus Distribution",
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [],
+    "volatility": "medium",
+    "rtp": 97,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2020,
+    "description": "Experience the thrill of the casino with Roulette Royale! This classic table game invites players to place their bets on a single-zero wheel, featuring a variety of betting options for every strategy. Spin the wheel and let fate decide your fortune!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-064",
+    "title": "Fruit Burst Instant Win",
+    "provider": "Northlight Interactive",
+    "aggregator": "Prism Games Hub",
+    "gameType": "instant_win",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [],
+    "volatility": "low",
+    "rtp": 94.5,
+    "minStake": 0.5,
+    "maxStake": 20,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Get ready for a juicy surprise with Fruit Burst Instant Win! This vibrant scratch card game takes you on a fruity adventure, where every scratch reveals potential prizes. With a low volatility, it's an easy and fun way to enjoy instant wins!",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-065",
+    "title": "Fortune Wheel Live",
+    "provider": "Northlight Interactive",
+    "aggregator": "Prism Games Hub",
+    "gameType": "live",
+    "themes": [
+      "game_show"
+    ],
+    "mechanics": [
+      "wheel_bonus",
+      "multipliers",
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "single-wheel",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Step into the exhilarating world of Fortune Wheel Live, where excitement meets chance! Spin the vibrant wheel and unveil thrilling multipliers that can boost your winnings. This live dealer experience combines the anticipation of a game show with interactive gameplay, providing endless entertainment for players eager to test their luck. Join the fun and make your spin count!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-066",
+    "title": "Roulette Classic",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [],
+    "volatility": "medium",
+    "rtp": 96.8,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2019,
+    "description": "Step into the world of chance with Roulette Classic! This timeless table game features a single-zero wheel, providing players with an authentic casino experience. Place your bets and anticipate the spin to see where the ball lands!",
+    "seriesId": null,
+    "brands": [
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-067",
+    "title": "Underwater Riches",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fishing",
+      "underwater"
+    ],
+    "mechanics": [
+      "cash_collect",
+      "free_spins"
+    ],
+    "volatility": "high",
+    "rtp": 95.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 1,024 ways",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Plunge into the depths with Underwater Riches, a high-volatility slot that combines thrilling gameplay with a fishing theme. Collect cash prizes and trigger free spins as you navigate the ocean floor for hidden treasures. The adventure awaits beneath the waves!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-068",
+    "title": "Cascading Sands",
+    "provider": "Redwater Gaming",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.3,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x5, 50 lines",
+    "maxWinMultiplier": 750,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Unravel the mysteries of ancient Egypt in Cascading Sands! This high-volatility slot features cascading reels and exciting multipliers that can elevate your winnings to new heights. Experience the thrilling action as symbols tumble and new opportunities arise!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-069",
+    "title": "Roulette Master",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [],
+    "volatility": "medium",
+    "rtp": 97.2,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Try your luck with Roulette Master, a classic table game featuring a single-zero wheel. Enjoy a variety of betting options and immerse yourself in the excitement of the roulette table. Place your bets and let the wheel decide your fate!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-070",
+    "title": "Egyptian Rebirth",
+    "provider": "Northlight Interactive",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 95.9,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 40 lines",
+    "maxWinMultiplier": 600,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Experience the rebirth of the ancient gods in Egyptian Rebirth! This high-volatility slot features cascading reels and multipliers that can lead to monumental wins. Step into a world of mystique and power as you embark on your journey through the sands of time!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-071",
+    "title": "Mystic Enchantment",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fantasy"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 95.3,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 1000,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Enter a realm of wonder in Mystic Enchantment, where magical creatures and spellbinding features await. With vibrant graphics and enchanting soundscapes, players will spin the reels to uncover wilds and free spins that can amplify their wins. Experience the thrill of fantasy like never before!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-072",
+    "title": "Pharaoh's Cascade",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x5, 50 lines",
+    "maxWinMultiplier": 5000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Unveil the treasures of ancient Egypt in Pharaoh's Cascade, where cascading reels and multipliers bring the secrets of the Nile to life. Every winning combination triggers a cascade, providing fresh opportunities to win as symbols disappear and new ones fall into place. With a high volatility, this game offers potential for monumental prizes!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-073",
+    "title": "Joyful Jubilee",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 94.8,
+    "minStake": 0.1,
+    "maxStake": 30,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 750,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Celebrate the spirit of festivities in Joyful Jubilee! Featuring colorful graphics and a cheerful soundtrack, this slot brings joy to every spin. Trigger free spins and multipliers that can boost your winnings while surrounded by delightful symbols inspired by celebration and cheer.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-074",
+    "title": "Outlaw's Fortune",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "western"
+    ],
+    "mechanics": [
+      "free_spins",
+      "sticky_wilds"
+    ],
+    "volatility": "high",
+    "rtp": 95.5,
+    "minStake": 0.25,
+    "maxStake": 50,
+    "reelLayout": "5x4, 25 lines",
+    "maxWinMultiplier": 2000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Step into the wild west with Outlaw's Fortune, where the thrill of the chase leads to big rewards. This high-volatility slot offers free spins and sticky wilds, creating an exhilarating gameplay experience that keeps you on the edge of your seat as you hunt for treasure!",
+    "seriesId": null,
+    "brands": [
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-075",
+    "title": "Gods of Olympus",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "mythology"
+    ],
+    "mechanics": [
+      "multipliers",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 97,
+    "minStake": 0.5,
+    "maxStake": 20,
+    "reelLayout": "5x3, 30 lines",
+    "maxWinMultiplier": 1500,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Join the deities of ancient Greece in Gods of Olympus, a slot that brings the power of mythology to your fingertips. With divine multipliers and the chance to unlock free spins, players can summon epic wins as they spin the reels and encounter legendary figures.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-076",
+    "title": "Treasures of Fortune",
+    "provider": "Orbital Reels",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "wealth"
+    ],
+    "mechanics": [
+      "multipliers",
+      "pick_bonus"
+    ],
+    "volatility": "high",
+    "rtp": 96.5,
+    "minStake": 0.1,
+    "maxStake": 100,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 4000,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Dive into Treasures of Fortune, where every spin is a chance to discover untold riches! This high-volatility slot features generous multipliers and a thrilling pick bonus game that allows players to choose their path to wealth, promising an adventurous experience with every session.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-077",
+    "title": "Galactic Quest",
+    "provider": "Kestrel Play",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "space"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 95.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x5, 40 lines",
+    "maxWinMultiplier": 1200,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Blast off into the cosmos with Galactic Quest! This exciting space-themed slot features high-quality animations and intergalactic sounds that enhance the adventure. Players can enjoy free spins and multipliers while exploring the universe, searching for stars and planets that lead to stellar wins!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-078",
+    "title": "Deep Reef: Coral Treasures",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "underwater"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 94.7,
+    "minStake": 0.15,
+    "maxStake": 75,
+    "reelLayout": "6x6, 40 lines",
+    "maxWinMultiplier": 1800,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Dive deep into the vibrant ocean in Deep Reef: Coral Treasures, where cascading reels bring the underwater world to life! Explore colorful corals and hidden treasures as you trigger free spins with every winning combination. The ocean holds endless possibilities for thrilling adventures!",
+    "seriesId": "deep-reef",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-079",
+    "title": "Rhythm Bingo",
+    "provider": "Redwater Gaming",
+    "aggregator": null,
+    "gameType": "bingo",
+    "themes": [
+      "music"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 96,
+    "minStake": 0.1,
+    "maxStake": 5,
+    "reelLayout": "90-ball",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Get ready to jam with Rhythm Bingo, where music meets classic bingo! Featuring a lively soundtrack and energetic visuals, players mark their cards to the beat of the tunes. Enjoy a fun twist on the traditional game with a musical flair that keeps the excitement rolling!",
+    "seriesId": null,
+    "brands": [
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-080",
+    "title": "Spin & Win Live",
+    "provider": "Kestrel Play",
+    "aggregator": "Prism Games Hub",
+    "gameType": "live",
+    "themes": [
+      "game_show"
+    ],
+    "mechanics": [
+      "wheel_bonus",
+      "multipliers",
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 95.4,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 2500,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Join the fun in Spin & Win Live, a thrilling game show experience that combines excitement with live interactions! Players can spin the bonus wheel for a chance at multipliers and live dealer engagement, creating an electrifying atmosphere as everyone vies for big rewards in real-time!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-081",
+    "title": "Cosmic Drift: Galactic Spins",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "space"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 20 lines",
+    "maxWinMultiplier": 25000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Embark on an interstellar adventure with Cosmic Drift: Galactic Spins! This 5x4 slot features cascading reels that send you soaring through the cosmos, where multipliers amplify your wins as you uncover alien treasures across 20 lines.",
+    "seriesId": "cosmic-drift",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-082",
+    "title": "Card Masters Live",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "live",
+    "themes": [
+      "cards"
+    ],
+    "mechanics": [
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": null,
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Join us for an exhilarating experience with Card Masters Live! Engage with our charming live dealers as they guide you through a variety of card games, where strategy meets entertainment in a vibrant setting.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-083",
+    "title": "Cascading Empire: The Pharaoh's Legacy",
+    "provider": "Bramble Games",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "cascading_reels",
+      "multipliers"
+    ],
+    "volatility": "high",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 25000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Uncover ancient treasures in Cascading Empire: The Pharaoh's Legacy, where every winning combination triggers a cascade of symbols, leading to potential multipliers on each spin. Journey through the sands of time as you discover the hidden secrets of the pharaohs. With stunning graphics and immersive soundscapes, this high-volatility slot offers an exciting adventure with the chance to unlock monumental rewards.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "egyptian_cascade",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-084",
+    "title": "Stellar Reels",
+    "provider": "Northlight Interactive",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "space"
+    ],
+    "mechanics": [
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 94.5,
+    "minStake": 0.1,
+    "maxStake": 100,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 12000,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Blast off into the universe with Stellar Reels! This 5x3 slot offers 25 lines of cosmic fun, with a free spins feature that launches you into a realm of endless possibilities and stellar rewards.",
+    "seriesId": "g-084-family",
+    "brands": [
+      "harbour",
+      "liberty"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-085",
+    "title": "Fortune Splash",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "instant_win",
+    "themes": [
+      "wealth"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "low",
+    "rtp": 97,
+    "minStake": 0.1,
+    "maxStake": 5,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 200,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Dive into wealth with Fortune Splash! This instant win scratch card game offers a simple yet thrilling experience as you uncover symbols that could lead to fabulous riches, all within a vibrant underwater theme.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-086",
+    "title": "Lucky Clover Lane: St. Paddy's Spins",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "irish"
+    ],
+    "mechanics": [
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 96,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 15000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Join the luck of the Irish in Lucky Clover Lane: St. Paddy's Spins! This enchanting slot features 25 lines and a delightful free spins feature, where pots of gold and shamrocks lead you to magical wins.",
+    "seriesId": "lucky-clover-lane",
+    "brands": [
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-087",
+    "title": "Fruit Frenzy Megaways",
+    "provider": "Kestrel Play",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "megaways"
+    ],
+    "volatility": "high",
+    "rtp": 95.7,
+    "minStake": 0.1,
+    "maxStake": 100,
+    "reelLayout": "6x7 Megaways, 117,649 ways",
+    "maxWinMultiplier": 50000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Get ready for a juicy adventure with Fruit Frenzy Megaways! This high-volatility slot features an incredible 117,649 ways to win, where vibrant fruits tumble down the reels, creating endless excitement and opportunities for big wins.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-088",
+    "title": "Roulette Royale",
+    "provider": "Orbital Reels",
+    "aggregator": "Nexus Distribution",
+    "gameType": "table",
+    "themes": [
+      "roulette"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "medium",
+    "rtp": 96.3,
+    "minStake": 1,
+    "maxStake": 100,
+    "reelLayout": "single-zero wheel",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Experience the thrill of the casino with Roulette Royale! This classic table game features a single-zero wheel, offering an elegant atmosphere where you can place your bets and watch the wheel spin for your chance to win.",
+    "seriesId": null,
+    "brands": [
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-089",
+    "title": "Spin to Win Live",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "live",
+    "themes": [
+      "game_show"
+    ],
+    "mechanics": [
+      "wheel_bonus",
+      "multipliers",
+      "live_dealer"
+    ],
+    "volatility": "medium",
+    "rtp": 95.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": null,
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Join the excitement of Spin to Win Live! This interactive game show brings the thrill of a spinning wheel to your screen, featuring live dealers, multipliers on your bets, and an engaging atmosphere that guarantees fun with every spin.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "live_game_show",
+    "clusterRole": "member"
+  },
+  {
+    "id": "g-090",
+    "title": "Catch the Big One Scratch",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "instant_win",
+    "themes": [
+      "fishing"
+    ],
+    "mechanics": [
+      "scratch_card"
+    ],
+    "volatility": "low",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "3x3 scratch grid",
+    "maxWinMultiplier": 50,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Reel in the rewards with Catch the Big One Scratch! This low-volatility instant win game lets you scratch off cards in search of fishy fortunes, perfect for quick and easy gameplay with the chance for instant wins.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "fishing_cash_collect",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-091",
+    "title": "Sands of Khepri: Pharaoh's Fortune",
+    "provider": "Bramble Games",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "egyptian"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers",
+      "expanding_wilds"
+    ],
+    "volatility": "high",
+    "rtp": 96.2,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "5x4, 30 lines",
+    "maxWinMultiplier": 5000,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Embark on a mystical journey through ancient Egypt in 'Sands of Khepri: Pharaoh's Fortune'. Unravel the secrets of the pharaohs with expanding wilds and multipliers that enhance your gameplay. Trigger the free spins feature to uncover hidden treasures beneath the sands.",
+    "seriesId": "sands-of-khepri",
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-092",
+    "title": "Gilded Dragon: Rise of the Phoenix",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "asian"
+    ],
+    "mechanics": [
+      "multipliers",
+      "cascading_reels",
+      "sticky_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.1,
+    "maxStake": 100,
+    "reelLayout": "6x4, 4,096 ways",
+    "maxWinMultiplier": 25000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Enter a world of opulence and mythical creatures in 'Gilded Dragon: Rise of the Phoenix'. This slot features cascading reels and sticky wilds that keep the action fiery. Watch the phoenix rise and multiply your wins as you navigate through this enchanting adventure.",
+    "seriesId": "gilded-dragon",
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-093",
+    "title": "Gilded Dragon: The Serpent's Lair",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "asian"
+    ],
+    "mechanics": [
+      "multipliers",
+      "free_spins",
+      "cascading_reels"
+    ],
+    "volatility": "high",
+    "rtp": 97,
+    "minStake": 0.5,
+    "maxStake": 75,
+    "reelLayout": "5x5, 3,125 ways",
+    "maxWinMultiplier": 30000,
+    "jackpotNetwork": null,
+    "releaseYear": 2026,
+    "description": "Journey deeper into the Gilded Dragon series with 'Gilded Dragon: The Serpent's Lair'. Unleash powerful multipliers and free spins while navigating the treacherous lair filled with serpents. Experience cascading wins that can lead to legendary payouts!",
+    "seriesId": "gilded-dragon",
+    "brands": [
+      "aurora",
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "withdrawn",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-094",
+    "title": "Wild Safari Adventure",
+    "provider": "Kestrel Play",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "animals"
+    ],
+    "mechanics": [
+      "pick_bonus",
+      "multipliers",
+      "sticky_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 94.8,
+    "minStake": 0.25,
+    "maxStake": 50,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 15000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Embark on an exhilarating expedition in 'Wild Safari Adventure'. Encounter majestic animals and unlock thrilling bonuses as you navigate through the wilderness. With sticky wilds and multipliers, every spin brings the potential for an unforgettable adventure!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-095",
+    "title": "Fruity Megaways Frenzy",
+    "provider": "Redwater Gaming",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "fruit"
+    ],
+    "mechanics": [
+      "megaways",
+      "bonus_buy"
+    ],
+    "volatility": "extreme",
+    "rtp": 96.8,
+    "minStake": 0.2,
+    "maxStake": 50,
+    "reelLayout": "6x7 Megaways, 117,649 ways",
+    "maxWinMultiplier": 50000,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Dive into a whirlwind of colors and flavors in 'Fruity Megaways Frenzy'. This extreme volatility slot offers the chance to buy your way into the action with the bonus buy feature. Experience the thrill of up to 117,649 ways to win with every juicy spin!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": "classic_fruit",
+    "clusterRole": "near_miss"
+  },
+  {
+    "id": "g-096",
+    "title": "Mystical Forest Quest",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fantasy"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers",
+      "cascading_reels"
+    ],
+    "volatility": "low",
+    "rtp": 95.7,
+    "minStake": 0.1,
+    "maxStake": 5,
+    "reelLayout": "5x4, 40 lines",
+    "maxWinMultiplier": 1000,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Venture into the enchanting 'Mystical Forest Quest' where magical creatures and hidden treasures await. With cascading reels and multipliers, each spin unveils new surprises. Trigger free spins to explore deeper into the forest and discover legendary rewards!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-097",
+    "title": "Deep Reef: Ocean's Bounty",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "underwater"
+    ],
+    "mechanics": [
+      "pick_bonus",
+      "multipliers",
+      "expanding_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 96,
+    "minStake": 0.1,
+    "maxStake": 60,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 10000,
+    "jackpotNetwork": null,
+    "releaseYear": 2025,
+    "description": "Explore the depths of the ocean in 'Deep Reef: Ocean's Bounty'. Uncover vibrant sea life and treasure with expanding wilds and multipliers. Engage in the pick bonus feature to reveal hidden gems and maximize your underwater adventure!",
+    "seriesId": "deep-reef",
+    "brands": [
+      "liberty"
+    ],
+    "markets": [
+      "NJ"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-098",
+    "title": "Classic Slots Rewind",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines"
+    ],
+    "volatility": "low",
+    "rtp": 95.2,
+    "minStake": 0.1,
+    "maxStake": 5,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Relive the nostalgia of traditional gaming with 'Classic Slots Rewind'. This straightforward slot features fixed paylines and a simple 3x3 layout, perfect for those who appreciate the charm of classic slots. Spin for fun and experience the timeless thrill of the reels!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-099",
+    "title": "Gemstone Quest",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "gems"
+    ],
+    "mechanics": [
+      "multipliers",
+      "cascading_reels"
+    ],
+    "volatility": "high",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 80,
+    "reelLayout": "5x5, 25 lines",
+    "maxWinMultiplier": 15000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Join the adventure in 'Gemstone Quest', where precious gems await your discovery! With cascading reels and multipliers, every spin can lead to dazzling rewards. Explore colorful gem layouts and unlock the potential for significant wins!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-100",
+    "title": "Fortune's Harvest",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "wealth"
+    ],
+    "mechanics": [
+      "multipliers",
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 94.9,
+    "minStake": 0.1,
+    "maxStake": 50,
+    "reelLayout": "5x4, 20 lines",
+    "maxWinMultiplier": 10000,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Reap the rewards in 'Fortune's Harvest', a game where prosperity meets excitement. With multipliers and free spins, every harvest can yield bountiful rewards. Spin the reels to uncover the riches of the land!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-101",
+    "title": "Fortune's Bounty II",
+    "provider": "Northlight Interactive",
+    "aggregator": "Prism Games Hub",
+    "gameType": "slot",
+    "themes": [
+      "wealth"
+    ],
+    "mechanics": [
+      "multipliers",
+      "sticky_wilds"
+    ],
+    "volatility": "medium",
+    "rtp": 95.5,
+    "minStake": 0.25,
+    "maxStake": 50,
+    "reelLayout": "5x4, 50 lines",
+    "maxWinMultiplier": 2500,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Unlock the treasures of wealth with Fortune's Bounty! This captivating slot features multipliers and sticky wilds that can help you amass a fortune. With its vibrant visuals and engaging gameplay, players are invited to embark on a quest for riches and prosperity.",
+    "seriesId": "g-036-family",
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "GB",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-102",
+    "title": "Stellar Reels II",
+    "provider": "Northlight Interactive",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "space"
+    ],
+    "mechanics": [
+      "free_spins"
+    ],
+    "volatility": "medium",
+    "rtp": 94.5,
+    "minStake": 0.1,
+    "maxStake": 100,
+    "reelLayout": "5x3, 25 lines",
+    "maxWinMultiplier": 12000,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Blast off into the universe with Stellar Reels! This 5x3 slot offers 25 lines of cosmic fun, with a free spins feature that launches you into a realm of endless possibilities and stellar rewards.",
+    "seriesId": "g-084-family",
+    "brands": [
+      "harbour",
+      "liberty"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-103",
+    "title": "Mystical Forest Quest Xtreme",
+    "provider": "Northlight Interactive",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "fantasy"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers",
+      "cascading_reels",
+      "bonus_buy"
+    ],
+    "volatility": "extreme",
+    "rtp": 95.7,
+    "minStake": 2,
+    "maxStake": 500,
+    "reelLayout": "5x4, 40 lines",
+    "maxWinMultiplier": 50000,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Venture into the enchanting 'Mystical Forest Quest' where magical creatures and hidden treasures await. With cascading reels and multipliers, each spin unveils new surprises. Trigger free spins to explore deeper into the forest and discover legendary rewards! Extreme volatility with Bonus Buy to jump straight into the feature.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-104",
+    "title": "Classic Slots Rewind Xtreme",
+    "provider": "Bramble Games",
+    "aggregator": null,
+    "gameType": "slot",
+    "themes": [
+      "classic"
+    ],
+    "mechanics": [
+      "fixed_paylines",
+      "bonus_buy"
+    ],
+    "volatility": "extreme",
+    "rtp": 95.2,
+    "minStake": 2,
+    "maxStake": 500,
+    "reelLayout": "3x3, 5 lines",
+    "maxWinMultiplier": 50000,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Relive the nostalgia of traditional gaming with 'Classic Slots Rewind'. This straightforward slot features fixed paylines and a simple 3x3 layout, perfect for those who appreciate the charm of classic slots. Spin for fun and experience the timeless thrill of the reels! Extreme volatility with Bonus Buy to jump straight into the feature.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL"
+    ],
+    "status": "active",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-105",
+    "title": "Joyful Jubilee Deluxe",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 94.8,
+    "minStake": 0.1,
+    "maxStake": 30,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 750,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Celebrate the spirit of festivities in Joyful Jubilee! Featuring colorful graphics and a cheerful soundtrack, this slot brings joy to every spin. Trigger free spins and multipliers that can boost your winnings while surrounded by delightful symbols inspired by celebration and cheer.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "suspended",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-106",
+    "title": "Festive Glow Classic",
+    "provider": "Orbital Reels",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 96.5,
+    "minStake": 0.3,
+    "maxStake": 15,
+    "reelLayout": "6x3, 50 lines",
+    "maxWinMultiplier": 500,
+    "jackpotNetwork": null,
+    "releaseYear": 2022,
+    "description": "Celebrate the season with Festive Glow! This enchanting slot brings the spirit of festivities to life with vibrant decorations and cheerful music. Spin the reels for a chance to activate free spins and enjoy festive multipliers that brighten your day!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "certification_expired",
+    "isTestGame": false,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-107",
+    "title": "Gemstone Quest Demo",
+    "provider": "Kestrel Play",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "gems"
+    ],
+    "mechanics": [
+      "multipliers",
+      "cascading_reels"
+    ],
+    "volatility": "high",
+    "rtp": 96.5,
+    "minStake": 0.2,
+    "maxStake": 80,
+    "reelLayout": "5x5, 25 lines",
+    "maxWinMultiplier": 15000,
+    "jackpotNetwork": null,
+    "releaseYear": 2024,
+    "description": "Join the adventure in 'Gemstone Quest', where precious gems await your discovery! With cascading reels and multipliers, every spin can lead to dazzling rewards. Explore colorful gem layouts and unlock the potential for significant wins!",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour",
+      "liberty",
+      "meridian"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NJ",
+      "NL"
+    ],
+    "status": "demo_only",
+    "isTestGame": false,
+    "seasonMonths": null,
+    "benchmarkCluster": null,
+    "clusterRole": null
+  },
+  {
+    "id": "g-108",
+    "title": "TEST_JOYFUL_JUBILEE_V2",
+    "provider": "Lumen Studios",
+    "aggregator": "Nexus Distribution",
+    "gameType": "slot",
+    "themes": [
+      "festive"
+    ],
+    "mechanics": [
+      "free_spins",
+      "multipliers"
+    ],
+    "volatility": "medium",
+    "rtp": 94.8,
+    "minStake": 0.1,
+    "maxStake": 30,
+    "reelLayout": "5x3, 20 lines",
+    "maxWinMultiplier": 750,
+    "jackpotNetwork": null,
+    "releaseYear": 2023,
+    "description": "Celebrate the spirit of festivities in Joyful Jubilee! Featuring colorful graphics and a cheerful soundtrack, this slot brings joy to every spin. Trigger free spins and multipliers that can boost your winnings while surrounded by delightful symbols inspired by celebration and cheer.",
+    "seriesId": null,
+    "brands": [
+      "aurora",
+      "harbour"
+    ],
+    "markets": [
+      "ES",
+      "GB",
+      "NL",
+      "SE"
+    ],
+    "status": "active",
+    "isTestGame": true,
+    "seasonMonths": [
+      1,
+      11,
+      12
+    ],
+    "benchmarkCluster": null,
+    "clusterRole": null
+  }
+]

@@ -1,0 +1,253 @@
+{
+  "provider": "openai",
+  "model": "openai:gpt-4o-mini",
+  "promptVersion": "generate-catalogue.v2",
+  "seeds": {
+    "slate": 42,
+    "offlineCreative": null,
+    "operational": 99,
+    "degradation": 1234,
+    "traps": 777
+  },
+  "generatedAt": "2026-11-16T02:06:19.418Z",
+  "counts": {
+    "canonicalGames": 108,
+    "feedRecords": 113
+  },
+  "repairs": [
+    {
+      "kind": "cluster_title",
+      "slot": 48,
+      "field": "title",
+      "before": "Classic Fruit Fiesta",
+      "after": "Classic Fruit Delight",
+      "attempts": 1,
+      "collidedWithSlot": 33,
+      "provider": "Bramble Games"
+    },
+    {
+      "kind": "cluster_title",
+      "slot": 65,
+      "field": "title",
+      "before": "Spin the Fortune Wheel",
+      "after": "Fortune Wheel Live",
+      "attempts": 1,
+      "collidedWithSlot": 56,
+      "provider": "Northlight Interactive"
+    },
+    {
+      "kind": "cluster_title",
+      "slot": 83,
+      "field": "title",
+      "before": "Pharaoh's Cascade",
+      "after": "Cascading Empire: The Pharaoh's Legacy",
+      "attempts": 1,
+      "collidedWithSlot": 72,
+      "provider": "Bramble Games"
+    },
+    {
+      "kind": "layout_regenerated",
+      "slot": 40,
+      "field": "reelLayout",
+      "before": "5x3, 10 lines",
+      "after": "single-zero wheel",
+      "attempts": 1
+    },
+    {
+      "kind": "layout_regenerated",
+      "slot": 55,
+      "field": "reelLayout",
+      "before": "5x3, 10 lines",
+      "after": "single-zero wheel",
+      "attempts": 1
+    },
+    {
+      "kind": "layout_regenerated",
+      "slot": 57,
+      "field": "reelLayout",
+      "before": "6x7 Megaways, 117,649 ways",
+      "after": "3x3 scratch grid",
+      "attempts": 1
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 40,
+      "field": "mechanics",
+      "before": [
+        "live_dealer",
+        "side_bets"
+      ],
+      "after": [
+        "side_bets"
+      ],
+      "attempts": 0
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 41,
+      "field": "mechanics",
+      "before": [
+        "live_dealer"
+      ],
+      "after": [],
+      "attempts": 0
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 50,
+      "field": "mechanics",
+      "before": [
+        "live_dealer"
+      ],
+      "after": [],
+      "attempts": 0
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 54,
+      "field": "reelLayout",
+      "before": "live dealer",
+      "after": null,
+      "attempts": 0
+    },
+    {
+      "kind": "live_dealer_removed",
+      "slot": 55,
+      "field": "mechanics",
+      "before": [
+        "live_dealer",
+        "side_bets"
+      ],
+      "after": [
+        "side_bets"
+      ],
+      "attempts": 0
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 56,
+      "field": "reelLayout",
+      "before": "live dealer",
+      "after": null,
+      "attempts": 0
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 82,
+      "field": "reelLayout",
+      "before": "na",
+      "after": null,
+      "attempts": 0
+    },
+    {
+      "kind": "layout_cleared",
+      "slot": 89,
+      "field": "reelLayout",
+      "before": "na",
+      "after": null,
+      "attempts": 0
+    }
+  ],
+  "evaluation_dimensions": {
+    "note": "108 canonical games are represented by 113 feed records; the difference is duplicate exports and RTP variants, which ingestion must recognise as the same game.",
+    "perCanonicalGame": {
+      "denominator": 108,
+      "gameType": {
+        "bingo": 5,
+        "instant_win": 7,
+        "live": 9,
+        "slot": 78,
+        "table": 9
+      },
+      "volatility": {
+        "extreme": 3,
+        "high": 27,
+        "low": 24,
+        "medium": 54
+      },
+      "series": {
+        "bandit-ridge": 2,
+        "cosmic-drift": 2,
+        "deep-reef": 2,
+        "g-036-family": 2,
+        "g-084-family": 2,
+        "gilded-dragon": 3,
+        "lucky-clover-lane": 3,
+        "none": 84,
+        "orchard-classics": 3,
+        "sands-of-khepri": 3,
+        "thunder-halls": 2
+      },
+      "benchmarkClusters": [
+        {
+          "id": "egyptian_cascade",
+          "label": "Egyptian cascading-reel slots, high volatility",
+          "members": 5,
+          "nearMisses": 2
+        },
+        {
+          "id": "fishing_cash_collect",
+          "label": "Fishing slots with cash collect, medium/high volatility",
+          "members": 5,
+          "nearMisses": 2
+        },
+        {
+          "id": "classic_fruit",
+          "label": "Classic fruit slots, low volatility",
+          "members": 5,
+          "nearMisses": 2
+        },
+        {
+          "id": "live_game_show",
+          "label": "Live game shows with a bonus wheel",
+          "members": 5,
+          "nearMisses": 2
+        }
+      ],
+      "marketProfile": {
+        "eu_and_nj": 25,
+        "eu_only": 76,
+        "nj_only": 7
+      },
+      "brandScope": {
+        "multi_brand": 92,
+        "single_brand": 16
+      },
+      "distribution": {
+        "aggregated": 66,
+        "direct": 42
+      }
+    },
+    "perFeedRecord": {
+      "denominator": 113,
+      "qualityProfile": {
+        "partial": 38,
+        "rich": 50,
+        "thin": 17,
+        "title_only": 8
+      },
+      "trapTypes": {
+        "cryptic": 3,
+        "duplicate_export": 3,
+        "escalation_twin": 2,
+        "lifecycle_cert_expired": 1,
+        "lifecycle_demo_only": 1,
+        "lifecycle_suspended": 1,
+        "market_twin": 2,
+        "marketing_fluff": 2,
+        "markets_missing": 2,
+        "misleading_title": 2,
+        "new_release": 2,
+        "noisy_tags": 2,
+        "non_english": 1,
+        "none": 79,
+        "prompt_injection": 2,
+        "rtp_variant": 2,
+        "seasonal": 4,
+        "status_missing": 1,
+        "studio_aggregator_swap": 1,
+        "test_game": 1
+      }
+    }
+  }
+}

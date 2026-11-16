@@ -16,8 +16,8 @@ export const CanonicalGameSchema = z.object({
   rtp: z.number(),
   minStake: z.number(),
   maxStake: z.number(),
-  /** Reel/board layout, including win lines or ways for slots, e.g. "5x3, 20 lines". */
-  reelLayout: z.string(),
+  /** Reel/board layout, including win lines or ways for slots, e.g. "5x3, 20 lines". Null only for a non-slot whose LLM layout was a placeholder. */
+  reelLayout: z.string().nullable(),
   maxWinMultiplier: z.number(),
   jackpotNetwork: z.string().nullable(),
   releaseYear: z.number().int(),

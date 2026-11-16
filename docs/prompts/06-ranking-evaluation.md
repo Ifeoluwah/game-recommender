@@ -95,7 +95,7 @@ Metrics:
 - passes ground-truth eligibility in the query's context;
 - passes the ground-truth policy against the seed.
 
-Diversity caps are ignored. The grade of a returned record of the seed's own game would be 0, but the service never returns one (dedupe). Because the pool counts feed records, a game with a duplicate export or RTP variant appears twice in it, while the service can return it only once. That lowers nDCG slightly. It's kept as defined, and `EVALUATION.md` lists it under known limitations.
+Diversity caps are ignored. The grade of a returned record of the seed's own game would be 0, but the service never returns one (dedupe). Because the pool counts feed records, a game with a duplicate export or RTP variant appears twice in it, while the service can return it only once. The same goes for different games sharing a displayed name (spec 02 §6.2, `quality:duplicate_title`). That lowers nDCG slightly. It's kept as defined, and `EVALUATION.md` lists it under known limitations.
 
 **Baselines:**
 - `random`: for each seed, every other game in a seeded order (seed 2024, the whole catalogue, not a top 40), all with score 1.

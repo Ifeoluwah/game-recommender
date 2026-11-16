@@ -76,7 +76,8 @@ Every tag used anywhere must come from these lists. That's what makes hallucinat
   maxStake: number,              // authoritative; generated games clamped to £2–£100. Trap twins (spec 02) are set to
                                  // £2 / £500 after clamping, so the schema itself has no range: just positive numbers
   maxWinMultiplier: number,      // 50–50,000 for LLM output (clamped); offline output isn't clamped (6.4). Authoritative
-  reelLayout: string,            // "5x3, 20 lines", "6x7 Megaways, 117,649 ways", "single-zero wheel", "90-ball"
+  reelLayout: string | null,     // "5x3, 20 lines", "6x7 Megaways, 117,649 ways", "single-zero wheel", "90-ball";
+                                 // null only for a non-slot whose LLM layout was a placeholder (§6.2 repairs)
   jackpotNetwork: JackpotNetwork | null,   // only if mechanics include progressive_jackpot
   releaseYear: number,           // 2012–2026
   description: string,           // 1–4 sentences, supplier style, accurate, no win claims
@@ -148,7 +149,18 @@ Exact values ([appendix A3](appendix-reference-values.md#a3-slate-series-theme-p
   - jackpot network set to null unless the game is progressive;
   - all series members share the studio of whichever member comes first **in slate order**.
 - Retry a failed batch with backoff (3 attempts). Never silently drop a slate entry: if a batch still fails, or returns the wrong number of games, **fail the run**.
-- **Title and studio together must be unique.** Two unrelated games with the same title and studio would share a dedupe key and be merged, so the generate script fails on a repeat. The same title from different studios is allowed (the offline generator produces a few).
+- **Title and studio together must be unique.** Two unrelated games with the same title and studio would share a dedupe key and be merged. The same title from different studios is allowed (the offline generator produces a few). The generate script fails on any repeat that reaches it.
+- **Repairs after generation (LLM path only).** Batches can't see each other, and a model doesn't always follow the layout rules, so after all batches, and after series alignment and cluster enforcement (which settle each game's studio), the output is checked and repaired. The offline generator gets none of this, so its output, and the reference dataset, are unchanged.
+  - **What is regenerated.** Each slot with one of these problems is regenerated alone:
+    - **Title and studio repeat an earlier slot's.** The later slot is regenerated.
+    - **A title repeated among benchmark-cluster games**, whatever the studio. The later slot is regenerated. Titles go into the embedding text, so two cluster games with one title would distort cluster recall.
+    - **A layout that contradicts the game type**, or is missing on a slot. On a non-slot, reels, lines, paylines, ways, Megaways or a cluster grid contradict the type (a scratch grid like "3x3 scratch grid" is fine on an instant win). On a slot, the layout must give a grid (`5x3`) **and** win lines or ways, Megaways or a cluster grid, because §6.2's prompt requires them.
+  - **The single-slot request.** The slot's line, plus `Titles already used (do not reuse): …` listing every current title (so a repair can't create a new collision), plus, for a layout problem, `The previous reelLayout "…" does not fit type=<type>. Use a reelLayout that fits it.` The versioned prompt file is unchanged.
+  - **Accepting a repair.** The result goes through the same clamps, alignment and enforcement, and is kept once the slot has none of these problems. Up to 3 attempts per slot (a failed call counts as one); if it still has a problem, the run fails with a message naming the slot(s).
+  - **Deterministic fixes**, after the regeneration loop:
+    - `live_dealer` is removed from any game whose type isn't `live`. A live dealer is a property of live games only, and on a table or bingo game it blurs table against live in matching.
+    - A missing or placeholder layout on a non-slot becomes `null`. Placeholders are anything that doesn't describe a board for that type, such as "live dealer" or "live studio setting". The fits are a wheel, shoe, deck or table for table and live games; a scratch grid, tiles or panel for instant win; balls for bingo. A null layout is omitted from the feed (§7.2 `specs`), and normalises to `reelLayout: null`.
+  - **The record.** Every repair is recorded in the manifest's `repairs` list: `{ kind, slot, field, before, after, attempts }`. The `kind` is `title_studio`, `cluster_title`, `layout_regenerated`, `layout_cleared` or `live_dealer_removed`. Title repairs also give `collidedWithSlot` and `provider`, and deterministic fixes have `attempts: 0`.
 
 ### 6.3 Operational fields (seeded code, never the LLM)
 
@@ -203,7 +215,7 @@ How to read this table (the exact draws are in [appendix A7](appendix-reference-
 | `volatility` | "Med", "3/5", "HIGH", "4/5", "Very High", "EXTREME", "L" |
 | `rtp` | `96.21`, `"96.21%"`, `"0.9621"`, `"96,21"` |
 | `max_bet`, `min_bet` | `100`, `"£100"`, `"100.00"`, `"10p"` |
-| `specs` | nested blob with varying keys (`reels`/`layout`/`grid`, `max_win`/`maxWin`, `jackpot`/`jackpot_network`), or flat columns |
+| `specs` | nested blob with varying keys (`reels`/`layout`/`grid`, `max_win`/`maxWin`, `jackpot`/`jackpot_network`), or flat columns. A null layout (§6.2 repairs) is left out, not sent as null; the key is still drawn, so the draws don't shift |
 | max win | `"5,000x"`, `"x5000"`, `5000` |
 | `release` | `"2019"`, `"2019-03-01"`, `2019` |
 | `markets` | array, or `"UK;SE"` (UK means GB) |
@@ -344,3 +356,8 @@ Enrichment, embeddings, the service and the evaluation runner. Those are later s
 | File serialisation | **Fixed** in §10: 2-space JSON plus a trailing newline, LF, top-level arrays | The index identity hashes the raw file's text. Left open, a rebuild could match every value and still miss the hash. Whether this reproduces the reference hash is recorded in `REBUILD_NOTES.md` |
 | Clamping offline output | **Not clamped:** offline games go through `enforceSlate` only | Clamping would change the reference dataset. The offline data tests software, not catalogue realism |
 | Where offline output goes | **`data/offline/`, git-ignored;** only the OpenAI dataset is committed | An offline dataset in `data/generated/` could be mistaken for, or committed as, the submitted one |
+| Title collisions across LLM batches | **Repaired, not just rejected:** the later slot is regenerated alone with the used titles listed, up to 3 attempts, and recorded in the manifest's `repairs` | The first OpenAI run failed on two "Bandit Ridge" members sharing a title. Failing the whole run for one repeat wastes the batch calls, and rerunning won't help, because batches still can't see each other. Repairing only the clashing slot keeps the rest of the generation |
+| Repeated titles inside the benchmark clusters | **Treated as a collision whatever the studio** (LLM path) | Titles go into the embedding text; two cluster games sharing a title distort cluster recall. Found in the first OpenAI build ("Deep Sea Catch" ×2) |
+| `live_dealer` on non-live games | **Removed deterministically**, recorded | The model put it on 4 tables and 2 bingo games. It is a live-game property, and on other types it blurs table against live in matching |
+| Layouts that don't fit the game type | **Regenerate a contradiction** (reels on a non-slot; a slot layout without a grid and lines or ways); **clear a non-slot placeholder to null**; both recorded | The first OpenAI build had "live dealer" as a table's layout and "6x5, cascading" on a slot. A clearly wrong layout is worth a call; a placeholder on a non-slot carries no information, so null is honest and costs nothing |
+| Manifest repair record | **One `repairs` list with a `kind`**, replacing `titleRepairs` | One place to see everything the generator changed after the model answered |

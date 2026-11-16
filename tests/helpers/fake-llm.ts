@@ -16,7 +16,11 @@ export class FakeJsonLlm implements JsonLlm {
 }
 
 /** Slate lines in a generation request: "#12 type=slot; primary theme=egyptian; series=none…". */
-export const slotsInRequest = (user: string): Array<{ slot: number; primaryTheme: string }> =>
-  [...user.matchAll(/^#(\d+) type=\w+; primary theme=(\w+);/gm)].map((m) => ({ slot: Number(m[1]), primaryTheme: m[2]! }));
+export const slotsInRequest = (user: string): Array<{ slot: number; gameType: string; primaryTheme: string }> =>
+  [...user.matchAll(/^#(\d+) type=(\w+); primary theme=(\w+);/gm)].map((m) => ({ slot: Number(m[1]), gameType: m[2]!, primaryTheme: m[3]! }));
+
+/** A layout that fits each game type (spec 01 §6.2), so a fake model doesn't trigger layout repairs by accident. */
+export const layoutFor = (gameType: string): string =>
+  ({ slot: "5x3, 20 lines", table: "single-zero wheel", live: "money wheel", instant_win: "3x3 scratch grid", bingo: "90-ball" })[gameType] ?? "5x3, 20 lines";
 
 export const noSleep = { sleep: async () => undefined } as const;

@@ -575,6 +575,8 @@ Compare with START_HERE §3:
 - theme precision 0.667, the only non-ranking gate that fails; coverage 0.979 passes;
 - nDCG@5 0.549, lift −0.026, bad-rec 0.606.
 
+**Expect the served-recall and ranking numbers to differ.** The rail now also dedupes on the displayed title (spec 02 §6.2, `quality:duplicate_title`), which the prototype didn't. The offline catalogue has same-title games, including "Prize Wheel Live" ×3 and "Big Show Live" ×3 in `live_game_show`. START_HERE §3's ranking and cluster numbers are a prototype baseline this build supersedes. Record this build's first offline values as the new baseline and update START_HERE §3 (`REBUILD_NOTES.md`, "Baselines superseded"). The `catalogueHash`, the 39 traps and the eligibility and policy gates stay as expected values.
+
 ### Acceptance criteria (verbatim, spec 06 §9)
 
 > 1. `npm run eval -- --provider=offline` on an offline build writes both report files to `eval/reports/offline/`, shows the offline callout, and runs in seconds. `npm run eval` with no OpenAI build present exits 1 with a clear message.

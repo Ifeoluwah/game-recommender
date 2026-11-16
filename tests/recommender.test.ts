@@ -167,6 +167,36 @@ describe("dedupe", () => {
     expect(r.diagnostics["quality:duplicate_or_rtp_variant"]).toBe(1);
   });
 
+  it("never shows two games with the same displayed name, even from different studios", () => {
+    // Three different tables called "Roulette Royale" (as in the first OpenAI build): distinct dedupe keys, one name.
+    const r = ask(indexWith([
+      game("rr1", { title: "Roulette Royale", provider: "Bramble Games", dedupeKey: "rouletteroyale|bramblegames" }),
+      game("rr2", { title: "ROULETTE ROYALE", provider: "Redwater Gaming", dedupeKey: "rouletteroyale|redwatergaming" }),
+      game("rr3", { title: "Roulette  Royale!", provider: "Kestrel Play", dedupeKey: "rouletteroyale|kestrelplay" }),
+      ...fillers(),
+    ]));
+    expect(shown(r)).toEqual(["rr1", "f1", "f2", "f3"]);
+    expect(r.diagnostics["quality:duplicate_title"]).toBe(2);
+    expect(r.diagnostics["quality:duplicate_or_rtp_variant"]).toBeUndefined();
+  });
+
+  it("never shows a different game with the seed's displayed name", () => {
+    const seed = game("seed", { title: "Gods of Olympus" });
+    const r = ask(indexWith([game("namesake", { title: "Gods of Olympus", provider: "Redwater Gaming" }), ...fillers()], seed));
+    expect(shown(r)).not.toContain("namesake");
+    expect(r.diagnostics["quality:duplicate_title"]).toBe(1);
+  });
+
+  it("counts a same-game duplicate once, as a duplicate, not also as a title clash", () => {
+    const r = ask(indexWith([game("a", { title: "Gold Rush" }), game("a-cms2", { title: "GOLD RUSH", dedupeKey: "a|studio" }), ...fillers()]));
+    expect(r.diagnostics).toEqual({ "quality:duplicate_or_rtp_variant": 1 });
+  });
+
+  it("doesn't let a rejected game's name block a namesake", () => {
+    const r = ask(indexWith([game("x", { title: "Lucky 88", status: "withdrawn" }), game("y", { title: "Lucky 88" }), ...fillers()]));
+    expect(shown(r)).toEqual(["y", "f1", "f2", "f3"]);
+  });
+
   it("counts only accepted items: a rejected record doesn't block its duplicate", () => {
     const r = ask(indexWith([game("a", { status: "withdrawn" }), game("a-cms2", { dedupeKey: "a|studio" }), ...fillers()]));
     expect(shown(r)).toEqual(["a-cms2", "f1", "f2", "f3"]);

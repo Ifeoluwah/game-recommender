@@ -36,9 +36,8 @@ export interface DatasetOptions {
 
 export async function generateDataset(opts: DatasetOptions = {}): Promise<Dataset> {
   const slate = buildSlate(SEEDS.slate);
-  const creative = opts.llm
-    ? await generateWithLlm(slate, opts.llm, { retry: opts.retry, system: opts.system })
-    : generateOffline(slate, SEEDS.offlineCreative);
+  const llmRun = opts.llm ? await generateWithLlm(slate, opts.llm, { retry: opts.retry, system: opts.system }) : null;
+  const creative = llmRun ? llmRun.games : generateOffline(slate, SEEDS.offlineCreative);
   assertUniqueTitleStudio(creative);
 
   const traps = addTrapGames(assembleCanonical(creative, slate, SEEDS.operational), SEEDS.traps);
@@ -56,7 +55,7 @@ export async function generateDataset(opts: DatasetOptions = {}): Promise<Datase
     anchorOf: traps.anchorOf,
   });
 
-  const offline = !opts.llm;
+  const offline = !llmRun;
   const manifest = {
     provider: offline ? "offline" : "openai",
     model: opts.llm?.id ?? null,
@@ -67,6 +66,8 @@ export async function generateDataset(opts: DatasetOptions = {}): Promise<Datase
     seeds: { ...SEEDS, offlineCreative: offline ? SEEDS.offlineCreative : null },
     generatedAt: (opts.now ?? (() => new Date()))().toISOString(),
     counts: { canonicalGames: canonical.length, feedRecords: raw.length },
+    // Everything changed after the model answered (spec 01 §6.2; LLM path only).
+    ...(llmRun ? { repairs: llmRun.repairs } : {}),
     evaluation_dimensions: evaluationDimensions(canonical, reference),
   };
   return { canonical, raw, reference, manifest };

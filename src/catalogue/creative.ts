@@ -7,7 +7,12 @@ import { JACKPOT_NETWORKS, MECHANICS, PROVIDERS, THEMES, VOLATILITIES } from "..
 import type { GameType, Mechanic, Theme, Volatility } from "../domain/vocabulary.js";
 import { pick, round, sampleN, seededRandom, withRetry } from "../util/misc.js";
 import type { RetryOptions } from "../util/misc.js";
+import { applyDeterministicFixes, findRegenerationProblems, involves } from "./repairs.js";
+import type { GenerationRepair, RepairKind, SlotProblem } from "./repairs.js";
 import type { SlateEntry } from "./slate.js";
+
+export { assertUniqueTitleStudio, findTitleStudioCollisions } from "./repairs.js";
+export type { GenerationRepair } from "./repairs.js";
 
 /** The creative (non-operational) half of a game: what the LLM, or the offline stand-in, writes. */
 export interface CreativeGame {
@@ -20,7 +25,8 @@ export interface CreativeGame {
   rtp: number;
   minStake: number;
   maxStake: number;
-  reelLayout: string;
+  /** Null only after a placeholder layout on a non-slot is cleared (LLM path, spec 01 §6.2). */
+  reelLayout: string | null;
   maxWinMultiplier: number;
   jackpotNetwork: string | null;
   releaseYear: number;
@@ -101,48 +107,107 @@ export function slateLine(s: SlateEntry): string {
 export const batchUserMessage = (batch: readonly SlateEntry[]): string =>
   ["Create one game for each slate entry below, in the same order, echoing each slot number.", ...batch.map(slateLine)].join("\n");
 
+export interface LlmGeneration {
+  games: CreativeGame[];
+  /** Everything changed after the model answered (spec 01 §6.2), recorded in the manifest. */
+  repairs: GenerationRepair[];
+}
+
+export const MAX_REPAIR_ATTEMPTS = 3;
+
+/** Parse a response for `entries`, matching games to slate entries by slot, and apply the per-entry clamps. */
+function parseEntries(response: unknown, entries: readonly SlateEntry[]): CreativeGame[] {
+  const parsed = BatchSchema.parse(response).games;
+  const at = entries[0]?.slot;
+  if (parsed.length !== entries.length) throw new Error(`batch at slot ${at}: expected ${entries.length} games, got ${parsed.length}`);
+  return entries.map((s) => {
+    const g = parsed.find((x) => x.slot === s.slot);
+    if (!g) throw new Error(`batch at slot ${at}: no game for slot ${s.slot}`);
+    return sanitiseCreative(g, s);
+  });
+}
+
+/** The whole-catalogue repair steps, run after any entry changes. Both are idempotent. */
+const alignAndEnforce = (games: CreativeGame[], slate: SlateEntry[]) => enforceSlate(alignSeries(games, slate), slate);
+
 /**
  * Generate the creative fields for every slate entry, 10 per call. A batch that fails or returns the
  * wrong games is retried (3 attempts); if it still fails the whole run fails, so no entry is dropped.
+ *
+ * Then the repairs of spec 01 §6.2. Batches can't see each other, and the model doesn't always follow
+ * the layout rules, so after series alignment and cluster enforcement (which settle each studio):
+ *  1. each slot with a title collision, a repeated cluster title or a contradicting layout is
+ *     regenerated alone (repairSlot), until none is left;
+ *  2. live_dealer comes off non-live games, and placeholder layouts on non-slots become null.
  */
-export async function generateWithLlm(slate: SlateEntry[], llm: JsonLlm, opts: { retry?: RetryOptions; system?: string } = {}): Promise<CreativeGame[]> {
+export async function generateWithLlm(slate: SlateEntry[], llm: JsonLlm, opts: { retry?: RetryOptions; system?: string } = {}): Promise<LlmGeneration> {
   const system = opts.system ?? loadGenerationPrompt();
+  const call = (user: string) =>
+    llm.completeJson({ system, user, schemaName: "catalogue_batch", schema: GENERATION_JSON_SCHEMA, temperature: GENERATION_TEMPERATURE });
+
   const out: CreativeGame[] = [];
   for (let start = 0; start < slate.length; start += BATCH_SIZE) {
     const batch = slate.slice(start, start + BATCH_SIZE);
-    const games = await withRetry(async () => {
-      const response = await llm.completeJson({
-        system,
-        user: batchUserMessage(batch),
-        schemaName: "catalogue_batch",
-        schema: GENERATION_JSON_SCHEMA,
-        temperature: GENERATION_TEMPERATURE,
-      });
-      const parsed = BatchSchema.parse(response).games;
-      if (parsed.length !== batch.length) throw new Error(`batch at slot ${batch[0]?.slot}: expected ${batch.length} games, got ${parsed.length}`);
-      return batch.map((s) => {
-        const g = parsed.find((x) => x.slot === s.slot);
-        if (!g) throw new Error(`batch at slot ${batch[0]?.slot}: no game for slot ${s.slot}`);
-        return sanitiseCreative(g, s);
-      });
-    }, opts.retry);
-    out.push(...games);
+    out.push(...(await withRetry(async () => parseEntries(await call(batchUserMessage(batch)), batch), opts.retry)));
   }
-  return enforceSlate(alignSeries(out, slate), slate);
+
+  let games = alignAndEnforce(out, slate);
+  const repairs: GenerationRepair[] = [];
+  // Each repair either leaves its slot problem-free (on both sides of any collision) or throws,
+  // so the number of problems strictly decreases and the loop ends.
+  for (let problem = findRegenerationProblems(games, slate)[0]; problem; problem = findRegenerationProblems(games, slate)[0]) {
+    const { games: repaired, repair } = await repairSlot(games, slate, problem, call);
+    games = repaired;
+    repairs.push(repair);
+  }
+  const fixed = applyDeterministicFixes(games, slate);
+  return { games: fixed.games, repairs: [...repairs, ...fixed.repairs] };
 }
 
 /**
- * Title and studio together identify a game (they form the dedupe key), so a repeat would merge two
- * unrelated games. The same title from different studios is allowed.
+ * The single-slot request: the slot's line, why the previous answer didn't fit (for a layout), and
+ * every other slot's title, so a repair can't create a new collision. The versioned prompt file is
+ * unchanged.
  */
-export function assertUniqueTitleStudio(games: readonly CreativeGame[]): void {
-  const seen = new Map<string, number>();
-  for (const g of games) {
-    const key = `${g.title.toLowerCase().replace(/[^a-z0-9]/g, "")}|${g.provider}`;
-    const other = seen.get(key);
-    if (other !== undefined) throw new Error(`duplicate title and studio: "${g.title}" by ${g.provider} (slots ${other} and ${g.slot})`);
-    seen.set(key, g.slot);
+export function repairUserMessage(entry: SlateEntry, otherTitles: readonly string[], badLayout: string | null = null): string {
+  const lines = [batchUserMessage([entry])];
+  if (badLayout !== null) lines.push(`The previous reelLayout ${JSON.stringify(badLayout)} does not fit type=${entry.gameType}. Use a reelLayout that fits it.`);
+  lines.push(`Titles already used (do not reuse): ${otherTitles.map((t) => JSON.stringify(t)).join(", ")}`);
+  return lines.join("\n");
+}
+
+const REPAIR_KIND: Record<SlotProblem["kind"], RepairKind> = { title_studio: "title_studio", cluster_title: "cluster_title", layout: "layout_regenerated" };
+
+async function repairSlot(
+  games: CreativeGame[],
+  slate: SlateEntry[],
+  problem: SlotProblem,
+  call: (user: string) => Promise<unknown>,
+): Promise<{ games: CreativeGame[]; repair: GenerationRepair }> {
+  const entry = slate.find((s) => s.slot === problem.slot)!;
+  const before = games.find((g) => g.slot === problem.slot)!;
+  const otherTitles = games.filter((g) => g.slot !== entry.slot).map((g) => g.title);
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= MAX_REPAIR_ATTEMPTS; attempt++) {
+    try {
+      const user = repairUserMessage(entry, otherTitles, problem.kind === "layout" ? before.reelLayout ?? "" : null);
+      const [candidate] = parseEntries(await call(user), [entry]);
+      const next = alignAndEnforce(games.map((g) => (g.slot === entry.slot ? candidate! : g)), slate);
+      if (!involves(findRegenerationProblems(next, slate), entry.slot)) {
+        const after = next.find((g) => g.slot === entry.slot)!;
+        const repair: GenerationRepair =
+          problem.kind === "layout"
+            ? { kind: "layout_regenerated", slot: entry.slot, field: "reelLayout", before: before.reelLayout, after: after.reelLayout, attempts: attempt }
+            : { kind: REPAIR_KIND[problem.kind], slot: entry.slot, field: "title", before: before.title, after: after.title, attempts: attempt, collidedWithSlot: problem.otherSlot ?? undefined, provider: after.provider };
+        return { games: next, repair };
+      }
+      lastError = undefined;
+    } catch (err) {
+      lastError = err;
+    }
   }
+  const detail = lastError ? `; last error: ${lastError instanceof Error ? lastError.message : String(lastError)}` : "";
+  throw new Error(`${problem.message} (not repaired after ${MAX_REPAIR_ATTEMPTS} attempts${detail})`);
 }
 
 // --- Slate enforcement and creative clamps (appendix A4) ---
