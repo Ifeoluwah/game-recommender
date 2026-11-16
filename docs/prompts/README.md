@@ -21,6 +21,6 @@ For future work in this repo, the intended workflow is the one in [`CLAUDE.md`](
 
 | [07-production-hardening.md](07-production-hardening.md) | Atomic writes, cache checkpointing and pipeline versioning, retry jitter, the number lint on summaries, cache provenance, and logs without player data. From a review of the prototype against a typical "production recommender" design |
 | [08-production-architecture-and-docs.md](08-production-architecture-and-docs.md) | `docs/ADR-001-…` (architecture, AWS choices, alternatives, trade-offs, player-facing failure behaviour, scaling triggers, revisit criteria), `docs/EVALUATION.md`, README, `AI_USAGE.md`, the Part B skill and `LEVERAGE.md`, plus `tests/docs.test.ts`. Written from the prototype's documents, which were then discarded |
-| [appendix-reference-values.md](appendix-reference-values.md) | The exact constants, word lists, probabilities and draw order the specs refer to, as code excerpts. In the finished repo it's regenerated from the code (`npm run spec:appendix`), and a test fails if it drifts |
+| [appendix-reference-values.md](appendix-reference-values.md) | The exact constants, word lists, probabilities and draw order the specs refer to, as code excerpts from the prototype. Maintained by hand: a change to quoted code updates its excerpt in the same change. The identity hash in START_HERE §3 checks that the code still reproduces the dataset |
 
 The runtime prompts the system itself sends to models are separate, versioned, and live in [`prompts/`](../../prompts/).

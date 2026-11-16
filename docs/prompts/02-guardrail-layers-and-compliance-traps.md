@@ -30,8 +30,11 @@ Every trap is a near-copy of a real game, so it ranks at or near the top by simi
 | `src/catalogue/degrade.ts` | Opaque records, seasonal labelling, lifecycle status strings; keeps anchors clean (section 4.2) |
 | `src/pipeline/normalise.ts` | Lifecycle statuses, test-build detection, season months (section 5) |
 | `src/service/recommender.ts` | `eligibilityProblems`, `policyProblems`, ordered filtering, decline reasons, per-layer diagnostics (section 6) |
-| `config/service.json` | Brands → markets, restricted mechanics per market, policy thresholds (section 6) |
-| `eval/release-gates.json`, `eval/run-eval.ts` | Gates grouped by layer; exhaustive ground-truth checks; trap table (section 7) |
+| `config/service.json` | Brands → markets, restricted mechanics per market, policy thresholds (section 6). Write the whole file here, including spec 05 §6.3's `recommendation` block, which `recommend()` needs |
+| `src/service/service-config.ts` | `ServiceConfigSchema` (Zod) and its loader. Not `src/config.ts`, which holds path constants only |
+| `src/domain/index-schema.ts` | `ServiceGame` (spec 05 §4.3), the record `recommend()` works on |
+| `eval/release-gates.json` | Gates grouped by layer (section 7) |
+| `eval/run-eval.ts` | **Built in spec 06.** This spec defines the exhaustive ground-truth checks and trap table it must run (section 7); AC4 is checked once it exists |
 | `tests/recommender.test.ts`, `tests/normalise.test.ts`, `tests/pipeline.test.ts` | Section 8 |
 
 ## 4. Dataset additions
@@ -121,7 +124,7 @@ The total becomes **108 canonical games**.
 
 ## 5. Normalisation rules for these traps
 
-- **Status:** only `live`, `active` or `enabled` (any case) is live. Everything else is not live, with an issue `status_not_live:<value>`, including SUSPENDED, CERTIFICATION_EXPIRED, DEMO_ONLY, maintenance, unknown values and missing.
+- **Status:** only `live`, `active` or `enabled` (any case) is live. Everything else is not live: SUSPENDED, CERTIFICATION_EXPIRED, DEMO_ONLY, maintenance, unknown values and missing. A present value gets the issue `status_not_live:<value>`; a missing one gets `status_missing_fail_closed` (appendix A13).
 - **Test builds:** `is_test_game` true, `"Y"`, `"yes"` or `"1"`, **or** a title starting `TEST`, `QA` or `DEV` followed by `_`, space or `-`.
 - **Season:** `available_months` absent → null (all year). Present → sorted unique months 1–12. Present but unreadable (not a list, or no valid month) → `[]` with issue `season_unreadable`, so the game is never in season. Fails closed, as spec 01 §8 and appendix A13 say.
 - **Studio "Unknown"** → provider null.
@@ -149,7 +152,7 @@ On bonus buy: in 2020 the UKGC told operators to remove feature buy-ins, so it's
 
 ### 6.2 Request flow (`recommend`), in this order
 
-1. Brand unknown or disabled → `BRAND_DISABLED`. Then, market not served by the brand → `MARKET_NOT_SERVED_BY_BRAND`. This is the order inside `recommend()`. The HTTP layer (spec 05 §6.2) validates first: an unknown brand → `400 unknown_brand`, and a brand not offered in the market → `400 brand_not_offered_in_market`, which is the same condition under its HTTP name. So over HTTP a disabled brand in a market it doesn't serve gets the 400, and a disabled brand in a market it does serve gets a 200 decline with `BRAND_DISABLED`. Header `x-player-restricted: true` → `PLAYER_RESTRICTED`, not cached.
+1. Brand unknown or disabled → `BRAND_DISABLED`. Then, market not served by the brand → `MARKET_NOT_SERVED_BY_BRAND`. This is the order inside `recommend()`. The HTTP layer (spec 05 §6.2) validates first: an unknown brand → `400 unknown_brand`, and a brand not offered in the market → `400 brand_not_offered_in_market`, which is the same condition under its HTTP name. So over HTTP a disabled brand in a market it doesn't serve gets the 400, and a disabled brand in a market it does serve gets a 200 decline with `BRAND_DISABLED`. Then, header `x-player-restricted: true` → `PLAYER_RESTRICTED`, not cached. This comes before every seed check, so the reason a restricted player gets never depends on the game. Full order: brand → market → restriction → `UNKNOWN_GAME` → `SEED_NOT_AVAILABLE` → `INSUFFICIENT_SOURCE_DATA`.
 2. Seed checks:
    - unknown → `UNKNOWN_GAME` (404);
    - not licensed in the market, or a test build → `SEED_NOT_AVAILABLE`;
@@ -162,14 +165,14 @@ On bonus buy: in 2020 the UKGC told operators to remove feature buy-ins, so it's
      - *Stakes fail closed too.* A candidate missing either stake → `stake_unknown`. A seed missing a stake is treated as the most cautious player: max £2, min £0.10, the bottom of the generated ranges (`UNKNOWN_SEED_MAX_STAKE` and `UNKNOWN_SEED_MIN_STAKE`). The feed carries stakes on every record except title-only ones (spec 01 §7.1), so this rarely fires, but unknown must never mean allowed.
      - *Max bet* above seed × `maxStakeMultiplier` → `stake_escalation`.
      - *Min bet* above seed × `maxMinStakeMultiplier` → `min_bet_escalation`.
-   - **Quality:** a candidate flagged `insufficient` → skip (`quality:thin_record`); duplicate or RTP variant (same dedupe key as the seed or an earlier item) → skip.
-   - A candidate that fails layer 2 isn't checked against layer 3 (only the eligibility problems are counted). Order of checks per candidate: eligibility, policy, quality, diversity.
-   - **Diversity:** at most 3 per studio and 2 per series. A null studio counts as the studio `"unknown"`; a null series isn't capped.
+   - **Quality:** a candidate flagged `insufficient` → skip (`quality:thin_record`). A duplicate or RTP variant → skip: its dedupe key matches the seed's or that of an item **already accepted** into the rail. Candidates rejected earlier don't count.
+   - Order of checks per candidate: eligibility, policy, quality, diversity. **The first layer that finds a problem ends the candidate's checks.** Every problem within that layer is counted, and later layers aren't checked or counted. So a candidate that fails layer 2 isn't checked against layer 3, and one that fails policy isn't counted under quality or diversity.
+   - **Diversity:** at most 3 per studio and 2 per series, counted over the items accepted so far. The seed doesn't count towards either cap. A null studio counts as the studio `"unknown"`; a null series isn't capped.
    - The loop stops at the first neighbour below the threshold (neighbours are sorted).
 4. Fewer than `min(minResults, limit)` survivors → `NO_CONFIDENT_MATCHES` (layer 4), with `minResults = 3`. The `limit` is clamped to 1…`maxLimit`.
 5. Return per-layer **diagnostics**: counts keyed `<layer>:<rule>` (e.g. `eligibility:not_licensed_in_market`, `policy:stake_escalation`, `quality:duplicate_or_rtp_variant`, `diversity:provider_cap`). A candidate with several problems counts once per problem. Diagnostics are logged and used by the evaluation, never sent to clients.
 
-Exact code: [appendix A10](appendix-reference-values.md#a10-eligibility-and-policy).
+Exact code for the per-candidate rules: [appendix A10](appendix-reference-values.md#a10-eligibility-and-policy). The loop around them isn't in the appendix; the prose above defines it. If a rebuild's offline ranking numbers (START_HERE §3) don't match, check this loop first.
 
 ## 7. Evaluation for these layers
 
@@ -187,7 +190,7 @@ Exact code: [appendix A10](appendix-reference-values.md#a10-eligibility-and-poli
 | abstention | `coverage`: answerable queries actually answered (1 − false abstention) | ≥ 0.8 |
 
 **Check against ground truth, exhaustively.**
-- For every game × every brand × every market that brand serves, in **July and December**, call `recommend` with `limit = maxLimit` (12), so the whole rail is checked.
+- For every game × every configured brand (disabled ones included: they decline with `BRAND_DISABLED`, which shows that rule working) × every market that brand serves, in **July and December**, call `recommend` with `limit = maxLimit` (12), so the whole rail is checked. A record's "served" count is the sum over both months.
 - Check each returned item against the **canonical** record, not the service's own rules: status, test flag, brand, market, season, restricted mechanics.
 - Check for the same canonical game as the seed or another item.
 - Check policy using canonical volatility and stakes.
@@ -196,7 +199,22 @@ This way a normalisation bug, such as a missed test build, shows up as a violati
 
 **Trap table:** one row per planted record, with these columns: layer, trap, record, what happened, ok. It covers spec 01's data-quality edge cases as well as this spec's traps. For twins and copies, include the trap's **similarity rank** in its anchor's neighbour list, to show how close it came.
 
-The rows below give **39 in total** on the reference dataset. Here `e` is the enriched record, `truth` the canonical one, and "served" counts come from the exhaustive check.
+The rows below give **39 in total** on the reference dataset. The total holds for the reference draws only: the seasonal count is chance (spec 01 §6.1), so a prose-only rebuild gets a different number of seasonal rows. Here `e` is the enriched record, `truth` the canonical one, and "served" counts come from the exhaustive check (for the seasonal row, July's count).
+
+**Which records each row covers.** Rows are selected by the reference entry's `specials`:
+
+| Trap label | Selected by |
+| --- | --- |
+| Prompt injection, Misleading title, Marketing fluff | `prompt_injection`, `misleading_title`, `marketing_fluff` |
+| Opaque record | `cryptic` |
+| Title only | profile `title_only` **and not** `cryptic` (there's no `title_only` special) |
+| Seasonal title | `seasonal` |
+| Licence data missing, Status missing | `markets_missing`, `status_missing` |
+| Market twin, Bonus buy in GB, Volatility/stake escalation | `market_twin`; `escalation_twin` (one row each for eligibility and policy) |
+| Status suspended / certification_expired / demo_only | `lifecycle_suspended`, `lifecycle_cert_expired`, `lifecycle_demo_only` |
+| Test build with live status | `test_game` |
+| Cold-start release | `new_release` |
+| RTP variant, Duplicate export, Studio/aggregator swapped | `rtp_variant`, `duplicate_export`, `studio_aggregator_swap` |
 
 | Layer label | Trap label | Rows | ok when |
 | --- | --- | --- | --- |
@@ -220,9 +238,10 @@ The rows below give **39 in total** on the reference dataset. Here `e` is the en
 
 Rows are produced in feed order, one per (record, label). A duplicate that is also the swapped one gets both rows. The console prints `Planted traps: X/Y handled correctly`, listing misses.
 
-**Choosing the context for an anchor row:**
-- Use the first enabled brand that carries the anchor, in the first listed market where it's licensed.
-- The market preference is: `["NJ"]` for the market twin, `["GB"]` for the escalation twin's eligibility row, and `["ES","SE","NL","NJ"]` for its policy row.
+**Choosing the context for an anchor row** (and for the cold-start row), market first:
+- For each market in the preference list, in order, take the first brand in `config/service.json` key order (`aurora`, `harbour`, `meridian`, `liberty`) that is enabled, carries the game and serves that market, provided the game is licensed there. The first market where such a brand exists gives the context.
+- A brand-first reading doesn't work: `aurora` carries most anchors but never serves NJ.
+- The market preference is: `["NJ"]` for the market twin, `["GB"]` for the escalation twin's eligibility row, `["ES","SE","NL","NJ"]` for its policy row, and `["GB","NJ","ES","SE","NL"]` for a cold-start seed.
 - A row is ok when the trap is absent from the anchor's rail in that context.
 - When an anchor isn't licensed in any preferred market, the row says so and fails. The escalation anchors are always given GB and ES (section 4.1), so this doesn't happen for them.
 
@@ -239,7 +258,7 @@ All pass with no API key.
    - a max bet of £5 → £500 and a min bet of 10p → £2 are blocked;
    - `MARKET_NOT_SERVED_BY_BRAND` is returned;
    - diagnostics name the rule that removed a candidate.
-4. `npm run eval`: every eligibility, policy and information gate is 0, and every trap row reads `ok`.
+4. `npm run eval -- --provider=offline`: every eligibility, policy and information gate is 0, and every trap row reads `ok`. (Checked once spec 06's runner exists.)
 
 ## Decisions
 
@@ -256,3 +275,6 @@ All pass with no API key.
 | How to check the rules | Against **ground truth**, exhaustively (every game × brand × market, July and December) | Checking the service against its own rules would hide normalisation bugs |
 | "Trending" fallback, `min_age` | **Rejected** | A fallback belongs to a different rail owned by the lobby; age is verified at account level |
 | Anchor selection | **Hardened** after a crash with short descriptions: fall back, then fail loudly | A generator that silently produces fewer traps would weaken the evaluation unnoticed |
+| Check order inside `recommend()` | **Specified** (§6.2): restriction before seed checks; dedupe against accepted items only; the first failing layer ends a candidate's checks; the seed doesn't count towards the caps | The appendix quotes only the rule functions, and the ranking numbers depend on the loop. Left open, two rebuilds could disagree |
+| Context for anchor and cold-start rows | **Market first**, brands in config order | A brand-first reading picks a brand that can't serve the preferred market (`aurora` in NJ) |
+| Disabled brands in the exhaustive check | **Included** | They decline, so they can't add violations, and they exercise `BRAND_DISABLED` |

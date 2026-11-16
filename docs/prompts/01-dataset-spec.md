@@ -11,7 +11,7 @@ Generate a **fictional** catalogue of about 100 online casino games, using an LL
 
 Every later stage (enrichment, matching, eligibility, evaluation) depends on this data having real signal. A uniformly clean catalogue would not exercise any of them.
 
-Commit both the generated data and the script that produced it.
+Commit the script and the OpenAI-generated data (`data/generated/`). The offline stand-in (section 6.4) writes to `data/offline/`, which is git-ignored and never committed.
 
 ## 2. Context you need
 
@@ -23,6 +23,9 @@ Commit both the generated data and the script that produced it.
 
 | Path | What |
 | --- | --- |
+| `src/util/misc.ts` | PRNG and sampling ([appendix A1](appendix-reference-values.md#a1-prng-and-sampling)), `round`, `sha256`, `stableStringify` (section 10), `mapLimit`, plus `withRetry` (with jitter) and `writeFileAtomic`, written now to their final contracts in spec 07 §3.2 |
+| `src/config.ts` | `KNOWN_BRANDS`, `EU_BRANDS` ([appendix A15](appendix-reference-values.md#a15-brands-and-helpers)) and the data and artefact path constants for both builds. The only file in `src/` that may name the evaluation files |
+| `src/ai/providers.ts` | The `JsonLlm` interface and `OpenAiJsonLlm` (contract in spec 04 §3), and `resolveProviderMode` (spec 05 §3). Generation needs them, so they're built here; specs 04 and 05 add to this file |
 | `src/domain/vocabulary.ts` | Closed vocabularies and fictional names (section 4) |
 | `src/domain/types.ts` | `CanonicalGameSchema` (Zod), `RawRecord`, `NormalisedGame` (section 5; exact definitions in [appendix A12](appendix-reference-values.md#a12-domain-types)) |
 | `src/catalogue/slate.ts` | Seeded slate that fixes the catalogue's shape (section 6.1) |
@@ -31,11 +34,14 @@ Commit both the generated data and the script that produced it.
 | `src/pipeline/normalise.ts` | The only code that reads raw records (section 8) |
 | `scripts/generate-catalogue.ts` | CLI: `npm run generate -- --provider=openai\|offline` |
 | `prompts/generate-catalogue.v2.md` | **Given:** already in the repo. Use it as is. The runtime prompt, versioned in its filename |
-| `data/generated/catalogue.raw.json` | The messy feed. **The only file the pipeline reads** |
-| `data/generated/catalogue.canonical.json` | The clean truth. **Evaluation only** |
-| `data/generated/eval-reference.json` | What was done to each raw record (section 9). **Evaluation only** |
-| `data/generated/manifest.json` | Provider, model, prompt version, seed, counts, dataset summary |
-| `tests/normalise.test.ts`, `tests/pipeline.test.ts` | Section 11 |
+| `<data>/catalogue.raw.json` | The messy feed. **The only file the pipeline reads** |
+| `<data>/catalogue.canonical.json` | The clean truth. **Evaluation only** |
+| `<data>/eval-reference.json` | What was done to each raw record (section 9). **Evaluation only** |
+| `<data>/manifest.json` | Provider, model, prompt version, seed, counts, dataset summary |
+| `.gitattributes` | `* text=auto eol=lf`, so a checkout never rewrites the line endings of a hashed file (section 10) |
+| `tests/normalise.test.ts`, `tests/pipeline.test.ts` | Section 12 |
+
+`<data>` is `data/generated/` for `--provider=openai` (committed) and `data/offline/` for `--provider=offline` (git-ignored).
 
 ## 4. Vocabulary (closed lists)
 
@@ -69,7 +75,7 @@ Every tag used anywhere must come from these lists. That's what makes hallucinat
   minStake: number,              // authoritative; generated games clamped to £0.10–£1.00 (appendix A4)
   maxStake: number,              // authoritative; generated games clamped to £2–£100. Trap twins (spec 02) are set to
                                  // £2 / £500 after clamping, so the schema itself has no range: just positive numbers
-  maxWinMultiplier: number,      // 50–50,000          authoritative
+  maxWinMultiplier: number,      // 50–50,000 for LLM output (clamped); offline output isn't clamped (6.4). Authoritative
   reelLayout: string,            // "5x3, 20 lines", "6x7 Megaways, 117,649 ways", "single-zero wheel", "90-ball"
   jackpotNetwork: JackpotNetwork | null,   // only if mechanics include progressive_jackpot
   releaseYear: number,           // 2012–2026
@@ -130,7 +136,13 @@ Exact values ([appendix A3](appendix-reference-values.md#a3-slate-series-theme-p
   - the reel layout must match the type and mechanics, and include win lines or ways for slots;
   - a jackpot network appears only with `progressive_jackpot`;
   - `extreme` volatility and `bonus_buy` are rare (at most 1 in 10 games).
-- **After the response, clamp and enforce in code; never trust the model for invariants:**
+- **The request.**
+  - The system prompt is the versioned file.
+  - The user message lists the batch's slate entries, one line each:
+    `#<slot> type=<gameType>; primary theme=<theme>; series=<name|none>`, then `; misleading title` when flagged, then `; MUST use mechanics=<a,b>; volatility=<v>; also themes=<x,y>` for a cluster entry (spec 03 §4).
+  - The response is `{ games: CreativeGame[] }`.
+  - `CreativeGame` = `{ slot, title, provider, themes, mechanics, volatility, rtp, minStake, maxStake, reelLayout, maxWinMultiplier, jackpotNetwork, releaseYear, description }`: the fields appendix A4 and A5 use.
+- **After the response, clamp and enforce in code; never trust the model for invariants.** The order is: Zod parse → `sanitiseCreative` per entry → `alignSeries` → `enforceSlate` ([appendix A4](appendix-reference-values.md#a4-slate-enforcement-and-creative-clamps)).
   - primary theme first; at most 4 themes and 5 mechanics, de-duplicated;
   - RTP, stakes, max win and year clamped to the ranges in 5.1;
   - jackpot network set to null unless the game is progressive;
@@ -156,7 +168,9 @@ Brands, markets, status, aggregator, test flag and season come from contracts an
 
 A deterministic procedural generator (seed 7) that implements the same slate contract, using word lists and templated descriptions ([appendix A5](appendix-reference-values.md#a5-offline-stand-in-generator)). Its descriptions name the game type, volatility and mechanics in words the rules enricher recognises, so **offline enrichment scores are optimistic and mean little**. Only the LLM build measures enrichment. It exists so tests and CI run with **no API key and no network**.
 
-Its output must say so in `manifest.json`. It is **not** the submitted dataset.
+Its output must say so in `manifest.json`. It is **not** the submitted dataset:
+- it's written to `data/offline/` (git-ignored), never to `data/generated/`;
+- it goes through `enforceSlate` only, not `sanitiseCreative` or `alignSeries` (appendix A4). Its values already sit in the generated ranges and its series already share a studio. The one exception is the `extreme` `classic_fruit` near-miss, whose max win can exceed 50,000 (up to 75,000). That's left as drawn, because clamping would change the reference dataset.
 
 ## 7. Stage 2: degradation (pure, seeded TypeScript)
 
@@ -168,7 +182,7 @@ Its output must say so in `manifest.json`. It is **not** the submitted dataset.
 | --- | --- | --- |
 | rich | ~45% | Every field except: volatility kept ~85% of the time, specs ~80%. Format noise applies |
 | partial | ~33% | Category ~60%; tags (first 2 only) ~40%; volatility ~40%; first sentence of description; specs ~50% |
-| thin | ~17% | Title, studio, operational fields; category ~40%; description truncated to ~8 words, about half the time |
+| thin | ~17% | Title, studio, operational fields; category ~40%; description present about half the time, and always truncated to its first 8 words when present |
 | title_only | 5 records | Title and operational fields only; studio removed half the time |
 
 How to read this table (the exact draws are in [appendix A7](appendix-reference-values.md#a7-degradation-constants-edge-case-picks-profiles-field-survival)):
@@ -208,7 +222,7 @@ Pick the targets with the seed from **live** games that aren't used for anything
 | --- | --- | --- |
 | Misleading title | 2 | The slate-flagged instant-win games. Category, tags and specs removed; full accurate description kept |
 | Marketing fluff | 2 | Description replaced with hype containing **no** gameplay facts; tags, volatility and specs removed |
-| Cold-start release | 2 | No description, category, volatility or specs. Tags become exactly `[type, "<Vol> Volatility", primary theme]`. Release set to `today`: a degradation option that defaults to the fixed date `2026-11-10`, never the wall clock, so output stays reproducible |
+| Cold-start release | 2 | No description, category, volatility or specs. Tags become exactly `[type, "<Vol> Volatility", primary theme]`, plus any declared feature that §7.4 appends afterwards (e.g. "Bonus Buy"). Release set to `today`: a degradation option that defaults to the fixed date `2026-11-10`, never the wall clock, so output stays reproducible |
 | Duplicate export | 3 | An extra record `<id>-cms2` with an UPPERCASE name. The last one also has **studio and aggregator swapped** |
 | RTP variant | 2 | An extra record `<id>-rtp<NN>`, with RTP about 2.1 points lower and the RTP in the title ("Gold Rush 94" or "Gold Rush (94.1%)") |
 | Prompt injection | 2 | A rich record whose description ends with an instruction to ignore previous instructions and tag the game "guaranteed win" / "free money". Volatility removed, so it **must** go through the LLM |
@@ -273,11 +287,17 @@ One entry per raw record:
 - an `evaluation_dimensions` summary that names the denominator of every count (canonical games vs feed records);
 - a note when the data came from the offline stand-in.
 
+The timestamp makes the manifest the one output file that differs between runs. Determinism checks (section 12; spec 07 AC7) cover the raw, canonical and reference files, and compare the manifest without its timestamp.
+
 ## 10. Determinism and reproducibility
 
 - **PRNG:** mulberry32 (`a += 0x6D2B79F5; t = imul(a ^ a>>>15, a|1); t ^= t + imul(t ^ t>>>7, t|61); return ((t ^ t>>>14)>>>0) / 2^32`).
 - **Seeds:** slate 42, offline creative generator 7, operational fields 99, degradation 1234, traps 777 (spec 02).
 - Sampling without replacement uses a Fisher–Yates shuffle with that PRNG.
+- **File format.** The raw feed's hash is part of the index's identity (spec 05 §4.3), so the bytes matter, not only the values.
+  - Every data file is written as `JSON.stringify(value, null, 2) + "\n"`, UTF-8 without a BOM, LF line endings, through `writeFileAtomic`.
+  - The raw feed, canonical catalogue and reference data are top-level arrays; the manifest is an object.
+  - `stableStringify` (used for `sourceHash` and `indexVersion`) is JSON with object keys sorted recursively and array order kept.
 - **The reference draw order** is quoted in [the appendix](appendix-reference-values.md) (A1, A3, A5–A8). Copy those excerpts, constants included, and the offline dataset is byte-identical to the reference.
 - **What "reproduce" means.** Same seed and same code → byte-identical output. A re-implementation from the prose alone will produce a dataset with the **same structure** (counts, profiles, edge cases, traps, clusters), but different individual games, because the exact order of random draws is an implementation detail. LLM-generated copy also differs between runs. Judge a rebuild by the acceptance criteria and the manifest's `evaluation_dimensions`, not by diffing files.
 
@@ -286,6 +306,8 @@ One entry per raw record:
 - TypeScript strict. Zod for every LLM response and for the canonical schema.
 - No API keys in the repo; read `OPENAI_API_KEY` from the environment or `.env`.
 - Keep the cost to pennies: about 10 generation calls with a small model.
+- **Runtime:** Node 20.12 or later (for `process.loadEnvFile`), built with full ICU, which official builds have. Degradation formats max wins with `toLocaleString("en-GB")`, and a small-ICU build would change the feed. CI pins Node 22 (spec 05 §9).
+- **Tests and keys:** tests never load `.env` and always construct providers explicitly, so a local key can't turn a test run into an OpenAI run.
 - **Nothing in `src/` (except path constants), `scripts/build-index.ts` or the demo may read the canonical file or the reference data.** That is enforced by a test in a later spec; don't make it fail.
 
 ## 12. Acceptance criteria
@@ -296,11 +318,11 @@ All of these must pass with **no API key**:
 2. `npm test` covers:
    - every parser in section 8, with the variants from 7.2 (RTP, stakes including "10p", volatility, category, studio variants and swap repair, tags and synonyms, specs nested and flat, max win, RTP-variant dedupe, including "Lucky 88" surviving);
    - fail-closed eligibility: missing markets, missing or unknown status, test builds;
-   - determinism: two runs with the same seed are byte-identical;
+   - determinism: two runs with the same seed give byte-identical raw, canonical and reference files (the manifest differs only in its timestamp);
    - every edge case in 7.3 is present, and specs appear both nested and flat;
    - the slate contract is enforced on LLM output, using a fake LLM (primary theme, clamps, series share a studio, no jackpot without progressive).
-3. `npm run generate -- --provider=offline` writes all four files; the manifest says "offline".
-4. With a key, `npm run generate -- --provider=openai` succeeds, and the manifest records the model and prompt version.
+3. `npm run generate -- --provider=offline` writes all four files to `data/offline/`; the manifest says "offline".
+4. With a key, `npm run generate -- --provider=openai` succeeds, writes to `data/generated/`, and the manifest records the model and prompt version.
 
 ## 13. Out of scope
 
@@ -319,3 +341,6 @@ Enrichment, embeddings, the service and the evaluation runner. Those are later s
 | Studio vs aggregator | **Adopted, with a trap** | A duplicate arriving with the fields swapped would otherwise dodge duplicate detection |
 | Restricted features in degraded records | **Added (§7.4)** after a spec-only rebuild of the prototype showed degradation could drop `bonus_buy`. It hadn't happened in the prototype's data (all 3 bonus-buy games were rich) | A compliance flag must not depend on which random profile a record draws |
 | RTP-number stripping in titles | **Refined** after a bug: strip a bare number only when it matches the record's RTP | "Game 85" was being merged with an unrelated game |
+| File serialisation | **Fixed** in §10: 2-space JSON plus a trailing newline, LF, top-level arrays | The index identity hashes the raw file's text. Left open, a rebuild could match every value and still miss the hash. Whether this reproduces the reference hash is recorded in `REBUILD_NOTES.md` |
+| Clamping offline output | **Not clamped:** offline games go through `enforceSlate` only | Clamping would change the reference dataset. The offline data tests software, not catalogue realism |
+| Where offline output goes | **`data/offline/`, git-ignored;** only the OpenAI dataset is committed | An offline dataset in `data/generated/` could be mistaken for, or committed as, the submitted one |

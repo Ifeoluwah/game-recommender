@@ -22,13 +22,13 @@ A related-games recommender for a regulated, real-money casino product. All AI w
 ## Stack and layout
 
 - **Stack:** TypeScript (`strict`), Node 20+, ESM. Fastify for HTTP, Zod for validation, Vitest for tests, `tsx` to run scripts. Dependencies are pinned in `package.json`; see the rule on new ones below.
-- **Layout:** `src/domain` (vocabulary, types), `src/catalogue` (dataset generation), `src/pipeline` (normalise, enrich, guard, build-index), `src/ai` (model providers), `src/service` (the API), `scripts/` (CLI entry points), `eval/` (AI evaluation), `tests/` (software tests), `prompts/` (versioned runtime prompts), `config/` (service config), `docs/` (ADR, evaluation, specs under `docs/prompts/`), `data/generated/` and `artifacts/` (build outputs).
-- **Commands:** `npm run typecheck`, `npm test`, `npm run generate -- --provider=offline|openai`, `npm run build:index -- --provider=offline|openai`, `npm start`, `npm run demo`, `npm run eval`, `npm run eval:gate`, `npm run check`, `npm run spec:appendix`.
+- **Layout:** `src/domain` (vocabulary, types), `src/catalogue` (dataset generation), `src/pipeline` (normalise, enrich, guard, build-index), `src/ai` (model providers), `src/service` (the API), `scripts/` (CLI entry points), `eval/` (AI evaluation), `tests/` (software tests), `prompts/` (versioned runtime prompts), `config/` (service config), `docs/` (ADR, evaluation, specs under `docs/prompts/`), `data/generated/`, `artifacts/` and `eval/reports/` (the committed OpenAI build), and `data/offline/`, `artifacts/offline/` and `eval/reports/offline/` (offline builds, git-ignored).
+- **Commands:** `npm run typecheck`, `npm test`, `npm run generate -- --provider=offline|openai`, `npm run build:index -- --provider=offline|openai`, `npm start`, `npm run demo [-- --provider=offline]`, `npm run eval [-- --provider=offline]`, `npm run eval:gate`, `npm run check`. `demo` and `eval` read the OpenAI build unless given `--provider=offline`, and exit 1 if it's missing.
 - **Style:** small modules, named exports, no default exports, classes only for things with state or a provider interface (the cache, metrics, model clients), `camelCase` for code and `snake_case` only for feed fields. Comments explain *why*, not what. Fictional names everywhere: no real operators, studios or brands.
 
 ## How to work here
 
-- Run `npm run typecheck`, `npm test` and `npm run eval` before calling work done. `npm run check` adds `eval:gate`, which passes only on a model-built index: an offline build fails the ranking gates by design (spec 06 AC2).
+- Run `npm run typecheck`, `npm test` and `npm run eval` (`-- --provider=offline` until an OpenAI build is committed) before calling work done. `npm run check` adds `eval:gate`, which passes only on a model-built index: an offline build fails the ranking gates by design (spec 06 AC2).
 - Software tests (`tests/`) check behaviour. Evaluations (`eval/`) check AI quality. Don't present one as the other: test coverage is not an AI evaluation.
 - Add a test for every new decline path or eligibility rule. Add an eval case for every new failure mode found in AI output.
 - Keep the offline path working (`--provider=offline`): tests and CI must run with no API key.

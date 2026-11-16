@@ -5,6 +5,8 @@
 > Where this spec and `AGENTS.md` disagree, `AGENTS.md` wins. Flag the conflict rather than guessing.
 >
 > **Provenance.** This spec came from a review note comparing the prototype (see `docs/prompts/README.md`) with a typical "production recommender" design. Specs 04 and 05 already hold the resulting contracts; this spec is the change set, kept as one reviewable unit.
+>
+> **In a spec-first build** specs 04 and 05 are implemented to those contracts from the start, so most of this spec already exists when you reach it. Implementing it then means checking each requirement in section 3 against the code and adding the tests in section 5. The ADR rows in §3.6 are written with the ADR, in spec 08.
 
 ## 1. Goal
 
@@ -20,15 +22,15 @@ Make the offline build safe to re-run, interrupt and evolve, and make the servic
 | `src/domain/types.ts` | `EnrichmentRecord.cached`, `EnrichmentRecord.proposedAt` |
 | `scripts/build-index.ts`, `scripts/generate-catalogue.ts` | All outputs written atomically |
 | `src/service/server.ts` | Request-log serializer without client IP |
-| `docs/ADR-001-recommender-architecture.md` | Seed-availability rows in the failure table |
-| `docs/prompts/04-…`, `05-…` | Contracts updated (spec 04 §6, §8, §10; spec 05 §4.4, §6.2, Decisions) |
+| `docs/ADR-001-recommender-architecture.md` | Seed-availability rows in the failure table. The ADR is created in spec 08, so these rows are written there |
+| `docs/prompts/04-…`, `05-…` | Contracts updated (spec 04 §6, §8, §10; spec 05 §4.4, §6.2, Decisions). Already done: no spec edit is needed in a spec-first build |
 | `tests/enrichment.test.ts`, `tests/api.test.ts` | New tests (section 5) |
 
 ## 3. Requirements
 
 ### 3.1 Versioned cache invalidation
 
-- Cache key = `sha256(sourceHash | model | promptVersion | ENRICH_PIPELINE_VERSION)`.
+- Cache key = `sha256(sourceHash | llm.id | promptVersion | ENRICH_PIPELINE_VERSION)`, where `llm.id` is the provider-qualified model id (e.g. `openai:gpt-4o-mini`), as in spec 04 §8.
 - `ENRICH_PIPELINE_VERSION` (start at `enrich-pipeline.v1`) versions what shapes a proposal besides the prompt: `buildEnrichmentInput`, the response schema and the parser. Bump it when any of them change.
 - The guard is **not** part of the key: it runs on every build, cached or not.
 - Embeddings aren't cached, so they need no version.
@@ -38,8 +40,8 @@ Make the offline build safe to re-run, interrupt and evolve, and make the servic
 - **Concurrency:** keep `mapLimit` with a default of 5 calls in flight.
 - **Retries:** `withRetry` delays are `base × 2^attempt × (0.5 + Math.random())`, with base 500 ms and 3 attempts. Jitter uses `Math.random`, because it affects timing, not data, so determinism is unaffected.
 - **Atomic writes:** `writeFileAtomic` creates the directory, writes `<path>.<pid>.tmp`, then `renameSync` to the final path. Use it for:
-  - `artifacts/index.json`, `enriched-catalogue.json` and `eval-variants.json`;
-  - every `data/generated/*` file;
+  - `index.json`, `enriched-catalogue.json` and `eval-variants.json`, in either build's artefact folder;
+  - every data file, in `data/generated/` or `data/offline/`;
   - the enrichment cache.
 - **Checkpointing:** save the cache after every 10 new proposals, and in a `finally` around the whole run, so completed paid calls survive an exception or interruption.
 
@@ -65,14 +67,14 @@ Cache entries store `createdAt`; older entries without it give `proposedAt: null
 
 ### 3.6 Seed availability, made explicit
 
-There's no behaviour change. Add rows to the ADR failure table:
+There's no behaviour change. Add rows to the ADR failure table (written when spec 08 creates the ADR):
 - unlicensed or test-build seed → `SEED_NOT_AVAILABLE`, no rail;
 - withdrawn or out-of-season seed → alternatives still shown, on purpose (spec 02 §6.2).
 
 ## 4. Constraints
 
 - No new dependencies (no `p-limit`: `mapLimit` already exists).
-- No change to ranking, rules, thresholds or gates. `npm run eval` must give identical gate values on the offline build.
+- No change to ranking, rules, thresholds or gates. `npm run eval -- --provider=offline` must give identical gate values on the offline build.
 - The offline path still runs with no key.
 
 ## 5. Acceptance criteria (no API key)
@@ -80,7 +82,7 @@ There's no behaviour change. Add rows to the ADR failure table:
 1. Typecheck and all tests pass.
 2. **Cache provenance:** a second run marks the unchanged record `cached: true`, with an ISO `proposedAt`, and the changed record `cached: false`.
 3. **Cache key:** the key differs when the model, the prompt version or the pipeline version changes, and is stable otherwise.
-4. **Interrupted run:** with concurrency 1, a run that throws on the third record (outside the per-record fallback) rejects. The cache file still holds the first two proposals, and no `.tmp` file is left.
+4. **Interrupted run:** with concurrency 1, a run that throws on the third record (outside the per-record fallback) rejects. The cache file still holds the first two proposals, and no `.tmp` file is left. The throw comes from an injected cache whose third write fails (spec 04 §8), because every model failure is caught by the fallback.
 5. **Number lint:** summaries "A 96.5% RTP slot with expanding wilds." and "Win up to £250,000 on expanding wilds." are discarded with a `summary_banned:` flag.
 6. **Logs** (`tests/api.test.ts`): two requests, one restricted, both with `remoteAddress` set. The captured logs:
    - contain both request ids;
@@ -88,9 +90,8 @@ There's no behaviour change. Add rows to the ADR failure table:
    - contain no IP, port, `remoteAddress`/`remotePort` or any mention of the restriction.
 7. **Unchanged results:** after an offline regenerate and rebuild:
    - the raw feed is byte-identical;
-   - the gate values match the previous report;
-   - 39/39 planted traps are handled;
-   - `npm run spec:appendix -- --check` passes.
+   - the gate values match the previous report (the offline report isn't committed, so keep a copy of `eval/reports/offline/latest.json` from before the change);
+   - 39/39 planted traps are handled.
 
 ## Decisions
 
@@ -107,4 +108,5 @@ There's no behaviour change. Add rows to the ADR failure table:
 | Seed deprecated or unavailable: decline or fall back | **Decline when unlicensed or a test build; still recommend when withdrawn or out of season.** Never fall back to popular games | Rule 7 (decline over pad); now in the ADR |
 | Fail fast or degrade on a bad artefact | **Not ready (503), no crash, no fallback matching** | Old instances keep serving; unevaluated rankings never reach a regulated page |
 | `enrichedBy` and timestamp provenance | **Adopted** as `cached` and `proposedAt`, alongside the existing method and per-field provenance | Auditability without changing the method enum |
+| Generated appendix with a drift check (`npm run spec:appendix -- --check`) | **Dropped** | The excerpts are fragments of files: A4 is three functions, and A14 is closures over the runner's state. A generator would need markers in production code or brittle source parsing. The appendix is a reproduction aid maintained by hand, and the identity hash already checks that the code reproduces the dataset |
 | Structured request telemetry without PII | **Already logged; two leaks fixed** | The default serializer logged the client IP, and the decline reason exposed a player's safer-gambling restriction per request. The second was found by writing this spec's log test |

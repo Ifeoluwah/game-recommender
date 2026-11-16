@@ -14,11 +14,11 @@ A reviewer should be able to understand the production design, its limits and ho
 
 | Path | What |
 | --- | --- |
-| `docs/ADR-001-recommender-architecture.md` | Stage 5 of the brief: the architecture decision record with a diagram (section 3) |
-| `docs/EVALUATION.md` | The evaluation design in prose (section 4; metrics defined in spec 06) |
-| `README.md` | Entry point (section 5) |
+| `docs/ADR-001-recommender-architecture.md` | Stage 5 of the brief: the architecture decision record with a diagram (section 3), including spec 07 §3.6's seed-availability rows |
+| `docs/EVALUATION.md` | The evaluation design in prose (section 4; metrics defined in spec 06). Completes the first version written in spec 06 |
+| `README.md` | Entry point (section 5). Extends the README spec 03 created, keeping its "Dataset design" section |
 | `docs/AI_USAGE.md` | AI tools and every agentic artifact (section 6) |
-| `.claude/skills/productionise-ai-prototype/SKILL.md`, `templates/ADR.md` | Part B: the reusable skill (section 7) |
+| `.claude/skills/productionise-ai-prototype/SKILL.md`, `templates/ADR.md` | Part B: the reusable skill (section 7). **Already in the skeleton:** check both against sections 7 and 8.5, and change them only to fix a mismatch |
 | `docs/LEVERAGE.md` | Part B: why this artifact, and how it applies to the next prototype (section 7) |
 | `tests/docs.test.ts` | Consistency checks (section 8) |
 
@@ -122,17 +122,17 @@ Sections:
 1. A one-paragraph summary: the build-time vs request-time idea.
 2. The four-layer table, with the real numbers.
 3. A "read this" table linking the ADR, `EVALUATION.md`, the latest report, `LEVERAGE.md`, `AI_USAGE.md`, `docs/prompts/` and `AGENTS.md`.
-4. "Run it (no API key needed)", with the API section: routes, parameters, response shape, decline reasons and an example.
-5. "Rebuild with a model".
+4. "Run it (no API key needed)": the offline commands with `--provider=offline`, including that offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`, and that `demo` and `eval` read the committed OpenAI build unless given the flag. Then the API section: routes, parameters, response shape, decline reasons and an example.
+5. "Rebuild with a model": the OpenAI commands, committing the result, and that only `text-embedding-3-small` has a score threshold (spec 05 §6.3).
 6. "Dataset design" (spec 03 §8).
 7. "How the pieces fit": an ASCII pipeline sketch.
-8. "Production concerns: what I built and what I left out". The built list, plus a left-out table with a reason per item: auth and rate limiting at the edge, hot reload, vector DB, live eligibility overlay, age checks, a "trending" fallback rail, personalisation and A/B, review UI, and IaC.
+8. "Production concerns: what I built and what I left out". The built list, plus a left-out table with a reason per item: auth and rate limiting at the edge, hot reload, vector DB, live eligibility overlay, age checks, a "trending" fallback rail, personalisation and A/B, review UI, IaC, and a generated spec appendix with a drift check. The last one's reason: the excerpts are fragments of files, so generating them needs markers in production code or brittle parsing; the appendix is maintained by hand, and the identity hash already checks the dataset (spec 07 Decisions).
 9. Repository map.
 
 ## 6. `docs/AI_USAGE.md`
 
 - **Tools:** the coding agent, and the models inside the product.
-- **Agentic artifacts:** every one, with its purpose: `AGENTS.md`, `CLAUDE.md`, `docs/prompts/` (including the generated appendix), the skill, the versioned runtime prompts, the gates file and CI.
+- **Agentic artifacts:** every one, with its purpose: `AGENTS.md`, `CLAUDE.md`, `docs/prompts/` (including the hand-maintained appendix), the skill, the versioned runtime prompts, the gates file and CI.
 - **"How it was built":** state the process accurately: the specs were developed against a prototype, checked by fresh-agent rebuilds, and this repo was then built from them spec by spec (`docs/prompts/README.md`). Leave the **"Division of work"** section as a marked placeholder **for the candidate to write**. An agent must not fill in claims about what the human did.
 
 ## 7. Part B: the reusable skill and `LEVERAGE.md`
@@ -164,7 +164,7 @@ Sections:
 1. The ADR names every `DeclineReason` in `src/service/recommender.ts`, in backticks.
 2. `EVALUATION.md` names every gate key in `eval/release-gates.json`.
 3. The ADR has every section in 3.1 and a Mermaid block.
-4. Every relative link in the README, ADR, `EVALUATION.md`, `LEVERAGE.md`, `AI_USAGE.md` and `docs/prompts/README.md` resolves to a file.
+4. Every relative link in the README, ADR, `EVALUATION.md`, `LEVERAGE.md`, `AI_USAGE.md` and `docs/prompts/README.md` resolves to a file or folder. One exception: links into `eval/reports/` (the OpenAI report) may be missing until the first OpenAI build is committed. The test then skips them and logs them as pending, rather than failing offline.
 5. The skill has its front matter, steps 1–9 and the template.
 
 Prose accuracy beyond these checks (numbers, behaviour) is a review item: when a spec changes a rule, update the README's layer table, the ADR's Decision section and `EVALUATION.md`'s policy section in the same change.
@@ -195,3 +195,5 @@ Prose accuracy beyond these checks (numbers, behaviour) is a review item: when a
 | Part B as a skill rather than a library | **Skill** | What transfers to the next prototype is the decision sequence, not recommender code |
 | Docs consistency test | **Added with this spec** | Writing the spec found drift: the ADR still said title-only records skip the LLM (changed by option B in spec 02), the policy summaries omitted the min-bet and unknown-stakes rules, and the market-not-served decline wasn't in the failure table. All fixed; the test now catches the checkable kinds |
 | Failure analysis now or after the OpenAI run | **After** | It must quote real cases from the configuration being submitted |
+| Links to the OpenAI report before it exists | **Skipped and logged** by the docs test, not failed | Offline reports are git-ignored, so the committed report is the OpenAI one. Tests must pass with no key |
+| Spec appendix exporter | **Not built;** listed under "left out" in the README | See spec 07 Decisions |

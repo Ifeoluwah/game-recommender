@@ -50,7 +50,9 @@ A commit per working milestone gives you a clean rollback point if a later one g
 
 **Step 3: the full check.** After spec 08:
 
-> Run `npm run generate -- --provider=offline`, `npm run build:index -- --provider=offline`, `npm run demo`, `npm run eval` and `npm run spec:appendix -- --check`. Compare the results with section 3 of `START_HERE.md` and report every difference.
+> Run `npm run generate -- --provider=offline`, `npm run build:index -- --provider=offline`, `npm run demo -- --provider=offline` and `npm run eval -- --provider=offline`. Compare the results with section 3 of `START_HERE.md` and report every difference.
+
+Offline builds go to `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`, all git-ignored. The committed build is the OpenAI one in `data/generated/`, `artifacts/` and `eval/reports/` (section 4). Without `--provider=offline`, `demo` and `eval` read the OpenAI build. Until it exists, they exit 1 and say so; they never fall back to the offline build. On Windows PowerShell the same commands work as written. Pass `--provider=offline` explicitly whenever a `.env` file exists, because `generate` and `build:index` choose OpenAI when a key is set.
 
 **The prototype as a reference.** You don't need the prototype's code: `docs/prompts/appendix-reference-values.md` already holds the tricky parts as exact excerpts (the PRNG and draw order, degradation, traps, normalisation, the policy rules, the relevance labels). That's what makes the dataset reproducible. If the agent gets stuck on something the appendix doesn't cover, add the relevant snippet to the appendix rather than pasting it into chat, so the spec stays complete.
 
@@ -59,11 +61,11 @@ A commit per working milestone gives you a clean rollback point if a later one g
 - **Typecheck and tests:** typecheck is clean and all tests pass.
 - **Dataset:** 108 canonical games and 113 feed records. The slate mix is 70 slot, 9 table, 9 live, 7 instant win and 5 bingo, with 4 benchmark clusters.
 - **Planted traps:** "39/39 handled correctly".
-- **Identity check:** the feed's `catalogueHash` in `artifacts/index.json` is `5caf2bbb0f343546`. If it matches, the dataset is byte for byte the prototype's and every number below will match too. If it doesn't, something in the draw order differs; the appendix (A1, A3, A5–A8) is where to look.
+- **Identity check:** the feed's `catalogueHash` in `artifacts/offline/index.json` is `5caf2bbb0f343546`. If it matches, the dataset is byte for byte the prototype's and every number below will match too. If it doesn't, check the file serialisation first (spec 01 §10). Then look at the draw order in the appendix (A1, A3, A5–A8).
 - **Clusters (raw text → enriched):** Recall@5 0.825 → 0.800, MRR 1 → 1, near-miss intrusion 0.15 → 0, served Recall@5 0.863 → 0.850.
-- **`npm run spec:appendix -- --check`:** passes, which means the code matches the appendix.
-- **Gates:** information, eligibility, policy and abstention pass, except theme precision (0.667), which spec 06 expects to fail offline.
-- **Ranking gates fail, as expected without a model:** nDCG@5 0.549, lift over raw text −0.026, bad-recommendation rate 0.606, coverage 0.979. So `npm run eval:gate` and `npm run check` exit 1 until you build with OpenAI.
+- **Gates:** information, eligibility, policy and abstention pass, including coverage (0.979, gate ≥ 0.8). The exception is theme precision (0.667), which spec 06 expects to fail offline.
+- **Ranking gates fail, as expected without a model:** nDCG@5 0.549, lift over raw text −0.026, bad-recommendation rate 0.606.
+- **`npm run eval:gate` and `npm run check` exit 1** until you build with OpenAI. They gate the committed OpenAI build, so before it exists they stop with a "no OpenAI build" message. `npm run eval:gate -- --provider=offline` also exits 1, on the ranking gates.
 
 Keep this file, or fold it into the README: it's part of the record of how the repo was built.
 
@@ -77,7 +79,7 @@ npm run eval
 ```
 
 1. Tune the score threshold from the sweep in `eval/reports/latest.md`; never tune the gates.
-2. Commit the OpenAI-built artefacts, so CI gates them.
+2. Commit the OpenAI build (`data/generated/`, `artifacts/`, `eval/reports/`), so CI gates it. CI fails until this is committed.
 3. Two things are left for you, not the agent:
    - the "division of work" section in `docs/AI_USAGE.md`;
    - the failure-analysis section in `docs/EVALUATION.md`, written from the OpenAI report's real cases.

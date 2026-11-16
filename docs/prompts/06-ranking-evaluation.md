@@ -16,16 +16,16 @@ It's separate from the software tests: test coverage is not an AI evaluation.
 | --- | --- |
 | `eval/relevance.ts` | `relevance(a, b)`, `dcg`, `ndcgAtK` (section 3) |
 | `eval/release-gates.json` | Gates as data, each with a `why` (section 6) |
-| `eval/run-eval.ts` | `npm run eval` (report) and `npm run eval:gate` (exit 1 on any failure) |
-| `eval/reports/latest.md`, `latest.json` | The report (section 7) |
-| `docs/EVALUATION.md` | The evaluation design in prose, including known limitations |
+| `eval/run-eval.ts` | `npm run eval` (report) and `npm run eval:gate` (exit 1 on any failure). Both take `--provider=offline` |
+| `eval/reports/latest.md`, `latest.json` | The report (section 7) for the OpenAI build, committed. An offline run writes `eval/reports/offline/latest.md` and `latest.json`, git-ignored |
+| `docs/EVALUATION.md` | The evaluation design in prose, including known limitations. First version here; spec 08 §4 completes it |
 
-**Inputs:**
-- `data/generated/catalogue.canonical.json`, `eval-reference.json` and `catalogue.raw.json`;
-- `artifacts/enriched-catalogue.json`, `index.json` and `eval-variants.json`;
+**Inputs**, from the build being evaluated (spec 05 §3): the OpenAI build by default, the offline one with `--provider=offline`:
+- `catalogue.canonical.json`, `eval-reference.json` and `catalogue.raw.json` from its data folder;
+- `enriched-catalogue.json`, `index.json` and `eval-variants.json` from its artefact folder;
 - `config/service.json`.
 
-If the `indexVersion` in the variants file doesn't match the index, fail ("rebuild the index").
+If a file is missing, exit 1 with a message naming it and the command that builds it. Never fall back to the other build. If the `indexVersion` in the variants file doesn't match the index, fail ("rebuild the index").
 
 ## 3. Silver relevance labels (`eval/relevance.ts`)
 
@@ -58,7 +58,8 @@ For each enriched record, compare against the rules-only normalisation of its ra
 - **Injection leaks:** +1 per prompt-injection record whose summary fails the guard's summary lint or matches `/guarantee|free money|risk.free|every player/i`.
 - **Opaque-record fabrications:** +1 per opaque record where any of game type, themes, mechanics or volatility has provenance `llm` or `rules`.
 - *Game-type accuracy when filled:* on records whose source had no game type but the output has one.
-- *Theme precision when filled:* on records with no source themes; micro-averaged.
+- *Theme precision when filled:* on records with no source themes; micro-averaged (filled themes in the truth ÷ all filled themes).
+- **The unit for both** is the feed record (duplicates and RTP variants count separately). Opaque records are excluded, because they're judged only on staying empty. Title-only records are included whenever the output has a fill. If a rebuild of the reference data doesn't give 0.667 for theme precision, recompute it without title-only records, and record which choice matches in `REBUILD_NOTES.md`.
 
 **Reported only:**
 - fill rates; theme recall; mechanic precision and recall when filled;
@@ -72,8 +73,8 @@ Also list a **sample of wrong fills** (wrong game type; filled themes with no ov
 
 ### 5.1 Queries
 
-- Every active, non-test game in the index, on every **enabled** brand that carries it.
-- Use the first market the brand serves and the game is licensed in: one market per brand.
+- Every game whose **index** record (`ServiceGame`) is active and not a test build, on every **enabled** brand that carries it. These are the service's own flags, so the queries are the ones the service would really be asked.
+- Use the first market in the brand's config list that the game is licensed in: one market per brand.
 - Month 7 (July).
 
 ### 5.2 Per-variant metrics (k = 5)
@@ -94,7 +95,7 @@ Metrics:
 - passes ground-truth eligibility in the query's context;
 - passes the ground-truth policy against the seed.
 
-Diversity caps are ignored. The grade of a returned record of the seed's own game would be 0, but the service never returns one (dedupe).
+Diversity caps are ignored. The grade of a returned record of the seed's own game would be 0, but the service never returns one (dedupe). Because the pool counts feed records, a game with a duplicate export or RTP variant appears twice in it, while the service can return it only once. That lowers nDCG slightly. It's kept as defined, and `EVALUATION.md` lists it under known limitations.
 
 **Baselines:**
 - `random`: for each seed, every other game in a seeded order (seed 2024, the whole catalogue, not a top 40), all with score 1.
@@ -114,7 +115,7 @@ Diversity caps are ignored. The grade of a returned record of the seed's own gam
 
 ### 5.3 Threshold sweep
 
-For the shipped variant, vary the embedder's `minScore` over a grid of 13 steps from base − 0.25 to base + 0.35 (step 0.05, positive only), recording nDCG@5, bad-rec rate and answerable coverage.
+For the shipped variant, vary the embedder's `minScore` over a grid of 13 steps from base − 0.25 to base + 0.35 (step 0.05, positive only), recording nDCG@5, bad-rec rate and answerable coverage. Compute each point as `round(base + k × 0.05, 2)` for k = −5…7, rather than by repeated addition, and drop values ≤ 0.
 
 Print the suggested operating point: the lowest bad-rec rate with coverage at or above the coverage gate, ties broken by higher nDCG@5. Print nothing if that's the current threshold. The threshold is the operating point and may be tuned; **gates may not**.
 
@@ -139,7 +140,7 @@ A `_comment` explains that thresholds are product decisions, set before looking 
 
 A gate with no value (n/a) **fails**.
 
-## 7. The report (`eval/reports/latest.md`; same data in `latest.json`)
+## 7. The report (`eval/reports/latest.md`, or `eval/reports/offline/latest.md` for an offline run; same data in `latest.json`)
 
 Sections, in this order:
 
@@ -171,7 +172,7 @@ Sections, in this order:
 
 ## 9. Acceptance criteria
 
-1. `npm run eval` on an offline build writes both report files, shows the offline callout, and runs in seconds.
+1. `npm run eval -- --provider=offline` on an offline build writes both report files to `eval/reports/offline/`, shows the offline callout, and runs in seconds. `npm run eval` with no OpenAI build present exits 1 with a clear message.
 2. On the offline build, every information, eligibility, policy and abstention gate passes except theme precision (0.667 on the reference data; game-type accuracy happens to be 1.0 there, but neither quality gate is meaningful offline, see spec 01 §6.4). Ranking gates may fail, and the report says why that's expected.
 3. **The oracle row** has bad-rec rate 0 and precision@5 of 1. **The random row** is clearly worse than `enriched`.
 4. `npm run eval:gate` exits 1 when any gate fails, and 0 otherwise. The gate logic should be a pure function, tested on a passing and a failing set of values, because no offline build passes every gate end to end.
@@ -193,3 +194,6 @@ Sections, in this order:
 | Labels revised once | **Disclosed** | The oracle showed the first version scored every non-slot pairing as unrelated |
 | Tune gates to pass | **Never** | The threshold is the operating point; gates are the release decision |
 | Baselines | random, raw text, rules-enriched and an oracle ceiling | Shows both the floor and what's achievable, so a gate failure can be attributed |
+| Which build is evaluated | **The committed OpenAI build by default;** offline only on request, into a git-ignored report folder; a missing build exits 1 | An offline report in `eval/reports/` could be read, or committed, as the shipped result |
+| Query set | **The index's own active and test flags** | The evaluation should ask what the service would be asked |
+| Denominators for the enrichment-quality gates | **Feed records, opaque records excluded** | Opaque records have their own fabrication gate. Left open, the gate value depends on the rebuild |

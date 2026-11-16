@@ -22,7 +22,7 @@ The output is **never shown to players**; it's matching features only.
 
 | Path | What |
 | --- | --- |
-| `src/ai/providers.ts` | `JsonLlm` interface and `OpenAiJsonLlm` (section 3) |
+| `src/ai/providers.ts` | `JsonLlm` interface and `OpenAiJsonLlm` (section 3). Already created for generation in spec 01; check it against section 3 here |
 | `prompts/enrich-game.v2.md` | **Given:** already in the repo. Use it as is; don't rewrite it. Section 5 says what it contains, so a change to it is a new version (`v3`) and a new evaluation. Versioned system prompt. `promptVersion` is the file name without `.md` (e.g. `enrich-game.v2`), exported as `ENRICH_PROMPT_VERSION` |
 | `src/pipeline/enrich.ts` | Evidence check, input builder, Zod parsing, rules enricher, cache, `enrichCatalogue` (sections 4–8) |
 | `src/pipeline/guard.ts` | `applyGuard` and `lintSummary` (section 6) |
@@ -160,7 +160,9 @@ For each record, with bounded concurrency and input order preserved:
    - up to 3 attempts, with exponential backoff (500 ms base) and **jitter**: each delay × a random 0.5–1.5, so parallel workers hitting a 429 don't retry in lockstep;
    - at most `concurrency` (default 5) calls in flight;
    - then parse with Zod, cache the result with its `createdAt`, and run the guard.
-5. Any failure → rules fallback for **this record only**. The build continues and the build script warns with the fallback count.
+5. Any failure of the LLM call or its parse → rules fallback for **this record only**. The build continues and the build script warns with the fallback count. A failure of the cache itself (reading or writing it) isn't a model failure, so it isn't caught: it rejects the run, after the `finally` save.
+
+`cache` is an object with the cache class's interface (`get`, `put`, `save`), passed in by the caller. The build script passes the file-backed cache; tests pass their own, so they can make a write fail (spec 07 AC4).
 
 The cache is a JSON file (`.cache/enrichment-cache.json`, git-ignored), a single object mapping cache key → `{ proposal, model, promptVersion, createdAt }`:
 - **Checkpointing:** it's saved every 10 new proposals, and in a `finally` at the end, so a crash or Ctrl-C mid-build keeps every proposal already paid for.
@@ -202,5 +204,6 @@ The cache is a JSON file (`.cache/enrichment-cache.json`, git-ignored), a single
 | Title-only records | **Ask the LLM, store as low-trust, never recommend** | Titles can be evidence; misleading titles show why they can't be trusted for ranking |
 | Pipeline version in the cache key | **Adopted** | A changed input builder or schema would otherwise reuse stale proposals silently |
 | Checkpoint the cache during the run | **Adopted** | A crash at record 90 of 100 shouldn't pay for 90 calls again |
+| Cache failures | **Not caught by the per-record fallback;** the cache is injected | A broken cache is an infrastructure fault, not a bad model answer. Falling back would hide it and silently pay for every call again. Injection also gives the interrupted-run test a seam |
 | Repair a banned summary | **No:** discard it | A repaired summary is still the model's text, just with the evidence of the problem removed |
 | Send the raw description into the embedding | **No:** embed guarded, structured features plus the neutral summary (spec 05) | Limits the pull of injected or promotional copy |

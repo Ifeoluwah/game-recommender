@@ -14,8 +14,10 @@ An offline build turns the messy feed into a versioned, validated index artefact
 
 | Path | What |
 | --- | --- |
-| `src/ai/providers.ts` | `Embedder` interface, `OpenAiEmbedder`, `HashingEmbedder`, `resolveProviderMode` (section 3) |
-| `src/pipeline/build-index.ts` | Embedding text, neighbours, `IndexSchema`, `buildIndex` (section 4) |
+| `src/ai/providers.ts` | `Embedder` interface, `OpenAiEmbedder`, `HashingEmbedder`, `resolveProviderMode` (section 3). The last already exists from spec 01 |
+| `src/domain/index-schema.ts` | `IndexSchema` (Zod) and `ServiceGame` (section 4.3), with no AI imports, so the service can load it without loading a model SDK |
+| `src/pipeline/build-index.ts` | Embedding text, neighbours, `buildIndex` (section 4); re-exports `IndexSchema` |
+| `src/service/service-config.ts` | `ServiceConfigSchema` and loader (section 6.3; created in spec 02) |
 | `scripts/build-index.ts` | CLI: `npm run build:index -- --provider=openai\|offline` (section 4.4) |
 | `src/service/index-store.ts` | `loadIndex` with validation (section 5) |
 | `src/service/recommender.ts` | Request logic (spec 02, section 6) |
@@ -44,7 +46,16 @@ interface Embedder { readonly id: string; readonly dim: number; embed(texts: str
   - Weight 2 for tokens containing `_` or equal to `slot|table|live|bingo|low|medium|high`, else 1.
   - L2-normalise the result.
 - **`resolveProviderMode(argv)`:** `--provider=openai|offline`. Without the flag, use `openai` if `OPENAI_API_KEY` is set, else `offline`. Reject unknown values.
-- **Keys:** scripts load `.env` from the repo root if present (`process.loadEnvFile`), ignoring a missing file.
+- **Keys:** scripts load `.env` from the repo root if present (`process.loadEnvFile`), ignoring a missing file. A script that chose its provider without the flag logs which one it picked and why. Tests never load `.env`.
+
+**Where each build lives.** The provider mode also picks the folders:
+
+| | Data (spec 01) | Artefacts | Report (spec 06) | In git |
+| --- | --- | --- | --- | --- |
+| `openai` (the shipped build) | `data/generated/` | `artifacts/` | `eval/reports/` | committed |
+| `offline` | `data/offline/` | `artifacts/offline/` | `eval/reports/offline/` | ignored |
+
+`generate` and `build:index` write to their mode's folders. `demo` and `eval` read the **OpenAI** build unless given `--provider=offline`. Their default doesn't depend on whether a key is set, because they make no model calls. If the build they're asked for is missing, they exit 1 with a message naming the missing file and the command that creates it. They never fall back to the other build.
 
 ## 4. Index build (offline, the only place models are called)
 
@@ -67,7 +78,11 @@ Omit any part that's empty. Each part ends with a full stop except the summary; 
 - Sort by score descending, then id ascending (deterministic ties).
 - O(n²) is fine at this scale; the ADR names the trigger for approximate methods.
 
-### 4.3 Artefact (`artifacts/index.json`, Zod-validated on write and load)
+### 4.3 Artefact (`index.json` in the build's artefact folder, Zod-validated on write and load)
+
+`IndexSchema` lives in `src/domain/index-schema.ts`. `catalogueHash` hashes the raw feed file exactly as written (spec 01 §10).
+
+`enrichment` describes how the **build** was run, not each record: offline `{ method: "rules", model: null, promptVersion: "rules.v1" }`; OpenAI `{ method: "llm", model: <llm.id>, promptVersion: "enrich-game.v2" }`. Records that were skipped or fell back keep their own method in `enriched-catalogue.json`.
 
 ```ts
 {
@@ -93,17 +108,17 @@ No vectors go into the service artefact; the service doesn't need them.
 
 ### 4.4 Build script
 
-1. Read `data/generated/catalogue.raw.json`, then run `normaliseRecord` on every record (spec 01).
+1. Read `catalogue.raw.json` from the mode's data folder (section 3), then run `normaliseRecord` on every record (spec 01).
 2. `enrichCatalogue` with the LLM (OpenAI mode) or rules (offline), using the cache (spec 04). Log the stats, and warn on fallbacks.
 3. `buildIndex(enriched, embedder, { catalogueHash, enrichment })`.
 4. **Evaluation variants,** embedded with the **same** embedder for a fair comparison:
    - `enriched` = the index neighbours;
    - `raw_text` = neighbours from raw-text embeddings;
    - in OpenAI mode, also `rules_enriched` = neighbours from rules-enriched text.
-5. Write, each **atomically** (temp file + rename, `writeFileAtomic` in `src/util/misc.ts`), so a killed build never leaves a half-written artefact for the service or the next build to load. The generate script writes its files the same way.
-   - `artifacts/index.json`;
-   - `artifacts/enriched-catalogue.json` (pretty-printed, for inspection and evaluation);
-   - `artifacts/eval-variants.json` = `{ indexVersion, embedding, variants }`.
+5. Write to the mode's artefact folder, each **atomically** (temp file + rename, `writeFileAtomic` in `src/util/misc.ts`), so a killed build never leaves a half-written artefact for the service or the next build to load. The generate script writes its files the same way.
+   - `index.json`;
+   - `enriched-catalogue.json` (pretty-printed, for inspection and evaluation);
+   - `eval-variants.json` = `{ indexVersion, embedding, variants }`.
 6. Never read the canonical catalogue or the reference data (boundary rule).
 
 ## 5. Loading the index (`loadIndex(path, config)`)
@@ -137,8 +152,8 @@ A bad artefact makes the process **not ready**, not crashed: the load balancer k
 - otherwise `400 {status:"error", error:"invalid_request", details}`.
 
 Then:
-- unknown brand → `400 unknown_brand`;
-- brand not operating in that market → `400 brand_not_offered_in_market`;
+- unknown brand → `400 {status:"error", error:"unknown_brand"}`;
+- brand not operating in that market → `400 {status:"error", error:"brand_not_offered_in_market"}`;
 - no index loaded → `503 {status:"unavailable", items:[]}`.
 
 **Call** `recommend(index, config, { gameId, brand, market, limit, playerRestricted, month })`:
@@ -173,23 +188,33 @@ Brands, `restrictedMechanicsByMarket` and `policy` are as in spec 02, section 6.
 
 The whole file is Zod-validated on load.
 
-The score threshold belongs to an embedding model. A new model needs its own threshold, chosen from the evaluation's sweep (spec 06). Without one, the service refuses that index.
+The score threshold belongs to an embedding model. A new model needs its own threshold, chosen from the evaluation's sweep (spec 06). Without one, the service refuses that index. So `OPENAI_EMBEDDING_MODEL` can be changed, but only `text-embedding-3-small` builds load until another model gets a threshold. `.env.example` and the README say so.
 
 ## 7. Metrics (`/metrics`, Prometheus text format)
 
-- `recs_requests_total{outcome, reason, brand}` counter (reason `none` when ok).
+- `recs_requests_total{outcome, reason, brand}` counter, one count per `/related` request:
+  - `outcome` is `ok`, `declined`, `invalid` (any 400) or `unavailable` (503);
+  - `reason` is the decline reason or 400 error code, `none` when ok;
+  - `brand` is the requested brand when it's in the config, else `invalid`, so clients can't create unbounded label values.
 - `recs_latency_ms` histogram, with buckets 1, 2, 5, 10, 25, 50, 100 and `+Inf`, plus `_sum` and `_count`.
 - `recs_index_info{version}` gauge: 1 when loaded.
 
 ## 8. Entry point and demo
 
 **`src/main.ts`:**
-- load and validate the config, then `loadIndex` (path from `INDEX_PATH`, default `artifacts/index.json`);
+- load and validate the config, then `loadIndex` (path from `INDEX_PATH`, default `artifacts/index.json`, the OpenAI build; set `INDEX_PATH=artifacts/offline/index.json` to serve an offline one);
 - build the server with logging on; if the index didn't load, log the error and serve, reporting not ready;
 - listen on `127.0.0.1:${PORT ?? 3000}`;
 - close gracefully on SIGINT/SIGTERM.
 
-**`scripts/demo.ts`:** load the committed index in-process, pick suitable games from the enriched catalogue, and print one block per case, using `app.inject`. The cases:
+**`scripts/demo.ts`:** load the index in-process: the committed OpenAI build by default, or the offline one with `--provider=offline` (section 3; exit 1 if it's missing). Pick games from that build's enriched catalogue and index by scanning in id order, so the choice is deterministic. Print one block per case, using `app.inject`, with its status code and reason. The picks:
+- cases 1 and 2: the first game that returns `ok` on `aurora`/GB and on `harbour`/GB;
+- case 3: the first game that returns `ok` on `liberty`/NJ;
+- case 4: the first game flagged `insufficient`;
+- case 5: the first game not licensed in GB, requested on `aurora`/GB;
+- cases 6–10: fixed inputs.
+
+The cases:
 1. normal (a well-described slot on `aurora`/GB);
 2. the same game on another brand;
 3. an NJ player on `liberty`/NJ;
@@ -203,11 +228,11 @@ The score threshold belongs to an embedding model. A new model needs its own thr
 
 ## 9. CI
 
-`.github/workflows/check.yml`: `npm ci`, `typecheck`, `test`, `eval:gate`.
+`.github/workflows/check.yml`: Node 22, `npm ci`, `typecheck`, `test`, `eval:gate`.
 
 The gate runs on the **committed** artefacts, so CI needs no API key.
 
-**Which artefacts are committed:** the shipped build (`--provider=openai`), never an offline one. An offline build fails the ranking gates by design (spec 06 AC2), so committing one turns CI red. That's correct: it isn't a releasable index. Until the first OpenAI build is committed, CI fails on the ranking gates only, and the report says why. Tests never read the committed artefacts; they build their own offline ones in memory.
+**Which artefacts are committed:** the shipped build (`--provider=openai`) in `data/generated/`, `artifacts/` and `eval/reports/`. Offline builds live in git-ignored folders (section 3), so they can't be committed by accident. Until the first OpenAI build is committed, CI fails at `eval:gate`, which exits 1 with a "no OpenAI build" message. That's correct: there is no releasable index yet. Tests never read either build's files; they build their own offline ones in memory.
 
 ## 10. Acceptance criteria (no API key)
 
@@ -221,9 +246,9 @@ The gate runs on the **committed** artefacts, so CI needs no API key.
    - `/metrics` shows the request counter and `recs_index_info{version="…"} 1`;
    - `loadIndex` rejects missing, corrupt, wrong-schema-version and unknown-embedder artefacts without throwing, and accepts a valid one.
 3. **`tests/boundaries.test.ts`:**
-   - no file in `src/` (except `config.ts`), `scripts/build-index.ts` or `scripts/demo.ts` references the canonical catalogue, the reference data or the `eval/` folder;
+   - no file in `src/` (except `config.ts`), `scripts/build-index.ts` or `scripts/demo.ts` references the canonical catalogue, the reference data or the `eval/` folder, whether by file name or by importing `config.ts`'s path constants for them;
    - no file in `src/service/` imports `openai` or the AI providers module.
-4. **Commands:** `npm run build:index -- --provider=offline`, then `npm run demo`, show all 10 cases with the expected status codes and reasons. `npm start` serves on port 3000.
+4. **Commands:** `npm run build:index -- --provider=offline`, then `npm run demo -- --provider=offline`, show all 10 cases with the expected status codes and reasons. `npm run demo` without the flag, with no OpenAI build present, exits 1 with a clear message. `npm start` serves on port 3000.
 
 ## 11. Known open questions
 
@@ -248,6 +273,12 @@ These are recorded so that a reviewer, or the next agent, decides them on purpos
 | Decline status code | **200** (404 only for unknown games) | A decline is a correct answer ("hide the rail"), not an error |
 | Bad artefact at start-up | **Not ready, not a crash** | Keeps old instances serving during a bad rollout |
 | One threshold for all embedders | **No:** a threshold per embedder; refuse an index without one | Similarity scales differ by model |
+| Offline builds | **Separate, git-ignored folders.** `demo` and `eval` default to the OpenAI build and exit 1 if it's missing, never falling back | Keyless results must never be mistaken for, or committed as, the shipped build. A silent fallback would report stand-in numbers as if they were real |
+| Where `IndexSchema` lives | **`src/domain/index-schema.ts`**, re-exported by `build-index.ts` | Importing it from `build-index.ts` would load the OpenAI SDK into the service, against rule 1 |
+| Boundary test scope | **Includes `config.ts`'s path constants** | A file name check alone misses code that imports the constant |
+| Error bodies and the request counter | **Specified** (§6.2, §7): one error shape; every request counted; unknown brands labelled `invalid` | Free-text label values would let any client grow the metric series without bound |
+| Index-level `enrichment` | **Describes the build mode** | A build mixes `llm`, `skipped_complete` and `rules_fallback` records, so one record's method can't describe it |
+| CI Node version | **22** | Full ICU and `process.loadEnvFile`. The dataset's formatting depends on ICU (spec 01 §11) |
 
 ### Compared with a common alternative design
 

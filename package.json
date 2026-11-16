@@ -16,8 +16,7 @@
     "eval": "tsx eval/run-eval.ts",
     "eval:gate": "tsx eval/run-eval.ts --gate",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm test && npm run eval:gate",
-    "spec:appendix": "tsx scripts/export-spec-appendix.ts"
+    "check": "npm run typecheck && npm test && npm run eval:gate"
   },
   "dependencies": {
     "fastify": "5.2.1",

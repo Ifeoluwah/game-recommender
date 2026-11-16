@@ -18,8 +18,8 @@ Make ranking quality **diagnosable**: measure *which kinds* of similarity the re
 | `src/catalogue/degrade.ts` | Cluster availability and profiles; `labelsFor()` (sections 5–6) |
 | `src/domain/types.ts` | `benchmarkCluster`, `clusterRole` on the canonical schema |
 | `scripts/generate-catalogue.ts` | `evaluation_dimensions` in `manifest.json` (section 6) |
-| `eval/run-eval.ts` | Per-cluster metrics section (section 7) |
-| `README.md` | "Dataset design" section (section 8) |
+| `eval/run-eval.ts` | Per-cluster metrics section (section 7). The runner itself is built in spec 06; AC5 is checked then |
+| `README.md` | Create it with the "Dataset design" section (section 8). Spec 08 §5 adds the rest around it |
 | `tests/pipeline.test.ts` | Section 9 |
 
 ## 3. The clusters
@@ -97,7 +97,7 @@ For each cluster, use every **member** as the seed. Work on the **similarity ran
 | Recall@5 | other members in the top 5 ÷ min(5, number of other members = 4) |
 | MRR | 1 ÷ rank of the first other member (0 if absent from the top 40) |
 | Near-miss intrusion | share of seeds where a near-miss ranks above at least one other member. A member missing from the top 40 counts as rank ∞, so any near-miss in the list beats it |
-| Served Recall@5 | Recall@5 on what `recommend` actually returns (all guardrails applied), with `limit: 5`, in July. Context: the first enabled brand carrying the seed, in the first of GB, ES, SE, NL where it's licensed. Seeds with no such context are skipped; null if none remain |
+| Served Recall@5 | Recall@5 on what `recommend` actually returns (all guardrails applied), with `limit: 5`, in July. Context, chosen market first as in spec 02 §7: for the first of GB, ES, SE, NL where the seed is licensed and an enabled brand (in config order) carries it and serves that market, use that brand. Seeds with no such context are skipped; null if none remain |
 
 Report each for the **raw-text** and **enriched** variants (built by `build-index`), shown as `raw → enriched`, plus a macro average. Print the macro line to the console.
 
@@ -121,8 +121,8 @@ All pass with no API key.
 1. **`tests/pipeline.test.ts`, clusters:** for each cluster, exactly 5 members and 2 near-misses. Every member has the cluster's theme first, game type, exact mechanics, allowed volatility, status active, £0.20/£50 stakes, and the 5 members have 5 distinct studios. Near-misses share the theme but differ in type or mechanics.
 2. **Enforcement on LLM output:** with a fake LLM that returns wrong themes, mechanics and volatility, every forced entry comes back corrected.
 3. **Labels:** every reference entry has exactly the 10 label keys. Cluster records are only `rich` or `partial` and carry no traps (seasonal excepted). At least one record has `studio_aggregator_swap`.
-4. **`npm run generate -- --provider=offline`:** `manifest.json` shows 4 clusters × (5 + 2), with denominators 108 and 113.
-5. **`npm run eval`:** the benchmark-cluster table appears, with raw → enriched values and a macro row.
+4. **`npm run generate -- --provider=offline`:** `data/offline/manifest.json` shows 4 clusters × (5 + 2), with denominators 108 and 113.
+5. **`npm run eval -- --provider=offline`:** the benchmark-cluster table appears, with raw → enriched values and a macro row. (Checked once spec 06's runner exists.)
 
 ## Decisions
 
