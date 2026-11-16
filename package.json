@@ -1,0 +1,33 @@
+{
+  "name": "game-recommender",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Production-shaped first step for 'Because you played X' related-game recommendations.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate-catalogue.ts",
+    "build:index": "tsx scripts/build-index.ts",
+    "start": "tsx src/main.ts",
+    "demo": "tsx scripts/demo.ts",
+    "test": "vitest run",
+    "eval": "tsx eval/run-eval.ts",
+    "eval:gate": "tsx eval/run-eval.ts --gate",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run eval:gate",
+    "spec:appendix": "tsx scripts/export-spec-appendix.ts"
+  },
+  "dependencies": {
+    "fastify": "5.2.1",
+    "openai": "4.77.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}
