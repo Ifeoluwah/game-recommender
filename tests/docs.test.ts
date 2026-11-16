@@ -84,6 +84,21 @@ describe("docs consistency (spec 08 §8)", () => {
     expect(mermaid).toContain("x-player-restricted: true");
   });
 
+  it("6. the README has a compact flowchart that shares the ADR's evidence-check branches (spec 08 §5.2)", () => {
+    const mermaidOf = (doc: string) => /```mermaid\n([\s\S]*?)```/.exec(read(doc).replace(/\r\n/g, "\n"))?.[1];
+    const readme = mermaidOf("README.md");
+    expect(readme, "README.md has no Mermaid block").toBeDefined();
+    expect(readme).toContain("flowchart LR");
+    expect(readme).toMatch(/subgraph build\["Build time[^"]*"\]/);
+    expect(readme).toMatch(/subgraph request\["Request time[^"]*"\]/);
+    for (const layer of ["Eligibility", "Policy", "Quality", "Diversity"]) expect(readme, layer).toMatch(new RegExp(`\\w+\\[${layer}\\]`));
+    const adr = mermaidOf(ADR);
+    for (const branch of [/--\s*"partial \/ title-only"\s*-->/, /--\s*complete\s*-->/]) {
+      expect(readme, `README: ${branch}`).toMatch(branch);
+      expect(adr, `ADR: ${branch}`).toMatch(branch);
+    }
+  });
+
   it("3a. the ADR has spec 07 §3.6's seed-availability rows and the all-declined brand revisit criterion", () => {
     const adr = read(ADR);
     expect(adr).toMatch(/not licensed in the market, or a test build \| `SEED_NOT_AVAILABLE`/);

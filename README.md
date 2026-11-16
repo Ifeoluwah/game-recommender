@@ -27,6 +27,35 @@ Every figure here is from `eval/reports/latest.json`, the committed OpenAI build
   - **g-003 "Crypt Legends"** (*offline*, `eval/reports/offline/latest.json`): a cold-start decline, the offline build's one miss (38/39 traps). The offline build is a software check, not the shipped system.
   - **Two misleading-title rows prove nothing.** g-019 and g-057 pass vacuously: both titles name their true type ("Scratch"), so they don't test whether enrichment trusts the copy over a misleading title.
 
+## How it works
+
+Models run once, when the index is built; each request only reads that index and applies rules.
+
+```mermaid
+flowchart LR
+  subgraph build["Build time: all AI runs here"]
+    F[Supplier feed] --> N["Normalise<br/>fails closed on unknowns"]
+    N --> EC{Evidence check}
+    EC -- complete --> EM[Embed]
+    EC -- "partial / title-only" --> EN[LLM enrichment]
+    EN --> GD["Guard<br/>regulated fields from source only<br/>closed vocabulary<br/>summary lint"]
+    GD --> EM
+    EM --> IX["Index artefact<br/>precomputed top-40<br/>neighbours per game"]
+    IX --> RG{Release gates}
+  end
+  subgraph request["Request time: no model, no vector search"]
+    API[API request] --> NL[Neighbour lookup]
+    NL --> EL[Eligibility]
+    EL --> PO[Policy]
+    PO --> QU[Quality]
+    QU --> DI[Diversity]
+    DI --> OUT(["Ranked items<br/>or decline with reason"])
+  end
+  RG -- pass --> NL
+```
+
+The ADR's [diagram](docs/ADR-001-recommender-architecture.md#3-diagram) is the full version, with the AWS mapping. [Failure behaviour](docs/ADR-001-recommender-architecture.md#7-failure-behaviour) is in the ADR too.
+
 ## The four layers
 
 Every candidate passes every layer, in order, on every request. No similarity score can outweigh a layer. Rule values are from [`config/service.json`](config/service.json); results are from the committed OpenAI build (index `ef13f1ecf784`, [`eval/reports/latest.md`](eval/reports/latest.md)).

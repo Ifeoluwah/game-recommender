@@ -122,14 +122,19 @@ The failure-analysis section (a few concrete cases where the system is wrong, re
 Sections:
 1. A one-paragraph summary: the build-time vs request-time idea.
    - Then, on the first screen, a **status block**: the release decision, how many of the ranking queries decline, and any brand or market with no rails, with the reason. Then **"Trade-offs and limitations"**, using only figures from `eval/reports/latest.json` and naming the build. Both already exist (added after spec 07); keep them and refresh the figures from the latest report.
-2. The four-layer table, with the real numbers.
-3. A "read this" table linking the ADR, `EVALUATION.md`, the latest report, `LEVERAGE.md`, `AI_USAGE.md`, `docs/prompts/` and `AGENTS.md`.
-4. "Run it (no API key needed)": the offline commands with `--provider=offline`, including that offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`, and that `demo` and `eval` read the committed OpenAI build unless given the flag. Then the API section: routes, parameters, response shape, decline reasons and an example.
-5. "Rebuild with a model": the OpenAI commands, committing the result, and that only `text-embedding-3-small` has a score threshold (spec 05 §6.3).
-6. "Dataset design" (spec 03 §8).
-7. "How the pieces fit": an ASCII pipeline sketch.
-8. "Production concerns: what I built and what I left out". The built list, plus a left-out table with a reason per item: auth and rate limiting at the edge, hot reload, vector DB, live eligibility overlay, age checks, a "trending" fallback rail, personalisation and A/B, review UI, IaC, and a generated spec appendix with a drift check. The last one's reason: the excerpts are fragments of files, so generating them needs markers in production code or brittle parsing; the appendix is maintained by hand, and the identity hash already checks the dataset (spec 07 Decisions).
-9. Repository map.
+2. **"How it works": a compact system-flow diagram**, after the status block and trade-offs and before the layer table. One short lead-in sentence, then the diagram, then a line pointing to the ADR's diagram for the AWS mapping and failure behaviour. The diagram is a Mermaid `flowchart LR` with two subgraphs:
+   - **Build time**, labelled so it's clear all AI runs there. The supplier feed enters normalisation, which is labelled as failing closed on unknown values. The evidence check is a decision node with the ADR's branch labels: `complete` goes straight to embedding, and `partial / title-only` goes to LLM enrichment. Enrichment passes through the guard, which is labelled with what it enforces (regulated fields from source only, closed vocabulary, summary lint), before embedding. Embedding produces the index artefact, labelled as the precomputed top-40 neighbours per game. The release gates are a decision node after the index, and their passing edge feeds the request path.
+   - **Request time**, labelled so it's clear no model and no vector search run there. The API request enters a neighbour lookup, then eligibility, policy, quality and diversity as separate nodes in that order, then a single terminal node: ranked items, or a decline with a reason.
+
+   Constraints: it must not contradict the ADR's diagram. It has no metric values, counts or thresholds, so it can't go stale. The one exception is top-40, a fixed design constant the ADR also states. It has short labels with `<br/>` line breaks and no styling, and it must render in GitHub's Markdown preview.
+3. The four-layer table, with the real numbers.
+4. A "read this" table linking the ADR, `EVALUATION.md`, the latest report, `LEVERAGE.md`, `AI_USAGE.md`, `docs/prompts/` and `AGENTS.md`.
+5. "Run it (no API key needed)": the offline commands with `--provider=offline`, including that offline builds go to the git-ignored `data/offline/`, `artifacts/offline/` and `eval/reports/offline/`, and that `demo` and `eval` read the committed OpenAI build unless given the flag. Then the API section: routes, parameters, response shape, decline reasons and an example.
+6. "Rebuild with a model": the OpenAI commands, committing the result, and that only `text-embedding-3-small` has a score threshold (spec 05 §6.3).
+7. "Dataset design" (spec 03 §8).
+8. "How the pieces fit": an ASCII pipeline sketch.
+9. "Production concerns: what I built and what I left out". The built list, plus a left-out table with a reason per item: auth and rate limiting at the edge, hot reload, vector DB, live eligibility overlay, age checks, a "trending" fallback rail, personalisation and A/B, review UI, IaC, and a generated spec appendix with a drift check. The last one's reason: the excerpts are fragments of files, so generating them needs markers in production code or brittle parsing; the appendix is maintained by hand, and the identity hash already checks the dataset (spec 07 Decisions).
+10. Repository map.
 
 ## 6. `docs/AI_USAGE.md`
 
@@ -168,6 +173,7 @@ Sections:
 3. The ADR has every section in 3.1 and a Mermaid block.
 4. Every relative link in the README, ADR, `EVALUATION.md`, `LEVERAGE.md`, `AI_USAGE.md` and `docs/prompts/README.md` resolves to a file or folder. One exception: links into `eval/reports/` (the OpenAI report) may be missing until the first OpenAI build is committed. The test then skips them and logs them as pending, rather than failing offline.
 5. The skill has its front matter, steps 1–9 and the template.
+6. The README has a Mermaid `flowchart LR` with the build-time and request-time subgraphs, the eligibility, policy, quality and diversity nodes, and the evidence check's `complete` and `partial / title-only` edge labels. Those labels must also appear in the ADR's diagram, so the two can't drift apart silently.
 
 Prose accuracy beyond these checks (numbers, behaviour) is a review item: when a spec changes a rule, update the README's layer table, the ADR's Decision section and `EVALUATION.md`'s policy section in the same change.
 
@@ -198,4 +204,5 @@ Prose accuracy beyond these checks (numbers, behaviour) is a review item: when a
 | Docs consistency test | **Added with this spec** | Writing the spec found drift: the ADR still said title-only records skip the LLM (changed by option B in spec 02), the policy summaries omitted the min-bet and unknown-stakes rules, and the market-not-served decline wasn't in the failure table. All fixed; the test now catches the checkable kinds |
 | Failure analysis now or after the OpenAI run | **After** | It must quote real cases from the configuration being submitted |
 | Links to the OpenAI report before it exists | **Skipped and logged** by the docs test, not failed | Offline reports are git-ignored, so the committed report is the OpenAI one. Tests must pass with no key |
+| A diagram in the README as well as the ADR | **Yes: a compact flow in the README, and the full one in the ADR** | A reviewer skimming the README shouldn't have to open the ADR to see the shape of the system. The README's diagram shows only the flow and the build/request split. The ADR's keeps the AWS mapping and failure paths. The docs test pins the shared branch labels, and the README's diagram has no numbers that can go stale |
 | Spec appendix exporter | **Not built;** listed under "left out" in the README | See spec 07 Decisions |
